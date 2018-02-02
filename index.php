@@ -50,7 +50,7 @@ function drawHome()
 
     $s = "<h2>Home</h2>";
 
-    $s .= "<a href='?screen=therapist'><button>Therapist</button></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=admin'><button>Admin</button></a>";
+    $s .= "<a href='?screen=therapist'><div class='otButton'>Therapist</div></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=admin'><div class='otButton'>Admin</div></a>";
 
     return( $s );
 }
@@ -72,32 +72,32 @@ function drawTherapist( $screen )
                              ."<a href='?screen=therapist-materials'><div class='otButton'>Print Materials</div></a>"
                          ."</div>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-formscharts'><button>Print Forms for Charts</button></a>"
+                             ."<a href='?screen=therapist-formscharts'><div class='otButton'>Print Forms for Charts</div></a>"
                          ."</div>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-linedpapers'><button>Print Different Lined Papers</button></a>"
-                         ."</div>"
-                     ."</div>"
-                     ."<div class='row'>"
-                         ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-entercharts'><button>Enter Charts</button></a>"
-                         ."</div>"
-                         ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-clientRx'><button>Print Client Rx Activities</button></a>"
-                         ."</div>"
-                         ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-ideas'><button>Get Ideas</button></a>"
-                         ."</div>"
-                         ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-downloadcustommaterials'><button>Download and Customize Marketable Materials</button></a>"
+                             ."<a href='?screen=therapist-linedpapers'><div class='otButton'>Print Different Lined Papers</div></a>"
                          ."</div>"
                      ."</div>"
                      ."<div class='row'>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-team'><button>Meet the Team</button></a>"
+                             ."<a href='?screen=therapist-entercharts'><div class='otButton'>Enter Charts</div></a>"
                          ."</div>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-submitresources'><button>Submit Resources to Share</button></a>"
+                             ."<a href='?screen=therapist-clientRx'><div class='otButton'>Print Client Rx Activities</div></a>"
+                         ."</div>"
+                         ."<div class='col-md-3'>"
+                             ."<a href='?screen=therapist-ideas'><div class='otButton'>Get Ideas</div></a>"
+                         ."</div>"
+                         ."<div class='col-md-3'>"
+                             ."<a href='?screen=therapist-downloadcustommaterials'><div class='otButton'>Download and Customize Marketable Materials</div></a>"
+                         ."</div>"
+                     ."</div>"
+                     ."<div class='row'>"
+                         ."<div class='col-md-3'>"
+                             ."<a href='?screen=therapist-team'><div class='otButton'>Meet the Team</div></a>"
+                         ."</div>"
+                         ."<div class='col-md-3'>"
+                             ."<a href='?screen=therapist-submitresources'><div class='otButton'>Submit Resources to Share</div></a>"
                          ."</div>"
                      ."</div>"
                  ."</div>";
@@ -140,7 +140,7 @@ function drawAdmin()
 
     $s = "<h2>Admin</h2>";
 
-    $s .= "<a href='?screen=home'><button>Home</button></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist'><button>Therapist</button></a>";
+    $s .= "<a href='?screen=home'><div class='otButton'>Home</div></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist'><div class='otButton'>Therapist</div></a>";
 
     return( $s );
 }
