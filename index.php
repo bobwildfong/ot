@@ -2,10 +2,17 @@
 
 include_once( "_config.php" );
 include( SEEDCore."SEEDCore.php" );
+include( SEEDROOT."Keyframe/KeyframeDB.php" );
 
 if( !isset($dirBootstrap) ) {
     $dirBootstrap = "./bootstrap3/";
 }
+
+
+$kfdb = new KeyFrameDatabase( "localhost", "ot", "ot" );
+var_dump($kfdb);
+
+
 
 $s =
 "<html>

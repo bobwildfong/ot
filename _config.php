@@ -1,5 +1,6 @@
 <?php
 
-define( "SEEDCore", "../seeds/seedcore/" );
+define( "SEEDROOT", "../seeds/" );
+define( "SEEDCore", SEEDROOT."seedcore/" );
 
 ?>
