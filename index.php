@@ -86,7 +86,7 @@ function drawTherapist( $screen )
     switch( $screen ) {
         case "therapist":
         default:
-            $s .= "<p>What would you like to do?</p>"
+            $s .= "<p id='test' onload='createCircle(test, 20px, red);'>What would you like to do?</p>"
                  ."<div class='container-fluid'>"
                      ."<div class='row'>"
                          ."<div class='col-md-3'>"
