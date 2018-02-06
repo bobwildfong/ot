@@ -3,16 +3,11 @@
 include_once( "_config.php" );
 include( SEEDCore."SEEDCore.php" );
 include( SEEDROOT."Keyframe/KeyframeDB.php" );
+include( "database.php" );
 
 if( !isset($dirBootstrap) ) {
     $dirBootstrap = "./bootstrap3/";
 }
-
-
-$kfdb = new KeyFrameDatabase( "localhost", "ot", "ot" );
-var_dump($kfdb);
-
-
 
 $s =
 "<html>
@@ -64,6 +59,8 @@ function drawHome()
 
 function drawTherapist( $screen )
 {
+    global $kfdb;
+
     $s = "<h2>Therapist</h2>";
 
     switch( $screen ) {
@@ -106,6 +103,9 @@ function drawTherapist( $screen )
                          ."<div class='col-md-3'>"
                              ."<a href='?screen=therapist-submitresources'><div class='otButton'>Submit Resources to Share</div></a>"
                          ."</div>"
+                         ."<div class='col-md-3'>"
+                             ."<a href='?screen=therapist-clientlist'><div class='otButton'>Clients and Providers</div></a>"
+                         ."</div>"
                      ."</div>"
                  ."</div>";
             break;
@@ -136,6 +136,9 @@ function drawTherapist( $screen )
         case "therapist-submitresources":
             $s .= "SUBMIT RESOURCES";
             break;
+        case "therapist-clientlist":
+            $s .= drawClientList( $kfdb );
+            break;
     }
 
     return( $s );
@@ -151,5 +154,27 @@ function drawAdmin()
 
     return( $s );
 }
+
+function drawClientList( KeyframeDatabase $kfdb )
+{
+    $s = "";
+
+    $raClients = GetClients( $kfdb );
+    $raPros = GetProfessionals( $kfdb );
+
+    $s .= "<div class='container-fluid'><div class='row'>"
+         ."<div class='col-md-6'>"
+             ."<h3>Clients</h3>"
+             .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'>[[client_name]] likes [[fav_colour]]</div>" )
+         ."</div>"
+         ."<div class='col-md-6'>"
+             ."<h3>Providers</h3>"
+             .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'>[[pro_name]] is a [[pro_role]] who likes [[fav_colour]]</div>" )
+         ."</div>";
+
+
+    return( $s );
+}
+
 
 ?>
