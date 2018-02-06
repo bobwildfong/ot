@@ -33,7 +33,7 @@ function createCircle(element, radius, color) {
 try {
 var toStyle = document.getElementById(element);
 }
-catch {
+catch(err) {
 console.log('Invalid element specified for createCircle');
 return false;
 }
