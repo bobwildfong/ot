@@ -10,8 +10,11 @@ if( !isset($dirBootstrap) ) {
 }
 
 $s =
-"<html>
+"<!DOCTYPE html>
+<html lang='en'>
 <head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='stylesheet' type='text/css' href='".$dirBootstrap."dist/css/bootstrap.min.css'></link>
 <script src='".$dirBootstrap."dist/js/bootstrap.min.js'></script>
 <meta name='viewport' content='width=device-width, initial-scale=1.0'>
@@ -29,8 +32,6 @@ $s =
 <body>";
 
 
-
-
 $screen = SEEDInput_Str( 'screen' );
 
 if( $screen == 'admin' ) {
@@ -44,6 +45,7 @@ if( $screen == 'admin' ) {
 echo $s
     ."</body></html>";
 
+    
 
 function drawHome()
 {
@@ -150,7 +152,9 @@ function drawAdmin()
 
     $s = "<h2>Admin</h2>";
 
-    $s .= "<a href='?screen=home'><div class='otButton'>Home</div></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist'><div class='otButton'>Therapist</div></a>";
+    $s .= "<a href='?screen=home'><div class='otButton'>Home</div></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist'><div class='otButton'>Therapist</div></a>"
+        ."</body>"
+        ."</html>";
 
     return( $s );
 }
