@@ -148,7 +148,9 @@ function drawAdmin()
 
     $s = "<h2>Admin</h2>";
 
-    $s .= "<a href='?screen=home'><div class='otButton'>Home</div></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist'><div class='otButton'>Therapist</div></a>";
+    $s .= "<a href='?screen=home'><div class='otButton'>Home</div></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist'><div class='otButton'>Therapist</div></a>"
+        ."</body>"
+        ."</html>";
 
     return( $s );
 }
