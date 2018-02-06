@@ -30,8 +30,6 @@ $s =
 <body>";
 
 
-
-
 $screen = SEEDInput_Str( 'screen' );
 
 if( $screen == 'admin' ) {
