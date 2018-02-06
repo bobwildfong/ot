@@ -5,9 +5,8 @@ include( SEEDCore."SEEDCore.php" );
 include( SEEDROOT."Keyframe/KeyframeDB.php" );
 include( "database.php" );
 
-if( !isset($dirBootstrap) ) {
-    $dirBootstrap = "./bootstrap3/";
-}
+if( !isset($dirBootstrap) ) { $dirBootstrap = "./bootstrap3/"; }
+if( !isset($dirJQuery) )    { $dirJQuery =    "./jquery/"; }
 
 $s =
 "<!DOCTYPE html>
@@ -16,6 +15,7 @@ $s =
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='stylesheet' type='text/css' href='".$dirBootstrap."dist/css/bootstrap.min.css'></link>
+<script src='".$dirJQuery."jquery-1.11.0.min.js'></script>
 <script src='".$dirBootstrap."dist/js/bootstrap.min.js'></script>
 <meta name='viewport' content='width=device-width, initial-scale=1.0'>
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -45,7 +45,7 @@ if( $screen == 'admin' ) {
 echo $s
     ."</body></html>";
 
-    
+
 
 function drawHome()
 {
@@ -163,18 +163,46 @@ function drawClientList( KeyframeDatabase $kfdb )
 {
     $s = "";
 
+    // Put this before the GetClients call so the changes are shown in the list
+    if( ($cmd = SEEDInput_Str('cmd')) == "update_client" ) {
+        $client_name = SEEDInput_Str( "client_name" );
+        $fav_colour  = SEEDInput_Str( "fav_colour" );
+        $client_key = SEEDInput_Int( "client_key" );
+        PutClient( $kfdb, $client_key, $client_name, $fav_colour );
+    }
+
     $raClients = GetClients( $kfdb );
     $raPros = GetProfessionals( $kfdb );
 
     $s .= "<div class='container-fluid'><div class='row'>"
          ."<div class='col-md-6'>"
              ."<h3>Clients</h3>"
-             .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'>[[client_name]] likes [[fav_colour]]</div>" )
+             .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?k=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a> likes [[fav_colour]]</div>" )
          ."</div>"
          ."<div class='col-md-6'>"
              ."<h3>Providers</h3>"
              .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'>[[pro_name]] is a [[pro_role]] who likes [[fav_colour]]</div>" )
-         ."</div>";
+         ."</div>"
+         ."</div></div>";
+
+    if( ($k = SEEDInput_Int( 'k' )) ) {
+        // The user clicked on a client name so show their form
+        foreach( $raClients as $ra ) {
+            if( $ra['_key'] == $k ) {
+                $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
+                     ."<form>"
+                     ."<input type='hidden' name='cmd' value='update_client'/>"
+                     ."<input type='hidden' name='client_key' value='$k'/>"
+                     ."<input type='hidden' name='screen' value='therapist-clientlist'/"
+                     ."<p>Client # $k</p>"
+                     ."<p>Name <input type='text' name='client_name' value='".htmlspecialchars($ra['client_name'])."'/></p>"
+                     ."<p>Colour <input type='text' name='fav_colour' value='".htmlspecialchars($ra['fav_colour'])."'/></p>"
+                     ."<p><input type='submit' value='Save'/></p>"
+                     ."</form>"
+                     ."</div>";
+            }
+        }
+    }
 
 
     return( $s );

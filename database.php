@@ -73,5 +73,17 @@ function GetProfessionals( $kfdb )
     return( $raPros );
 }
 
+function PutClient( $kfdb, $key, $name, $fav_colour )
+{
+    // note: use addslashes() in db statements because if the user puts a single-quote in a name or a colour it will mess up the syntax
+
+    if( $key ) {
+        // This is a known user so update their information
+        $kfdb->Execute( "UPDATE ot.clients SET client_name='".addslashes($name)."', fav_colour='".addslashes($fav_colour)."' WHERE _key='$key'" );
+    } else {
+        // $key==0 means this is a new user
+        $kfdb->Execute( "INSERT INTO ot.clients (null,client_name,fav_colour) VALUES (null,'".addslashes($name)."'.'".addslashes($fav_colour)."')" );
+    }
+}
 
 ?>
