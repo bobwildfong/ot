@@ -28,6 +28,24 @@ $s =
 <style>
 .otButton { border:1px solid #aaa; width:80%; text-align:center; padding: 20px 0px;}
 </style>
+<script>
+function createCircle(element, radius, color) {
+try {
+var toStyle = document.getElementById(element);
+}
+catch {
+console.log('Invalid element specified for createCircle');
+return false;
+}
+toStyle.style.height = 2 * radius;
+toStyle.style.width = toStyle.style.height;
+toStyle.style.borderStyle = 'inset outset outset inset';
+toStyle.style.borderColor = color;
+toStyle.style.backgroundColor = color;
+toStyle.style.borderRadius = radius;
+return true;
+}
+</script>
 </head>
 <body>";
 
