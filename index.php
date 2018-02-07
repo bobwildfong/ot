@@ -5,6 +5,8 @@ include( SEEDCore."SEEDCore.php" );
 include( SEEDROOT."Keyframe/KeyframeDB.php" );
 include( "database.php" );
 
+$client_fields = array("client_name","fav_colour","address","city","postal_code","phone_number","email");
+
 if( !isset($dirBootstrap) ) { $dirBootstrap = "./bootstrap3/"; }
 if( !isset($dirJQuery) )    { $dirJQuery =    "./jquery/"; }
 
@@ -179,19 +181,18 @@ function drawAdmin()
 
 function drawClientList( KeyframeDatabase $kfdb )
 {
+    global $client_fields;
     $s = "";
 
     // Put this before the GetClients call so the changes are shown in the list
     if( ($cmd = SEEDInput_Str('cmd')) == "update_client" ) {
-        $client_name = SEEDInput_Str( "client_name" );
-        $fav_colour  = SEEDInput_Str( "fav_colour" );
+        $sqla = array();
         $client_key = SEEDInput_Int( "client_key" );
-        $address = SEEDInput_Str( "address" );
-        $city = SEEDInput_Str( "city" );
-        $postal_code = SEEDInput_Str( "postal_code" );
-        $phone_number = SEEDInput_Str( "phone_number" );
-        $email = SEEDInput_Str( "email" );
-        PutClient( $kfdb, $client_key, $client_name, $fav_colour, $address, $city, $postal_code, $phone_number, $email );
+        foreach($client_fields as $field){
+            $sqla[$field] = SEEDInput_Str($field);
+        }
+        
+        PutClient( $kfdb, $sqla, $client_key );
     }
 
     $raClients = GetClients( $kfdb );

@@ -83,16 +83,22 @@ function GetProfessionals( $kfdb )
     return( $raPros );
 }
 
-function PutClient( $kfdb, $key, $name, $fav_colour, $address, $city, $postal_code, $phone_number, $email )
+function PutClient( $kfdb, $client_info, $key )
 {
     // note: use addslashes() in db statements because if the user puts a single-quote in a name or a colour it will mess up the syntax
-
     if( $key ) {
         // This is a known user so update their information
-        $kfdb->Execute( "UPDATE ot.clients SET client_name='".addslashes($name)."', address='".addslashes($address)."', city='".addslashes($city)."', postal_code='".addslashes($postal_code)."', phone_number='".addslashes($phone_number)."', email='".addslashes($email)."', fav_colour='".addslashes($fav_colour)."' WHERE _key='$key'" );
+        $sql = "";
+        foreach($client_info as $name => $value){
+            if($sql !== ""){
+                $sql .= ",";
+            }
+            $sql .= $name."='".addslashes($value)."'";
+        }
+        $kfdb->Execute( "UPDATE ot.clients SET ".$sql ." WHERE _key='$key'" );
     } else {
         // $key==0 means this is a new user
-        $kfdb->Execute( "INSERT INTO ot.clients (null,client_name,fav_colour) VALUES (null,'".addslashes($name)."'.'".addslashes($fav_colour)."')" );
+        $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name,fav_colour) VALUES (null,'".addslashes($name)."'.'".addslashes($fav_colour)."')" );
     }
 }
 
