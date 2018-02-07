@@ -186,7 +186,12 @@ function drawClientList( KeyframeDatabase $kfdb )
         $client_name = SEEDInput_Str( "client_name" );
         $fav_colour  = SEEDInput_Str( "fav_colour" );
         $client_key = SEEDInput_Int( "client_key" );
-        PutClient( $kfdb, $client_key, $client_name, $fav_colour );
+        $address = SEEDInput_Str( "address" );
+        $city = SEEDInput_Str( "city" );
+        $postal_code = SEEDInput_Str( "postal_code" );
+        $phone_number = SEEDInput_Str( "phone_number" );
+        $email = SEEDInput_Str( "email" );
+        PutClient( $kfdb, $client_key, $client_name, $fav_colour, $address, $city, $postal_code, $phone_number, $email );
     }
 
     $raClients = GetClients( $kfdb );
@@ -214,6 +219,11 @@ function drawClientList( KeyframeDatabase $kfdb )
                      ."<input type='hidden' name='screen' value='therapist-clientlist'/"
                      ."<p>Client # $k</p>"
                      ."<p>Name <input type='text' name='client_name' value='".htmlspecialchars($ra['client_name'])."'/></p>"
+                     ."<p>Address <input type='text' name='address' value='".htmlspecialchars($ra['address'])."'/></p>"
+                     ."<p>City <input type='text' name='city' value='".htmlspecialchars($ra['city'])."'/></p>"
+                     ."<p>Postal Code <input type='text' name='postal_code' value='".htmlspecialchars($ra['postal_code'])."'/></p>"
+                     ."<p>Phone Number <input type='text' name='phone_number' value='".htmlspecialchars($ra['phone_number'])."'/></p>"
+                     ."<p>Email <input type='text' name='email' value='".htmlspecialchars($ra['email'])."'/></p>"
                      ."<p>Colour <input type='text' name='fav_colour' value='".htmlspecialchars($ra['fav_colour'])."'/></p>"
                      ."<p><input type='submit' value='Save'/></p>"
                      ."</form>"
