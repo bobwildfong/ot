@@ -23,6 +23,11 @@ if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
         _status     INTEGER DEFAULT 0,
 
         client_name VARCHAR(200) NOT NULL DEFAULT '',
+        address VARCHAR(200) NOT NULL DEFAULT '',
+        city VARCHAR(200) NOT NULL DEFAULT '',
+        postal_code VARCHAR(200) NOT NULL DEFAULT '',
+        phone_number VARCHAR(200) NOT NULL DEFAULT '',
+        email VARCHAR(200) NOT NULL DEFAULT '',
         fav_colour  VARCHAR(200) NOT NULL DEFAULT '')" );
 
     $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name,fav_colour) values (null,'Eric','blue')" );
@@ -38,6 +43,11 @@ if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
 
         pro_name VARCHAR(200) NOT NULL DEFAULT '',
         pro_role VARCHAR(200) NOT NULL DEFAULT '',
+        address VARCHAR(200) NOT NULL DEFAULT '',
+        city VARCHAR(200) NOT NULL DEFAULT '',
+        postal_code VARCHAR(200) NOT NULL DEFAULT '',
+        phone_number VARCHAR(200) NOT NULL DEFAULT '',
+        email VARCHAR(200) NOT NULL DEFAULT '',
         fav_colour        VARCHAR(200) NOT NULL DEFAULT '')" );
 
     $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role,fav_colour) values (null,'Jose','Dentist','blue')" );
