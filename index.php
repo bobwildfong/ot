@@ -1,11 +1,11 @@
 <?php
 
-include_once( "_config.php" );
-include( SEEDCore."SEEDCore.php" );
-include( SEEDROOT."Keyframe/KeyframeDB.php" );
-include( "database.php" );
+include_once "_config.php" ;
+include SEEDCore."SEEDCore.php" ;
+include SEEDROOT."Keyframe/KeyframeDB.php" ;
+require  "database.php" ;
 
-$client_fields = array("client_name","fav_colour","address","city","postal_code","phone_number","email");
+$client_fields = array("client_name","fav_colour","address","city","postal_code","dob","phone_number","email");
 
 if( !isset($dirBootstrap) ) { $dirBootstrap = "./bootstrap3/"; }
 if( !isset($dirJQuery) )    { $dirJQuery =    "./jquery/"; }
@@ -201,11 +201,11 @@ function drawClientList( KeyframeDatabase $kfdb )
     $s .= "<div class='container-fluid'><div class='row'>"
          ."<div class='col-md-6'>"
              ."<h3>Clients</h3>"
-             .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?k=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a> likes [[fav_colour]]</div>" )
+             .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?k=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a></div>" )
          ."</div>"
          ."<div class='col-md-6'>"
              ."<h3>Providers</h3>"
-             .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'>[[pro_name]] is a [[pro_role]] who likes [[fav_colour]]</div>" )
+             .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'>[[pro_name]] is a [[pro_role]]</div>" )
          ."</div>"
          ."</div></div>";
 
@@ -223,9 +223,9 @@ function drawClientList( KeyframeDatabase $kfdb )
                      ."<p>Address <input type='text' name='address' value='".htmlspecialchars($ra['address'])."'/></p>"
                      ."<p>City <input type='text' name='city' value='".htmlspecialchars($ra['city'])."'/></p>"
                      ."<p>Postal Code <input type='text' name='postal_code' value='".htmlspecialchars($ra['postal_code'])."'/></p>"
+                     ."<p>Date Of Birth <input type='date' name='dob' value='".htmlspecialchars($ra['dob'])."'/></p>"
                      ."<p>Phone Number <input type='text' name='phone_number' value='".htmlspecialchars($ra['phone_number'])."'/></p>"
-                     ."<p>Email <input type='text' name='email' value='".htmlspecialchars($ra['email'])."'/></p>"
-                     ."<p>Colour <input type='text' name='fav_colour' value='".htmlspecialchars($ra['fav_colour'])."'/></p>"
+                     ."<p>Email <input type='email' name='email' value='".htmlspecialchars($ra['email'])."'/></p>"
                      ."<p><input type='submit' value='Save'/></p>"
                      ."</form>"
                      ."</div>";
