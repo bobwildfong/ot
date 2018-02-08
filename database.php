@@ -23,12 +23,20 @@ if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
         _status     INTEGER DEFAULT 0,
 
         client_name VARCHAR(200) NOT NULL DEFAULT '',
+        parents_name VARCHAR(200) NOT NULL DEFAULT '',
+        parents_separate BIT(1) NOT NULL DEFAULT '0',
         address VARCHAR(200) NOT NULL DEFAULT '',
         city VARCHAR(200) NOT NULL DEFAULT '',
         postal_code VARCHAR(200) NOT NULL DEFAULT '',
         dob VARCHAR(200) NOT NULL DEFAULT '',
         phone_number VARCHAR(200) NOT NULL DEFAULT '',
-        email VARCHAR(200) NOT NULL DEFAULT '')" );
+        email VARCHAR(200) NOT NULL DEFAULT '',
+        family_doc VARCHAR(200) NOT NULL DEFAULT '',
+        paediatrician VARCHAR(200) NOT NULL DEFAULT '',
+        slp VARCHAR(200) NOT NULL DEFAULT '',
+        psychologist VARCHAR(200) NOT NULL DEFAULT '',
+        referal VARCHAR(500) NOT NULL DEFAULT '',
+        background_info VARCHAR(500) NOT NULL DEFAULT '')" );
 
     $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name) values (null,'Eric')" );
     $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name) values (null,'Joe')" );

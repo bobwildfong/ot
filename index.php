@@ -5,6 +5,7 @@ include SEEDCore."SEEDCore.php" ;
 include SEEDROOT."Keyframe/KeyframeDB.php" ;
 require  "database.php" ;
 
+#TODO Update array to match database colloms
 $client_fields = array("client_name","fav_colour","address","city","postal_code","dob","phone_number","email");
 
 if( !isset($dirBootstrap) ) { $dirBootstrap = "./bootstrap3/"; }
@@ -213,6 +214,7 @@ function drawClientList( KeyframeDatabase $kfdb )
         // The user clicked on a client name so show their form
         foreach( $raClients as $ra ) {
             if( $ra['_key'] == $k ) {
+                #TODO Update table to match database
                 $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
                      ."<form>"
                      ."<input type='hidden' name='cmd' value='update_client'/>"
