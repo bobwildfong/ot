@@ -26,12 +26,12 @@ if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
         address VARCHAR(200) NOT NULL DEFAULT '',
         city VARCHAR(200) NOT NULL DEFAULT '',
         postal_code VARCHAR(200) NOT NULL DEFAULT '',
+        dob VARCHAR(200) NOT NULL DEFAULT '',
         phone_number VARCHAR(200) NOT NULL DEFAULT '',
-        email VARCHAR(200) NOT NULL DEFAULT '',
-        fav_colour  VARCHAR(200) NOT NULL DEFAULT '')" );
+        email VARCHAR(200) NOT NULL DEFAULT '')" );
 
-    $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name,fav_colour) values (null,'Eric','blue')" );
-    $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name,fav_colour) values (null,'Joe','red')" );
+    $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name) values (null,'Eric')" );
+    $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name) values (null,'Joe')" );
 
     $kfdb->Execute( "CREATE TABLE ot.professionals (
         _key        INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -47,11 +47,10 @@ if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
         city VARCHAR(200) NOT NULL DEFAULT '',
         postal_code VARCHAR(200) NOT NULL DEFAULT '',
         phone_number VARCHAR(200) NOT NULL DEFAULT '',
-        email VARCHAR(200) NOT NULL DEFAULT '',
-        fav_colour        VARCHAR(200) NOT NULL DEFAULT '')" );
+        email VARCHAR(200) NOT NULL DEFAULT '')" );
 
-    $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role,fav_colour) values (null,'Jose','Dentist','blue')" );
-    $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role,fav_colour) values (null,'Darth Vader','Surgeon','red')" );
+    $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role) values (null,'Jose','Dentist')" );
+    $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role) values (null,'Darth Vader','Surgeon')" );
 
     $kfdb->SetDebug(0);
 }
@@ -98,7 +97,7 @@ function PutClient( $kfdb, $client_info, $key )
         $kfdb->Execute( "UPDATE ot.clients SET ".$sql ." WHERE _key='$key'" );
     } else {
         // $key==0 means this is a new user
-        $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name,fav_colour) VALUES (null,'".addslashes($name)."'.'".addslashes($fav_colour)."')" );
+        $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name) VALUES (null,'Client: '_key)" );
     }
 }
 
