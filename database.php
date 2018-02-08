@@ -24,7 +24,7 @@ if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
 
         client_name VARCHAR(200) NOT NULL DEFAULT '',
         parents_name VARCHAR(200) NOT NULL DEFAULT '',
-        parents_separate BIT(1) NOT NULL DEFAULT '0',
+        parents_separate BIT(1) NOT NULL DEFAULT b'0',
         address VARCHAR(200) NOT NULL DEFAULT '',
         city VARCHAR(200) NOT NULL DEFAULT '',
         postal_code VARCHAR(200) NOT NULL DEFAULT '',
