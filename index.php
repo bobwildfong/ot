@@ -192,7 +192,7 @@ function drawClientList( KeyframeDatabase $kfdb )
         foreach($client_fields as $field){
             $sqla[$field] = SEEDInput_Str($field);
         }
-        
+
         PutClient( $kfdb, $sqla, $client_key );
     }
 
@@ -215,6 +215,16 @@ function drawClientList( KeyframeDatabase $kfdb )
         foreach( $raClients as $ra ) {
             if( $ra['_key'] == $k ) {
                 #TODO Update table to match database
+
+                // Dad says: don't bother putting doctor, paed, slp names in this form. Instead we'll make a "connect-the-professionals" map
+                //    between the clients and professionals tables.
+
+                // TODO-Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
+
+                // TODO-Eric: I've pushed KeyframeRelation.php into the seeds codebase. This is a more advanced way to update database
+                //            rows, so don't bother moving ahead with more database code. It basically takes what you've done with $client_fields
+                //            and adds magic sauce (int/str/float types, logging of updates, auto-detection of inserts, deletes and undeletes,
+                //            optimizations, and other stuff)
                 $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
                      ."<form>"
                      ."<input type='hidden' name='cmd' value='update_client'/>"
