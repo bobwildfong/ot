@@ -201,11 +201,11 @@ function drawClientList( KeyframeDatabase $kfdb )
     $s .= "<div class='container-fluid'><div class='row'>"
          ."<div class='col-md-6'>"
              ."<h3>Clients</h3>"
-             .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?k=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a> likes [[fav_colour]]</div>" )
+             .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?k=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a></div>" )
          ."</div>"
          ."<div class='col-md-6'>"
              ."<h3>Providers</h3>"
-             .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'>[[pro_name]] is a [[pro_role]] who likes [[fav_colour]]</div>" )
+             .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'>[[pro_name]] is a [[pro_role]]</div>" )
          ."</div>"
          ."</div></div>";
 
