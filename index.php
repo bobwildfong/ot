@@ -188,6 +188,7 @@ function drawClientList( KeyframeDatabase $kfdb )
     if( ($cmd = SEEDInput_Str('cmd')) == "update_client" ) {
         $sqla = array();
         $client_key = SEEDInput_Int( "client_key" );
+        $sqla["parents_separated"] = SEEDInput_Str("parents_separated") == "on"?TRUE:FALSE;
         foreach($client_fields as $field){
             $sqla[$field] = SEEDInput_Str($field);
         }
@@ -220,7 +221,7 @@ function drawClientList( KeyframeDatabase $kfdb )
                      ."<input type='hidden' name='client_key' value='$k'/>"
                      ."<input type='hidden' name='screen' value='therapist-clientlist'/"
                      ."<p>Client # $k</p>"
-                     ."<p>Name <input type='text' name='client_name' value='".htmlspecialchars($ra['client_name'])."'/></p>"
+                     ."<p>Name <input type='text' name='client_name' required value='".htmlspecialchars($ra['client_name'])."'/></p>"
                      ."<p>Address <input type='text' name='address' value='".htmlspecialchars($ra['address'])."'/></p>"
                      ."<p>City <input type='text' name='city' value='".htmlspecialchars($ra['city'])."'/></p>"
                      ."<p>Postal Code <input type='text' name='postal_code' value='".htmlspecialchars($ra['postal_code'])."'/></p>"
