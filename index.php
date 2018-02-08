@@ -5,7 +5,6 @@ include SEEDCore."SEEDCore.php" ;
 include SEEDROOT."Keyframe/KeyframeDB.php" ;
 require  "database.php" ;
 
-#TODO Update array to match database colloms
 $client_fields = array("client_name","fav_colour","address","city","postal_code","dob","phone_number","email");
 
 if( !isset($dirBootstrap) ) { $dirBootstrap = "./bootstrap3/"; }
