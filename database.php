@@ -1,5 +1,17 @@
 <?php
 
+require SEEDROOT."Keyframe/KeyframeRelation.php";
+
+$kfreldefClients = array(
+    "Tables" => array( "Clients" => array( "Table" => 'ot.clients',
+                                           "Fields" => array( array("col"=>"client_name",   "type"=>"S"),
+                                                              array("col"=>"parents_name",  "type"=>"S"),
+                                                              array("col"=>"address",       "type"=>"S"),
+                                                      
+))));
+
+
+
 $kfdb = new KeyframeDatabase( "localhost", "ot", "ot" );
 
 if( !($kfdb && $kfdb->Connect( "ot" )) ) {
@@ -68,6 +80,13 @@ function GetClients( $kfdb )
 {
     $raClients = array();
 
+    global $kfreldefClients;
+    $kfrel = new KeyFrame_Relation( $kfdb, $kfreldefClients, 0 );   
+    
+    $kfdb->SetDebug(1);
+    //$ra = $kfrel->GetRecordSetRA("");var_dump($ra);
+    
+    
     if( ($dbc = $kfdb->CursorOpen( "SELECT * FROM ot.clients" )) ) {
         while( ($ra = $kfdb->CursorFetch( $dbc )) ) {
             $raClients[] = $ra;
