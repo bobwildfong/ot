@@ -5,7 +5,10 @@ include SEEDCore."SEEDCore.php" ;
 include SEEDROOT."Keyframe/KeyframeDB.php" ;
 require  "database.php" ;
 
-$client_fields = array("client_name","parents_name","address","city","postal_code","dob","phone_number","email","family_doc","paediatrician","slp","psychologist","referal","backgroung_info");
+var_dump($_REQUEST);
+$kfdb->SetDebug(1);
+
+$client_fields = array("client_name","parents_name","address","city","postal_code","dob","phone_number","email","family_doc","paediatrician","slp","psychologist","referal","background_info");
 
 if( !isset($dirBootstrap) ) { $dirBootstrap = "./bootstrap3/"; }
 if( !isset($dirJQuery) )    { $dirJQuery =    "./jquery/"; }
@@ -184,11 +187,12 @@ function drawClientList( KeyframeDatabase $kfdb )
     global $client_fields;
     $s = "";
 
+    $client_key = SEEDInput_Int( 'client_key' );
+
     // Put this before the GetClients call so the changes are shown in the list
     if( ($cmd = SEEDInput_Str('cmd')) == "update_client" ) {
         $sqla = array();
-        $client_key = SEEDInput_Int( "client_key" );
-        $sqla["parents_separated"] = SEEDInput_Str("parents_separated") == "on"?TRUE:FALSE;
+        $sqla["parents_separate"] = SEEDInput_Str("parents_separate") == "on"?TRUE:FALSE;
         foreach($client_fields as $field){
             $sqla[$field] = SEEDInput_Str($field);
         }
@@ -202,7 +206,8 @@ function drawClientList( KeyframeDatabase $kfdb )
     $s .= "<div class='container-fluid'><div class='row'>"
          ."<div class='col-md-6'>"
              ."<h3>Clients</h3>"
-             .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?k=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a></div>" )
+             .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?client_key=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a></div>" )
+             .($client_key ? drawClientForm( $kfdb, $raClients, $client_key) : "")
          ."</div>"
          ."<div class='col-md-6'>"
              ."<h3>Providers</h3>"
@@ -210,43 +215,46 @@ function drawClientList( KeyframeDatabase $kfdb )
          ."</div>"
          ."</div></div>";
 
-    if( ($k = SEEDInput_Int( 'k' )) ) {
-        // The user clicked on a client name so show their form
-        foreach( $raClients as $ra ) {
-            if( $ra['_key'] == $k ) {
-
-                // Dad says: don't bother putting doctor, paed, slp names in this form. Instead we'll make a "connect-the-professionals" map
-                //    between the clients and professionals tables.
-
-                //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
-
-                //TODO Eric: I've pushed KeyframeRelation.php into the seeds codebase. This is a more advanced way to update database
-                //            rows, so don't bother moving ahead with more database code. It basically takes what you've done with $client_fields
-                //            and adds magic sauce (int/str/float types, logging of updates, auto-detection of inserts, deletes and undeletes,
-                //            optimizations, and other stuff)
-                $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
-                     ."<form>"
-                     ."<input type='hidden' name='cmd' value='update_client'/>"
-                     ."<input type='hidden' name='client_key' value='$k'/>"
-                     ."<input type='hidden' name='screen' value='therapist-clientlist'/"
-                     ."<p>Client # $k</p>"
-                     ."<p>Name <input type='text' name='client_name' required maxlength='200' value='".htmlspecialchars($ra['client_name'])."'/></p>"
-                     ."<p>Address <input type='text' name='address' maxlength='200' value='".htmlspecialchars($ra['address'])."'/></p>"
-                     ."<p>City <input type='text' name='city' maxlength='200' value='".htmlspecialchars($ra['city'])."'/></p>"
-                     ."<p>Postal Code <input type='text' name='postal_code' maxlength='200' value='".htmlspecialchars($ra['postal_code'])."'/></p>"
-                     ."<p>Date Of Birth <input type='date' name='dob' value='".htmlspecialchars($ra['dob'])."'/></p>"
-                     ."<p>Phone Number <input type='text' name='phone_number' maxlength='200' value='".htmlspecialchars($ra['phone_number'])."'/></p>"
-                     ."<p>Email <input type='email' name='email' maxlength='200' value='".htmlspecialchars($ra['email'])."'/></p>"
-                     ."<p><input type='submit' value='Save'/></p>"
-                     ."</form>"
-                     ."</div>";
-            }
-        }
-    }
-
-
     return( $s );
 }
 
+
+function drawClientForm( $kfdb, $raClients, $client_key )
+{
+    $s = "";
+
+    // The user clicked on a client name so show their form
+    foreach( $raClients as $ra ) {
+        if( $ra['_key'] == $client_key ) {
+
+            // Dad says: don't bother putting doctor, paed, slp names in this form. Instead we'll make a "connect-the-professionals" map
+            //    between the clients and professionals tables.
+
+            //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
+
+            //TODO Eric: I've pushed KeyframeRelation.php into the seeds codebase. This is a more advanced way to update database
+            //            rows, so don't bother moving ahead with more database code. It basically takes what you've done with $client_fields
+            //            and adds magic sauce (int/str/float types, logging of updates, auto-detection of inserts, deletes and undeletes,
+            //            optimizations, and other stuff)
+            $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
+                 ."<form>"
+                 ."<input type='hidden' name='cmd' value='update_client'/>"
+                 ."<input type='hidden' name='client_key' value='$client_key'/>"
+                 ."<input type='hidden' name='screen' value='therapist-clientlist'/"
+                 ."<p>Client # $client_key</p>"
+                 ."<p>Name <input type='text' name='client_name' required maxlength='200' value='".htmlspecialchars($ra['client_name'])."'/></p>"
+                 ."<p>Address <input type='text' name='address' maxlength='200' value='".htmlspecialchars($ra['address'])."'/></p>"
+                 ."<p>City <input type='text' name='city' maxlength='200' value='".htmlspecialchars($ra['city'])."'/></p>"
+                 ."<p>Postal Code <input type='text' name='postal_code' maxlength='200' value='".htmlspecialchars($ra['postal_code'])."'/></p>"
+                 ."<p>Date Of Birth <input type='date' name='dob' value='".htmlspecialchars($ra['dob'])."'/></p>"
+                 ."<p>Phone Number <input type='text' name='phone_number' maxlength='200' value='".htmlspecialchars($ra['phone_number'])."'/></p>"
+                 ."<p>Email <input type='email' name='email' maxlength='200' value='".htmlspecialchars($ra['email'])."'/></p>"
+                 ."<p><input type='submit' value='Save'/></p>"
+                 ."</form>"
+                 ."</div>";
+        }
+    }
+    return( $s );
+}
 
 ?>
