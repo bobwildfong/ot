@@ -34,21 +34,31 @@ $s =
 .otButton { border:1px solid #aaa; width:80%; text-align:center; padding: 20px 0px;}
 </style>
 <script>
-function createCircle(element, radius, color) {
-try {
-var toStyle = document.getElementById(element);
-}
-catch(err) {
-console.log('Invalid element specified for createCircle');
-return false;
-}
-toStyle.style.height = 2 * radius;
-toStyle.style.width = toStyle.style.height;
+function createCircle(toStyle, radius, color, textColor) {
+toStyle.parentNode.style.display = 'inline-block';
+toStyle.parentNode.style.height = 2 * radius + 'px';
+toStyle.parentNode.style.width = toStyle.parentNode.style.height;
+toStyle.parentNode.style.lineHeight = toStyle.parentNode.style.height;
+toStyle.style.display = 'block';
+toStyle.style.height = '100%';
+toStyle.style.width = '100%'';
+toStyle.style.textAlign = 'center';
+toStyle.style.color = textColor;
 toStyle.style.borderStyle = 'inset outset outset inset';
 toStyle.style.borderColor = color;
 toStyle.style.backgroundColor = color;
-toStyle.style.borderRadius = radius;
+toStyle.style.borderRadius = radius + 'px';
 return true;
+}
+var x = document.querySelectorAll('a.toCircle');
+for(var y = 0; y < x.length; y++) {
+var classes = x[y].className.split(' ');
+for(var loop in classes) {
+if (classes[loop].search(/format-\d+-#?[\d\w]+-#?[\d\w]+/) !== -1) {
+var parse = classes[loop].split('-');
+createCircle(x[y], parse[1], parse[2], parse[3]);
+}
+}
 }
 </script>
 </head>
