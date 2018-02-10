@@ -184,23 +184,28 @@ function drawAdmin()
 
 function drawClientList( KeyframeDatabase $kfdb )
 {
-    global $client_fields;
+    global $client_fields, $oClientsDB;
+
     $s = "";
 
     $client_key = SEEDInput_Int( 'client_key' );
 
     // Put this before the GetClients call so the changes are shown in the list
     if( ($cmd = SEEDInput_Str('cmd')) == "update_client" ) {
-        $sqla = array();
-        $sqla["parents_separate"] = SEEDInput_Str("parents_separate") == "on"?TRUE:FALSE;
-        foreach($client_fields as $field){
-            $sqla[$field] = SEEDInput_Str($field);
+        $kfr = $oClientsDB->GetClient( $client_key );
+        $kfr->SetValue( 'parents_separate', SEEDInput_Str("parents_separate") == "on"?TRUE:FALSE );
+        foreach( $client_fields as $field ) {
+            $kfr->SetValue( $field, SEEDInput_Str($field) );
         }
-
-        PutClient( $kfdb, $sqla, $client_key );
+// This is cool - change one field in the form and Save. The keyframe generates just the exact sql to change that value.
+// It compares the record with the new values so it knows what has changed. This is good when we use KeyframeRelation::_Log() because
+// the log file just shows the actual changes so it's easier to read.
+$kfr->KFRel()->KFDB()->SetDebug(2);
+        $kfr->PutDBRow();
+$kfr->KFRel()->KFDB()->SetDebug(0);
     }
 
-    $raClients = GetClients( $kfdb );
+    $raClients = $oClientsDB->KFRel()->GetRecordSetRA("");
     $raPros = GetProfessionals( $kfdb );
 
     $s .= "<div class='container-fluid'><div class='row'>"
