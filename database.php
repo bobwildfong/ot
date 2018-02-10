@@ -2,11 +2,50 @@
 
 require SEEDROOT."Keyframe/KeyframeRelation.php";
 
-$kfreldefClients = array(
-    "Tables" => array( "Clients" => array( "Table" => 'ot.clients',
-                                           "Fields" => "Auto",
 
-)));
+
+class ClientsDB
+{
+    private $kfrel;
+    private $raClients;
+
+    private $kfreldef = array(
+        "Tables" => array( "Clients" => array( "Table" => 'ot.clients',
+                                               "Fields" => "Auto",
+    )));
+
+    function KFRel()  { return( $this->kfrel ); }
+
+    function __construct( KeyframeDatabase $kfdb, $uid = 0 )
+    {
+        $this->kfrel = new KeyFrame_Relation( $kfdb, $this->kfreldef, $uid );
+    }
+
+    function GetClient( $key )
+    {
+        return( $this->kfrel->GetRecordFromDBKey( $key ) );
+    }
+
+    function PutClient( $client_info, $key )
+    {
+        $ok = false;
+
+        if( $key ) {
+            $kfr = $this->kfrel->GetRecordFromDBKey( $key );
+        } else {
+            $kfr = $this->kfrel->CreateRecord();
+        }
+
+        if( $kfr ) {
+            foreach( $client_info as $k => $v ) {
+                $kfr->SetValue( $k, $v );
+            }
+            $ok = $kfr->PutDBRow();
+        }
+
+        return( $ok );
+    }
+}
 
 
 
@@ -18,9 +57,28 @@ if( !($kfdb && $kfdb->Connect( "ot" )) ) {
 }
 
 if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
+    createTables($kfdb);
+}
 
-    // Assume the tables have not been created yet
+$oClientsDB = new ClientsDB( $kfdb );
 
+
+
+function GetProfessionals( $kfdb )
+{
+    $raPros = array();
+
+    if( ($dbc = $kfdb->CursorOpen( "SELECT * FROM ot.professionals" )) ) {
+        while( ($ra = $kfdb->CursorFetch( $dbc )) ) {
+            $raPros[] = $ra;
+        }
+    }
+
+    return( $raPros );
+}
+
+function createTables( KeyframeDatabase $kfdb )
+{
     echo "Creating the database tables";
 
     $kfdb->SetDebug(2);
@@ -71,57 +129,6 @@ if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
     $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role) values (null,'Darth Vader','Surgeon')" );
 
     $kfdb->SetDebug(0);
-}
-
-
-function GetClients( $kfdb )
-{
-    $raClients = array();
-
-    global $kfreldefClients;
-    $kfrel = new KeyFrame_Relation( $kfdb, $kfreldefClients, 0 );
-
-    $raClients = $kfrel->GetRecordSetRA("");
-
-//    if( ($dbc = $kfdb->CursorOpen( "SELECT * FROM ot.clients" )) ) {
-//        while( ($ra = $kfdb->CursorFetch( $dbc )) ) {
-//            $raClients[] = $ra;
-//        }
-//    }
-
-    return( $raClients );
-}
-
-function GetProfessionals( $kfdb )
-{
-    $raPros = array();
-
-    if( ($dbc = $kfdb->CursorOpen( "SELECT * FROM ot.professionals" )) ) {
-        while( ($ra = $kfdb->CursorFetch( $dbc )) ) {
-            $raPros[] = $ra;
-        }
-    }
-
-    return( $raPros );
-}
-
-function PutClient( $kfdb, $client_info, $key )
-{
-    // note: use addslashes() in db statements because if the user puts a single-quote in a name or a colour it will mess up the syntax
-    if( $key ) {
-        // This is a known user so update their information
-        $sql = "";
-        foreach($client_info as $name => $value){
-            if($sql !== ""){
-                $sql .= ",";
-            }
-            $sql .= $name."='".addslashes($value)."'";
-        }
-        $kfdb->Execute( "UPDATE ot.clients SET ".$sql ." WHERE _key='$key'" );
-    } else {
-        // $key==0 means this is a new user
-        $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name) VALUES (null,'Client: '_key)" );
-    }
 }
 
 ?>
