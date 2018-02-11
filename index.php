@@ -9,6 +9,7 @@ var_dump($_REQUEST);
 $kfdb->SetDebug(1);
 
 $client_fields = array("client_name","parents_name","address","city","postal_code","dob","phone_number","email","family_doc","paediatrician","slp","psychologist","referal","background_info");
+$pro_fields = array("pro_name","pro_role","address","city","postal_code","phone_number","fax_number","email");
 
 if( !isset($dirBootstrap) ) { $dirBootstrap = "./bootstrap3/"; }
 if( !isset($dirJQuery) )    { $dirJQuery =    "./jquery/"; }
@@ -193,29 +194,32 @@ function drawAdmin()
 
 function drawClientList( KeyframeDatabase $kfdb )
 {
-    global $client_fields, $oClientsDB;
+    global $client_fields, $oClientsDB, $pro_fields, $oProsDB;
 
     $s = "";
 
     $client_key = SEEDInput_Int( 'client_key' );
+    $pro_key = SEEDInput_Int( 'pro_key' );
 
     // Put this before the GetClients call so the changes are shown in the list
     if( ($cmd = SEEDInput_Str('cmd')) == "update_client" ) {
         $kfr = $oClientsDB->GetClient( $client_key );
-        $kfr->SetValue( 'parents_separate', SEEDInput_Str("parents_separate") == "on"?TRUE:FALSE );
+        $kfr->SetValue( 'parents_separate', SEEDInput_Str("parents_separate") == "on" );
         foreach( $client_fields as $field ) {
             $kfr->SetValue( $field, SEEDInput_Str($field) );
         }
-// This is cool - change one field in the form and Save. The keyframe generates just the exact sql to change that value.
-// It compares the record with the new values so it knows what has changed. This is good when we use KeyframeRelation::_Log() because
-// the log file just shows the actual changes so it's easier to read.
-$kfr->KFRel()->KFDB()->SetDebug(2);
         $kfr->PutDBRow();
-$kfr->KFRel()->KFDB()->SetDebug(0);
+    }
+    elseif( ($cmd = SEEDInput_Str('cmd')) == "update_pro" ) {
+        $kfr = $oProsDB->GetPro( $pro_key );
+        foreach( $pro_fields as $field ) {
+            $kfr->SetValue( $field, SEEDInput_Str($field) );
+        }
+        $kfr->PutDBRow();
     }
 
     $raClients = $oClientsDB->KFRel()->GetRecordSetRA("");
-    $raPros = GetProfessionals( $kfdb );
+    $raPros = $oProsDB->KFRel()->GetRecordSetRA("");
 
     $s .= "<div class='container-fluid'><div class='row'>"
          ."<div class='col-md-6'>"
@@ -225,7 +229,8 @@ $kfr->KFRel()->KFDB()->SetDebug(0);
          ."</div>"
          ."<div class='col-md-6'>"
              ."<h3>Providers</h3>"
-             .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'>[[pro_name]] is a [[pro_role]]</div>" )
+             .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'><a href='?pro_key=[[_key]]&screen=therapist-clientlist'>[[pro_name]]</a> is a [[pro_role]]</div>" )
+             .($pro_key ? drawProForm( $kfdb, $raPros, $pro_key) : "")
          ."</div>"
          ."</div></div>";
 
@@ -245,11 +250,6 @@ function drawClientForm( $kfdb, $raClients, $client_key )
             //    between the clients and professionals tables.
 
             //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
-
-            //TODO Eric: I've pushed KeyframeRelation.php into the seeds codebase. This is a more advanced way to update database
-            //            rows, so don't bother moving ahead with more database code. It basically takes what you've done with $client_fields
-            //            and adds magic sauce (int/str/float types, logging of updates, auto-detection of inserts, deletes and undeletes,
-            //            optimizations, and other stuff)
             $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
                  ."<form>"
                  ."<input type='hidden' name='cmd' value='update_client'/>"
@@ -257,6 +257,8 @@ function drawClientForm( $kfdb, $raClients, $client_key )
                  ."<input type='hidden' name='screen' value='therapist-clientlist'/"
                  ."<p>Client # $client_key</p>"
                  ."<p>Name <input type='text' name='client_name' required maxlength='200' value='".htmlspecialchars($ra['client_name'])."'/></p>"
+                 ."<p>Parents Name <input type='text' name='parents_name' maxlength='200' value='".htmlspecialchars($ra['parents_name'])."'/></p>"
+                 ."<p>Parents Seperate <input type='checkbox' name='parents_separate' maxlength='200' ".($ra['parents_separate']?"checked":"")."/></p>"
                  ."<p>Address <input type='text' name='address' maxlength='200' value='".htmlspecialchars($ra['address'])."'/></p>"
                  ."<p>City <input type='text' name='city' maxlength='200' value='".htmlspecialchars($ra['city'])."'/></p>"
                  ."<p>Postal Code <input type='text' name='postal_code' maxlength='200' value='".htmlspecialchars($ra['postal_code'])."'/></p>"
@@ -266,6 +268,37 @@ function drawClientForm( $kfdb, $raClients, $client_key )
                  ."<p><input type='submit' value='Save'/></p>"
                  ."</form>"
                  ."</div>";
+        }
+    }
+    return( $s );
+}
+
+function drawProForm( $kfdb, $raPros, $pro_key )
+{
+    $s = "";
+    
+    // The user clicked on a professionals name so show their form
+    foreach( $raPros as $ra ) {
+        if( $ra['_key'] == $pro_key ) {
+            
+            //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
+            $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
+                ."<form>"
+                ."<input type='hidden' name='cmd' value='update_pro'/>"
+                ."<input type='hidden' name='pro_key' value='$pro_key'/>"
+                ."<input type='hidden' name='screen' value='therapist-clientlist'/"
+                ."<p>Professional # $pro_key</p>"
+                ."<p>Name <input type='text' name='pro_name' required maxlength='200' value='".htmlspecialchars($ra['pro_name'])."'/></p>"
+                ."<p>Address <input type='text' name='address' maxlength='200' value='".htmlspecialchars($ra['address'])."'/></p>"
+                ."<p>City <input type='text' name='city' maxlength='200' value='".htmlspecialchars($ra['city'])."'/></p>"
+                ."<p>Postal Code <input type='text' name='postal_code' maxlength='200' value='".htmlspecialchars($ra['postal_code'])."'/></p>"
+                ."<p>Phone Number <input type='text' name='phone_number' maxlength='200' value='".htmlspecialchars($ra['phone_number'])."'/></p>"
+                ."<p>Fax Number <input type='text' name='fax_number' maxlength='200' value='".htmlspecialchars($ra['fax_number'])."'/></p>"
+                ."<p>Email <input type='email' name='email' maxlength='200' value='".htmlspecialchars($ra['email'])."'/></p>"
+                ."<p>Role <input type='text' name='pro_role' maxlength='200' value='".htmlspecialchars($ra['pro_role'])."'/></p>"
+                ."<p><input type='submit' value='Save'/></p>"
+                ."</form>"
+                ."</div>";
         }
     }
     return( $s );

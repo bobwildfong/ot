@@ -26,27 +26,30 @@ class ClientsDB
         return( $this->kfrel->GetRecordFromDBKey( $key ) );
     }
 
-    function PutClient( $client_info, $key )
-    {
-        $ok = false;
-
-        if( $key ) {
-            $kfr = $this->kfrel->GetRecordFromDBKey( $key );
-        } else {
-            $kfr = $this->kfrel->CreateRecord();
-        }
-
-        if( $kfr ) {
-            foreach( $client_info as $k => $v ) {
-                $kfr->SetValue( $k, $v );
-            }
-            $ok = $kfr->PutDBRow();
-        }
-
-        return( $ok );
-    }
 }
-
+class ProsDB
+{
+    private $kfrel;
+    private $raPros;
+    
+    private $kfreldef = array(
+        "Tables" => array( "Pros" => array( "Table" => 'ot.professionals',
+            "Fields" => "Auto",
+        )));
+    
+    function KFRel()  { return( $this->kfrel ); }
+    
+    function __construct( KeyframeDatabase $kfdb, $uid = 0 )
+    {
+        $this->kfrel = new KeyFrame_Relation( $kfdb, $this->kfreldef, $uid );
+    }
+    
+    function GetPro( $key )
+    {
+        return( $this->kfrel->GetRecordFromDBKey( $key ) );
+    }
+    
+}
 
 
 $kfdb = new KeyframeDatabase( "localhost", "ot", "ot" );
@@ -61,21 +64,7 @@ if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
 }
 
 $oClientsDB = new ClientsDB( $kfdb );
-
-
-
-function GetProfessionals( $kfdb )
-{
-    $raPros = array();
-
-    if( ($dbc = $kfdb->CursorOpen( "SELECT * FROM ot.professionals" )) ) {
-        while( ($ra = $kfdb->CursorFetch( $dbc )) ) {
-            $raPros[] = $ra;
-        }
-    }
-
-    return( $raPros );
-}
+$oProsDB = new ProsDB( $kfdb );
 
 function createTables( KeyframeDatabase $kfdb )
 {
@@ -123,6 +112,7 @@ function createTables( KeyframeDatabase $kfdb )
         city VARCHAR(200) NOT NULL DEFAULT '',
         postal_code VARCHAR(200) NOT NULL DEFAULT '',
         phone_number VARCHAR(200) NOT NULL DEFAULT '',
+        fax_number VARCHAR(200) NOT NULL DEFAULT '',
         email VARCHAR(200) NOT NULL DEFAULT '')" );
 
     $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role) values (null,'Jose','Dentist')" );
