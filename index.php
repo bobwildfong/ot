@@ -220,7 +220,7 @@ function drawClientList( KeyframeDatabase $kfdb )
     }
 
     $raClients = $oClientsDB->KFRel()->GetRecordSetRA("");
-    $raPros = GetProfessionals( $kfdb );
+    $raPros = $oProsDB->KFRel()->GetRecordSetRA("");
 
     $s .= "<div class='container-fluid'><div class='row'>"
          ."<div class='col-md-6'>"
