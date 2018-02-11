@@ -26,25 +26,6 @@ class ClientsDB
         return( $this->kfrel->GetRecordFromDBKey( $key ) );
     }
 
-    function PutClient( $client_info, $key )
-    {
-        $ok = false;
-
-        if( $key ) {
-            $kfr = $this->kfrel->GetRecordFromDBKey( $key );
-        } else {
-            $kfr = $this->kfrel->CreateRecord();
-        }
-
-        if( $kfr ) {
-            foreach( $client_info as $k => $v ) {
-                $kfr->SetValue( $k, $v );
-            }
-            $ok = $kfr->PutDBRow();
-        }
-
-        return( $ok );
-    }
 }
 
 
