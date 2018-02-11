@@ -9,6 +9,7 @@ var_dump($_REQUEST);
 $kfdb->SetDebug(1);
 
 $client_fields = array("client_name","parents_name","address","city","postal_code","dob","phone_number","email","family_doc","paediatrician","slp","psychologist","referal","background_info");
+$pro_fields = array("pro_name","pro_role","address","city","postal_code","phone_number","fax_number","email");
 
 if( !isset($dirBootstrap) ) { $dirBootstrap = "./bootstrap3/"; }
 if( !isset($dirJQuery) )    { $dirJQuery =    "./jquery/"; }
@@ -194,7 +195,7 @@ function drawAdmin()
 
 function drawClientList( KeyframeDatabase $kfdb )
 {
-    global $client_fields, $oClientsDB;
+    global $client_fields, $oClientsDB, $pro_fields, $oProsDB;
 
     $s = "";
 
@@ -206,6 +207,13 @@ function drawClientList( KeyframeDatabase $kfdb )
         $kfr = $oClientsDB->GetClient( $client_key );
         $kfr->SetValue( 'parents_separate', SEEDInput_Str("parents_separate") == "on" );
         foreach( $client_fields as $field ) {
+            $kfr->SetValue( $field, SEEDInput_Str($field) );
+        }
+        $kfr->PutDBRow();
+    }
+    elseif( ($cmd = SEEDInput_Str('cmd')) == "update_pro" ) {
+        $kfr = $oProsDB->GetClient( $pro_key );
+        foreach( $pro_fields as $field ) {
             $kfr->SetValue( $field, SEEDInput_Str($field) );
         }
         $kfr->PutDBRow();
@@ -277,11 +285,11 @@ function drawProForm( $kfdb, $raPros, $pro_key )
             //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
             $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
                 ."<form>"
-                ."<input type='hidden' name='cmd' value='update_client'/>"
+                ."<input type='hidden' name='cmd' value='update_pro'/>"
                 ."<input type='hidden' name='pro_key' value='$pro_key'/>"
                 ."<input type='hidden' name='screen' value='therapist-clientlist'/"
                 ."<p>Professional # $pro_key</p>"
-                ."<p>Name <input type='text' name='client_name' required maxlength='200' value='".htmlspecialchars($ra['pro_name'])."'/></p>"
+                ."<p>Name <input type='text' name='pro_name' required maxlength='200' value='".htmlspecialchars($ra['pro_name'])."'/></p>"
                 ."<p>Address <input type='text' name='address' maxlength='200' value='".htmlspecialchars($ra['address'])."'/></p>"
                 ."<p>City <input type='text' name='city' maxlength='200' value='".htmlspecialchars($ra['city'])."'/></p>"
                 ."<p>Postal Code <input type='text' name='postal_code' maxlength='200' value='".htmlspecialchars($ra['postal_code'])."'/></p>"

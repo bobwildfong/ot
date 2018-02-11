@@ -27,7 +27,29 @@ class ClientsDB
     }
 
 }
-
+class ProsDB
+{
+    private $kfrel;
+    private $raPros;
+    
+    private $kfreldef = array(
+        "Tables" => array( "Pros" => array( "Table" => 'ot.professionals',
+            "Fields" => "Auto",
+        )));
+    
+    function KFRel()  { return( $this->kfrel ); }
+    
+    function __construct( KeyframeDatabase $kfdb, $uid = 0 )
+    {
+        $this->kfrel = new KeyFrame_Relation( $kfdb, $this->kfreldef, $uid );
+    }
+    
+    function GetPro( $key )
+    {
+        return( $this->kfrel->GetRecordFromDBKey( $key ) );
+    }
+    
+}
 
 
 $kfdb = new KeyframeDatabase( "localhost", "ot", "ot" );
@@ -42,21 +64,7 @@ if( !$kfdb->Query1( "SELECT count(*) FROM ot.clients" ) ) {
 }
 
 $oClientsDB = new ClientsDB( $kfdb );
-
-
-
-function GetProfessionals( $kfdb )
-{
-    $raPros = array();
-
-    if( ($dbc = $kfdb->CursorOpen( "SELECT * FROM ot.professionals" )) ) {
-        while( ($ra = $kfdb->CursorFetch( $dbc )) ) {
-            $raPros[] = $ra;
-        }
-    }
-
-    return( $raPros );
-}
+$oProsDB = new ProsDB( $kfdb );
 
 function createTables( KeyframeDatabase $kfdb )
 {
