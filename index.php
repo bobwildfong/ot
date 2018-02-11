@@ -212,7 +212,7 @@ function drawClientList( KeyframeDatabase $kfdb )
         $kfr->PutDBRow();
     }
     elseif( ($cmd = SEEDInput_Str('cmd')) == "update_pro" ) {
-        $kfr = $oProsDB->GetClient( $pro_key );
+        $kfr = $oProsDB->GetPro( $pro_key );
         foreach( $pro_fields as $field ) {
             $kfr->SetValue( $field, SEEDInput_Str($field) );
         }
