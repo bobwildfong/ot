@@ -31,34 +31,35 @@ $s =
 <![endif]-->
 
 <style>
-.otButton { border:1px solid #aaa; width:80%; text-align:center; padding: 20px 0px;}
+.otButton { border:1px solid #aaa; width:80%; text-align:center; padding: 20px 0px;};
 </style>
 <script>
 function createCircle(toStyle, radius, color, textColor) {
-toStyle.parentNode.style.display = 'inline-block';
-toStyle.parentNode.style.height = 2 * radius + 'px';
-toStyle.parentNode.style.width = toStyle.parentNode.style.height;
-toStyle.parentNode.style.lineHeight = toStyle.parentNode.style.height;
-toStyle.style.display = 'block';
-toStyle.style.height = '100%';
-toStyle.style.width = '100%'';
-toStyle.style.textAlign = 'center';
-toStyle.style.color = textColor;
-toStyle.style.borderStyle = 'inset outset outset inset';
-toStyle.style.borderColor = color;
-toStyle.style.backgroundColor = color;
-toStyle.style.borderRadius = radius + 'px';
-return true;
+	toStyle.style.display = 'inline-block';
+	toStyle.style.height = 2 * radius + 'px';
+    toStyle.style.marginBottom = '20px';
+    toStyle.style.marginLeft = '20px';
+	toStyle.style.width = toStyle.style.height;
+	toStyle.style.lineHeight = toStyle.style.height;
+	toStyle.style.textAlign = 'center';
+	toStyle.style.color = textColor;
+	toStyle.style.borderStyle = 'inset outset outset inset';
+	toStyle.style.borderColor = color;
+	toStyle.style.backgroundColor = color;
+	toStyle.style.borderRadius = radius + 'px';
+	return true;
 }
-var x = document.querySelectorAll('a.toCircle');
-for(var y = 0; y < x.length; y++) {
-var classes = x[y].className.split(' ');
-for(var loop in classes) {
-if (classes[loop].search(/format-\d+-#?[\d\w]+-#?[\d\w]+/) !== -1) {
-var parse = classes[loop].split('-');
-createCircle(x[y], parse[1], parse[2], parse[3]);
-}
-}
+function run() {
+    var x = document.querySelectorAll('a.toCircle');
+    for(var y = 0; y < x.length; y++) {
+	   var classes = x[y].classList;
+	   for(var loop in classes) {
+		  if (classes.item(loop).search(/format-\d+-#?[\d\w]+-#?[\d\w]+/) !== -1) {
+			 var parse = classes.item(loop).split('-');
+			 createCircle(x[y], parse[1], parse[2], parse[3]);
+		  }
+	   }
+    }
 }
 </script>
 </head>
@@ -76,7 +77,7 @@ if( $screen == 'admin' ) {
 }
 
 echo $s
-    ."</body></html>";
+    ."<script> run(); </script></body></html>";
 
 
 
@@ -87,7 +88,7 @@ function drawHome()
 
     $s = "<h2>Home</h2>";
 
-    $s .= "<a href='?screen=therapist'><div class='otButton'>Therapist</div></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=admin'><div class='otButton'>Admin</div></a>";
+    $s .= "<a href='?screen=therapist' class='toCircle format-100-#b3f0ff-blue'>Therapist</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=admin' class='toCircle format-100-red-black'>Admin</a>";
 
     return( $s );
 }
@@ -101,45 +102,45 @@ function drawTherapist( $screen )
     switch( $screen ) {
         case "therapist":
         default:
-            $s .= "<p id='test' onload='createCircle(test, 20px, red);'>What would you like to do?</p>"
+            $s .= "<p>What would you like to do?</p>"
                  ."<div class='container-fluid'>"
                      ."<div class='row'>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=home'><div class='otButton'>Home</div></a>"
+                             ."<a href='?screen=home' class='toCircle format-100-#b3f0ff-blue'>Home</a>"
                          ."</div>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-materials'><div class='otButton'>Print Materials</div></a>"
+                             ."<a href='?screen=therapist-materials' class='toCircle format-100-#99ff99-blue'>Print Materials</a>"
                          ."</div>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-formscharts'><div class='otButton'>Print Forms for Charts</div></a>"
+                             ."<a href='?screen=therapist-formscharts' class='toCircle format-100-#b3f0ff-blue'>Print Forms for Charts</a>"
                          ."</div>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-linedpapers'><div class='otButton'>Print Different Lined Papers</div></a>"
-                         ."</div>"
-                     ."</div>"
-                     ."<div class='row'>"
-                         ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-entercharts'><div class='otButton'>Enter Charts</div></a>"
-                         ."</div>"
-                         ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-clientRx'><div class='otButton'>Print Client Rx Activities</div></a>"
-                         ."</div>"
-                         ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-ideas'><div class='otButton'>Get Ideas</div></a>"
-                         ."</div>"
-                         ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-downloadcustommaterials'><div class='otButton'>Download and Customize Marketable Materials</div></a>"
+                             ."<a href='?screen=therapist-linedpapers' class='toCircle format-100-#99ff99-blue'>Print Different Lined Papers</a>"
                          ."</div>"
                      ."</div>"
                      ."<div class='row'>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-team'><div class='otButton'>Meet the Team</div></a>"
+                             ."<a href='?screen=therapist-entercharts' class='toCircle format-100-#99ff99-blue'>Enter Charts</a>"
                          ."</div>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-submitresources'><div class='otButton'>Submit Resources to Share</div></a>"
+                             ."<a href='?screen=therapist-clientRx' class='toCircle format-100-#b3f0ff-blue'>Print Client Rx Activities</a>"
                          ."</div>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-clientlist'><div class='otButton'>Clients and Providers</div></a>"
+                             ."<a href='?screen=therapist-ideas' class='toCircle format-100-#99ff99-blue'>Get Ideas</a>"
+                         ."</div>"
+                         ."<div class='col-md-3'>"
+                             ."<a href='?screen=therapist-downloadcustommaterials' class='toCircle format-100-#99ff99-blue'>Download Materials</a>"
+                         ."</div>"
+                     ."</div>"
+                     ."<div class='row'>"
+                         ."<div class='col-md-3'>"
+                             ."<a href='?screen=therapist-team' class='toCircle format-100-#b3f0ff-blue'>Meet the Team</a>"
+                         ."</div>"
+                         ."<div class='col-md-3'>"
+                             ."<a href='?screen=therapist-submitresources' class='toCircle format-100-#99ff99-blue'>Submit Resources to Share</a>"
+                         ."</div>"
+                         ."<div class='col-md-3'>"
+                             ."<a href='?screen=therapist-clientlist' class='toCircle format-100-#99ff99-blue'>Clients and Providers</a>"
                          ."</div>"
                      ."</div>"
                  ."</div>";
@@ -175,7 +176,7 @@ function drawTherapist( $screen )
             $s .= drawClientList( $kfdb );
             break;
     }
-
+    
     return( $s );
 }
 
@@ -185,9 +186,7 @@ function drawAdmin()
 
     $s = "<h2>Admin</h2>";
 
-    $s .= "<a href='?screen=home'><div class='otButton'>Home</div></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist'><div class='otButton'>Therapist</div></a>"
-        ."</body>"
-        ."</html>";
+    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>";
 
     return( $s );
 }
