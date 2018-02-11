@@ -123,7 +123,7 @@ function createTables( KeyframeDatabase $kfdb )
         city VARCHAR(200) NOT NULL DEFAULT '',
         postal_code VARCHAR(200) NOT NULL DEFAULT '',
         phone_number VARCHAR(200) NOT NULL DEFAULT '',
-        phone_number VARCHAR(200) NOT NULL DEFAULT '',
+        fax_number VARCHAR(200) NOT NULL DEFAULT '',
         email VARCHAR(200) NOT NULL DEFAULT '')" );
 
     $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role) values (null,'Jose','Dentist')" );
