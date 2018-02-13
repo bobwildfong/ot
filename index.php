@@ -1,9 +1,10 @@
 <?php
 
 include_once "_config.php" ;
-include SEEDCore."SEEDCore.php" ;
-include SEEDROOT."Keyframe/KeyframeDB.php" ;
-require  "database.php" ;
+include_once SEEDCore."SEEDCore.php" ;
+include_once SEEDROOT."Keyframe/KeyframeForm.php" ;
+include_once SEEDROOT."Keyframe/KeyframeDB.php" ;
+require_once "database.php" ;
 
 var_dump($_REQUEST);
 $kfdb->SetDebug(1);
@@ -177,7 +178,7 @@ function drawTherapist( $screen )
             $s .= drawClientList( $kfdb );
             break;
     }
-    
+
     return( $s );
 }
 
@@ -198,8 +199,15 @@ function drawClientList( KeyframeDatabase $kfdb )
 
     $s = "";
 
+    $oFormClient = new KeyframeForm( $oClientsDB->KFRel(), "Plain" );
+
     $client_key = SEEDInput_Int( 'client_key' );
     $pro_key = SEEDInput_Int( 'pro_key' );
+
+    if( $client_key ) {
+        $kfrClient = $oClientsDB->GetClient( $client_key );
+        $oFormClient->SetKFR( $kfrClient );
+    }
 
     // Put this before the GetClients call so the changes are shown in the list
     if( ($cmd = SEEDInput_Str('cmd')) == "update_client" ) {
@@ -225,7 +233,7 @@ function drawClientList( KeyframeDatabase $kfdb )
          ."<div class='col-md-6'>"
              ."<h3>Clients</h3>"
              .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?client_key=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a></div>" )
-             .($client_key ? drawClientForm( $kfdb, $raClients, $client_key) : "")
+             .($client_key ? drawClientForm( $oFormClient, $kfdb, $raClients, $client_key) : "")
          ."</div>"
          ."<div class='col-md-6'>"
              ."<h3>Providers</h3>"
@@ -238,14 +246,15 @@ function drawClientList( KeyframeDatabase $kfdb )
 }
 
 
-function drawClientForm( $kfdb, $raClients, $client_key )
+function drawClientForm( $oFormClient, $kfdb, $raClients, $client_key )
 {
     $s = "";
 
     // The user clicked on a client name so show their form
     foreach( $raClients as $ra ) {
         if( $ra['_key'] == $client_key ) {
-
+var_dump($oFormClient->Text('client_name'));
+var_dump($oFormClient->Text('city'));
             // Dad says: don't bother putting doctor, paed, slp names in this form. Instead we'll make a "connect-the-professionals" map
             //    between the clients and professionals tables.
 
@@ -276,11 +285,11 @@ function drawClientForm( $kfdb, $raClients, $client_key )
 function drawProForm( $kfdb, $raPros, $pro_key )
 {
     $s = "";
-    
+
     // The user clicked on a professionals name so show their form
     foreach( $raPros as $ra ) {
         if( $ra['_key'] == $pro_key ) {
-            
+
             //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
             $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
                 ."<form>"

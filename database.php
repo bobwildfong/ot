@@ -1,6 +1,6 @@
 <?php
 
-require SEEDROOT."Keyframe/KeyframeRelation.php";
+require_once SEEDROOT."Keyframe/KeyframeRelation.php";
 
 
 
@@ -31,24 +31,24 @@ class ProsDB
 {
     private $kfrel;
     private $raPros;
-    
+
     private $kfreldef = array(
         "Tables" => array( "Pros" => array( "Table" => 'ot.professionals',
             "Fields" => "Auto",
         )));
-    
+
     function KFRel()  { return( $this->kfrel ); }
-    
+
     function __construct( KeyframeDatabase $kfdb, $uid = 0 )
     {
         $this->kfrel = new KeyFrame_Relation( $kfdb, $this->kfreldef, $uid );
     }
-    
+
     function GetPro( $key )
     {
         return( $this->kfrel->GetRecordFromDBKey( $key ) );
     }
-    
+
 }
 
 
