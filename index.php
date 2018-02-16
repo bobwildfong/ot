@@ -253,8 +253,6 @@ function drawClientForm( $oFormClient, $kfdb, $raClients, $client_key )
     // The user clicked on a client name so show their form
     foreach( $raClients as $ra ) {
         if( $ra['_key'] == $client_key ) {
-var_dump($oFormClient->Text('client_name'));
-var_dump($oFormClient->Text('city'));
             // Dad says: don't bother putting doctor, paed, slp names in this form. Instead we'll make a "connect-the-professionals" map
             //    between the clients and professionals tables.
 
@@ -265,12 +263,12 @@ var_dump($oFormClient->Text('city'));
                  ."<input type='hidden' name='client_key' value='$client_key'/>"
                  ."<input type='hidden' name='screen' value='therapist-clientlist'/"
                  ."<p>Client # $client_key</p>"
-                 ."<p>Name <input type='text' name='client_name' required maxlength='200' value='".htmlspecialchars($ra['client_name'])."'/></p>"
-                 ."<p>Parents Name <input type='text' name='parents_name' maxlength='200' value='".htmlspecialchars($ra['parents_name'])."'/></p>"
+                 ."<p>Name ".$oFormClient->Text('client_name',"",array("attrs"=>"required maxlength='200'"))."</p>"
+                 ."<p>Parents Name ".$oFormClient->Text('parents_name',"",array("attrs"=>"maxlength='200'"))."</p>"
                  ."<p>Parents Seperate <input type='checkbox' name='parents_separate' maxlength='200' ".($ra['parents_separate']?"checked":"")."/></p>"
-                 ."<p>Address <input type='text' name='address' maxlength='200' value='".htmlspecialchars($ra['address'])."'/></p>"
-                 ."<p>City <input type='text' name='city' maxlength='200' value='".htmlspecialchars($ra['city'])."'/></p>"
-                 ."<p>Postal Code <input type='text' name='postal_code' maxlength='200' value='".htmlspecialchars($ra['postal_code'])."'/></p>"
+                     ."<p>Address ".$oFormClient->Text('address',"",array("attrs"=>"maxlength='200'"))."</p>"
+                         ."<p>City ".$oFormClient->Text('city',"",array("attrs"=>"maxlength='200'"))."</p>"
+                             ."<p>Postal Code ".$oFormClient->Text('Postal Code',"",array("attrs"=>"maxlength='200'"))."</p>"
                  ."<p>Date Of Birth <input type='date' name='dob' value='".htmlspecialchars($ra['dob'])."'/></p>"
                  ."<p>Phone Number <input type='text' name='phone_number' maxlength='200' value='".htmlspecialchars($ra['phone_number'])."'/></p>"
                  ."<p>Email <input type='email' name='email' maxlength='200' value='".htmlspecialchars($ra['email'])."'/></p>"
