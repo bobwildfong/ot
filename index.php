@@ -195,7 +195,7 @@ function drawAdmin()
 
 function drawClientList( KeyframeDatabase $kfdb )
 {
-    global $client_fields, $oClientsDB, $pro_fields, $oProsDB;
+    global $client_fields, $oClientsDB, $pro_fields, $oProsDB, $oClients_ProsDB;
 
     $s = "";
 
@@ -226,6 +226,17 @@ function drawClientList( KeyframeDatabase $kfdb )
         $kfr->PutDBRow();
     }
 
+    $clientPros = array();
+    $proClients = array();
+    if( $client_key ) {
+        // A client has been clicked. Who are their pros?
+        $myPros = $oClients_ProsDB->KFRel()->GetRecordSetRA("Clients._key='$client_key'" );
+    }
+    if( $pro_key ) {
+        // A client has been clicked. Who are their pros?
+        $myClients = $oClients_ProsDB->KFRel()->GetRecordSetRA("Pros._key='$pro_key'" );
+    }
+
     $raClients = $oClientsDB->KFRel()->GetRecordSetRA("");
     $raPros = $oProsDB->KFRel()->GetRecordSetRA("");
 
@@ -233,7 +244,7 @@ function drawClientList( KeyframeDatabase $kfdb )
          ."<div class='col-md-6'>"
              ."<h3>Clients</h3>"
              .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?client_key=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a></div>" )
-             .($client_key ? drawClientForm( $oFormClient, $kfdb, $raClients, $client_key) : "")
+             .($client_key ? drawClientForm( $oFormClient, $kfdb, $raClients, $myPros, $client_key) : "")
          ."</div>"
          ."<div class='col-md-6'>"
              ."<h3>Providers</h3>"
@@ -246,7 +257,7 @@ function drawClientList( KeyframeDatabase $kfdb )
 }
 
 
-function drawClientForm( $oFormClient, $kfdb, $raClients, $client_key )
+function drawClientForm( $oFormClient, $kfdb, $raClients, $myPros, $client_key )
 {
     $s = "";
 
@@ -255,16 +266,28 @@ function drawClientForm( $oFormClient, $kfdb, $raClients, $client_key )
         if( $ra['_key'] == $client_key ) {
             // Dad says: don't bother putting doctor, paed, slp names in this form. Instead we'll make a "connect-the-professionals" map
             //    between the clients and professionals tables.
+            $sPros = "<div style='padding:10px;border:1px solid #888'>"
+                    .SEEDCore_ArrayExpandRows( $myPros, "[[Pros_pro_name]] is my [[Pros_pro_role]]" )
+                    ."</div>";
 
             //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
-            $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
-                 ."<form>"
+            $sForm =
+                  "<form>"
                  ."<input type='hidden' name='cmd' value='update_client'/>"
                  ."<input type='hidden' name='client_key' value='$client_key'/>"
                  ."<input type='hidden' name='screen' value='therapist-clientlist'/"
                  ."<p>Client # $client_key</p>"
-                 ."<p>Name ".$oFormClient->Text('client_name',"",array("attrs"=>"required maxlength='200'"))."</p>"
-                 ."<p>Parents Name ".$oFormClient->Text('parents_name',"",array("attrs"=>"maxlength='200'"))."</p>"
+                 ."<div class='container-fluid'>"
+                 ."<div class='row'>"
+                     ."<div class='col-md-4'>Name</div>"
+                     ."<div class='col-md-8'>".$oFormClient->Text('client_name',"",array("attrs"=>"required maxlength='200'"))."</div>"
+                 ."</div>"
+                 ."<div class='row'>"
+                     ."<div class='col-md-4'>Parents Name</div>"
+                     ."<div class='col-md-8'>".$oFormClient->Text('parents_name',"",array("attrs"=>"maxlength='200'"))."</div>"
+                 ."</div>"
+                 ."</div>" // div container
+
                  ."<p>Parents Seperate <input type='checkbox' name='parents_separate' maxlength='200' ".($ra['parents_separate']?"checked":"")."/></p>"
                      ."<p>Address ".$oFormClient->Text('address',"",array("attrs"=>"maxlength='200'"))."</p>"
                          ."<p>City ".$oFormClient->Text('city',"",array("attrs"=>"maxlength='200'"))."</p>"
@@ -273,7 +296,14 @@ function drawClientForm( $oFormClient, $kfdb, $raClients, $client_key )
                  ."<p>Phone Number <input type='text' name='phone_number' maxlength='200' value='".htmlspecialchars($ra['phone_number'])."'/></p>"
                  ."<p>Email <input type='email' name='email' maxlength='200' value='".htmlspecialchars($ra['email'])."'/></p>"
                  ."<p><input type='submit' value='Save'/></p>"
-                 ."</form>"
+                 ."</form>";
+
+
+            $s .= "<div class='container-fluid' style='border:1px solid #aaa;padding:20px;margin:20px'>"
+                 ."<div class='row'>"
+                     ."<div class='col-md-9'>".$sForm."</div>"
+                     ."<div class='col-md-3'>".$sPros."</div>"
+                 ."</div>"
                  ."</div>";
         }
     }
