@@ -21,28 +21,22 @@ $s =
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<link rel='stylesheet' type='text/css' href='".$dirBootstrap."dist/css/bootstrap.min.css'></link>
-<script src='".$dirJQuery."jquery-1.11.0.min.js'></script>
-<script src='".$dirBootstrap."dist/js/bootstrap.min.js'></script>
+<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">
+<script src='https://code.jquery.com/jquery-3.2.1.slim.min.js' integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN' crossorigin='anonymous'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js' integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q' crossorigin='anonymous'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js' integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl' crossorigin='anonymous'></script>
 <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src='//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
-<script src='//oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js'></script>
-<![endif]-->
 
 <style>
 .otButton { border:1px solid #aaa; width:80%; text-align:center; padding: 20px 0px;};
 </style>
 <script>
 function createCircle(toStyle, radius, color, textColor) {
-	toStyle.style.display = 'inline-block';
+	toStyle.style.display = 'flex';
 	toStyle.style.height = 2 * radius + 'px';
-    toStyle.style.marginBottom = '20px';
-    toStyle.style.marginLeft = '20px';
 	toStyle.style.width = toStyle.style.height;
-	toStyle.style.lineHeight = toStyle.style.height;
+	toStyle.style.justifyContent = 'center';
+	toStyle.style.alignItems = 'center';
 	toStyle.style.textAlign = 'center';
 	toStyle.style.color = textColor;
 	toStyle.style.borderStyle = 'inset outset outset inset';
@@ -131,7 +125,7 @@ function drawTherapist( $screen )
                              ."<a href='?screen=therapist-ideas' class='toCircle format-100-#99ff99-blue'>Get Ideas</a>"
                          ."</div>"
                          ."<div class='col-md-3'>"
-                             ."<a href='?screen=therapist-downloadcustommaterials' class='toCircle format-100-#99ff99-blue'>Download Materials</a>"
+                             ."<a href='?screen=therapist-downloadcustommaterials' class='toCircle format-100-#99ff99-blue'>Download Marketable Materials</a>"
                          ."</div>"
                      ."</div>"
                      ."<div class='row'>"
@@ -277,25 +271,48 @@ function drawClientForm( $oFormClient, $kfdb, $raClients, $myPros, $client_key )
                  ."<input type='hidden' name='client_key' value='$client_key'/>"
                  ."<input type='hidden' name='screen' value='therapist-clientlist'/"
                  ."<p>Client # $client_key</p>"
-                 ."<div class='container-fluid'>"
-                 ."<div class='row'>"
-                     ."<div class='col-md-4'>Name</div>"
-                     ."<div class='col-md-8'>".$oFormClient->Text('client_name',"",array("attrs"=>"required maxlength='200'"))."</div>"
-                 ."</div>"
-                 ."<div class='row'>"
-                     ."<div class='col-md-4'>Parents Name</div>"
-                     ."<div class='col-md-8'>".$oFormClient->Text('parents_name',"",array("attrs"=>"maxlength='200'"))."</div>"
-                 ."</div>"
-                 ."</div>" // div container
-
-                 ."<p>Parents Seperate <input type='checkbox' name='parents_separate' maxlength='200' ".($ra['parents_separate']?"checked":"")."/></p>"
-                     ."<p>Address ".$oFormClient->Text('address',"",array("attrs"=>"maxlength='200'"))."</p>"
-                         ."<p>City ".$oFormClient->Text('city',"",array("attrs"=>"maxlength='200'"))."</p>"
-                             ."<p>Postal Code ".$oFormClient->Text('Postal Code',"",array("attrs"=>"maxlength='200'"))."</p>"
-                 ."<p>Date Of Birth <input type='date' name='dob' value='".htmlspecialchars($ra['dob'])."'/></p>"
-                 ."<p>Phone Number <input type='text' name='phone_number' maxlength='200' value='".htmlspecialchars($ra['phone_number'])."'/></p>"
-                 ."<p>Email <input type='email' name='email' maxlength='200' value='".htmlspecialchars($ra['email'])."'/></p>"
-                 ."<p><input type='submit' value='Save'/></p>"
+                 ."<table class='container-fluid table table-striped'>"
+                 ."<tr>"
+                     ."<td class='col-md-4'><p>Name</p></td>"
+                     ."<td class='col-md-8'>".$oFormClient->Text('client_name',"",array("attrs"=>"required maxlength='200' placeholder='Name'"))."</td>"
+                 ."</tr>"
+                 ."<tr>"
+                     ."<td class='col-md-4'><p>Parents Name</p></td>"
+                     ."<td class='col-md-8'>".$oFormClient->Text('parents_name',"",array("attrs"=>"maxlength='200' placeholder='Parents Name'"))."</td>"
+                 ."</tr>"
+                 
+                 ."<tr>"
+                    ."<td class='col-md-4'><p>Parents Separate</p></td>"
+                    ."<td class='col-md-8'><input type='checkbox' name='parents_separate' ".($ra['parents_separate']?"checked":"")."/></td>"
+                 ."</tr>"
+                 ."<tr>"
+                    ."<td class='col-md-4'><p>Address</p></td>"
+                    ."<td class='col-md-8'>".$oFormClient->Text('address',"",array("attrs"=>"maxlength='200' placeholder='Address'"))."</td>"
+                 ."</tr>"
+                 ."<tr>"
+                    ."<td class='col-md-4'><p>City</p></td>"
+                    ."<td class='col-md-8'>".$oFormClient->Text('city',"",array("attrs"=>"maxlength='200' placeholder='City'"))."</td>"
+                 ."</tr>"
+                 ."<tr>"
+                    ."<td class='col-md-4'><p>Postal Code</p></td>"
+                    ."<td class='col-md-8'>".$oFormClient->Text('Postal Code',"",array("attrs"=>"maxlength='200' placeholder='Postal Code' pattern='^[a-zA-Z]\d[a-zA-Z](\s+)?\d[a-zA-Z]\d$'"))."</td>"
+                 ."</tr>"
+                 ."<tr>"
+                    ."<td class='col-md-4'><p>Date Of Birth</p></td>"
+                    ."<td class='col-md-8'><input type='date' name='dob' value='".htmlspecialchars($ra['dob'])."'/></td>"
+                 ."</tr>"
+                 ."<tr>"
+                    ."<td class='col-md-4'><p>Phone Number</p></td>"
+                    ."<td class='col-md-8'><input type='text' name='phone_number' maxlength='200' value='".htmlspecialchars($ra['phone_number'])."' placeholder='Phone Number' pattern='^(\d{3}[-\s]?){2}\d{4}$'/></td>"
+                 ."</tr>"
+                 ."<tr>"
+                    ."<td class='col-md-4'><p>Email</p></td>"
+                    ."<td class='col-md-8'><input type='email' name='email' maxlength='200' value='".htmlspecialchars($ra['email'])."' placeholder='Email'/></td>"
+                 ."</tr>"
+                 ."<tr>"
+                    ."<td class='col-md-12'><input type='submit' value='Save' style='margin:auto'/></td>"
+                 ."</tr>"
+                 ."</table>" // table container
                  ."</form>";
 
 
