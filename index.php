@@ -34,7 +34,8 @@ function createCircle(toStyle, radius, color, textColor) {
 	toStyle.style.width = toStyle.style.height;
 	toStyle.style.justifyContent = 'center';
 	toStyle.style.alignItems = 'center';
-	toStyle.style.textAlign = 'center';
+	toStyle.style.marginBottom = '20px';
+    toStyle.style.textAlign = 'center';
 	toStyle.style.color = textColor;
 	toStyle.style.borderStyle = 'inset outset outset inset';
 	toStyle.style.borderColor = color;
@@ -189,9 +190,6 @@ function drawAdmin()
     }
     
     $s .= "<h2>Admin</h2>";
-
-    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>"
-        ."<a href='?screen=admin-droptable' class='toCircle format-100-#99ff99-blue'>Drop Tables</a>";
 
     return( $s );
 }
