@@ -190,6 +190,8 @@ function drawAdmin()
     }
     
     $s .= "<h2>Admin</h2>";
+    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>"
+       ."<a href='?screen=admin-droptable' class='toCircle format-100-#99ff99-blue'>Drop Tables</a>";
 
     return( $s );
 }
