@@ -60,7 +60,7 @@ class Clients_ProsDB
     private $raPros;
 
     private $kfreldef = array(
-        "Tables" => array( "Pros" => array( "Table" => 'ot.professionals',
+        "Tables" => array( "Pros" => array( "Table" => 'ot.clients_pros',
                                             "Fields" => "Auto",
         )));
 

@@ -64,7 +64,7 @@ function run() {
 
 $screen = SEEDInput_Str( 'screen' );
 
-if( $screen == 'admin' ) {
+if( substr($screen,0,5) == 'admin' ) {
     $s .= drawAdmin();
 } else if( substr( $screen, 0, 9 ) == "therapist" ) {
     $s .= drawTherapist( $screen );
@@ -179,10 +179,18 @@ function drawTherapist( $screen )
 function drawAdmin()
 {
     $s = "";
+    if(SEEDInput_Str("screen") == "admin-droptable"){
+        global $kfdb;
+        $kfdb->Execute("drop table ot.clients");
+        $kfdb->Execute("drop table ot.clients_pros");
+        $kfdb->Execute("drop table ot.professionals");
+        $s .= "<div class='alert alert-success'> Oops I missed placed your data</div>";
+    }
+    
+    $s .= "<h2>Admin</h2>";
 
-    $s = "<h2>Admin</h2>";
-
-    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>";
+    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>"
+        ."<a href='?screen=admin-droptable' class='toCircle format-100-#99ff99-blue'>Drop Tables</a>";
 
     return( $s );
 }
@@ -219,6 +227,12 @@ function drawClientList( KeyframeDatabase $kfdb )
         }
         $kfr->PutDBRow();
     }
+    elseif( ($cmd = SEEDInput_Str('cmd')) == "update_client_add_pro"){
+        $kfr = $oClients_ProsDB->KFRelBase()->CreateRecord();
+        $kfr->SetValue("fk_clients", $client_key);
+        $kfr->SetValue("fk_professionals", SEEDInput_Int("add_pro_key"));
+        $kfr->PutDBRow();
+    }
 
     $clientPros = array();
     $proClients = array();
@@ -227,7 +241,7 @@ function drawClientList( KeyframeDatabase $kfdb )
         $myPros = $oClients_ProsDB->KFRel()->GetRecordSetRA("Clients._key='$client_key'" );
     }
     if( $pro_key ) {
-        // A client has been clicked. Who are their pros?
+        // A pro has been clicked. Who are their clients?
         $myClients = $oClients_ProsDB->KFRel()->GetRecordSetRA("Pros._key='$pro_key'" );
     }
 
@@ -238,7 +252,7 @@ function drawClientList( KeyframeDatabase $kfdb )
          ."<div class='col-md-6'>"
              ."<h3>Clients</h3>"
              .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?client_key=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a></div>" )
-             .($client_key ? drawClientForm( $oFormClient, $kfdb, $raClients, $myPros, $client_key) : "")
+             .($client_key ? drawClientForm( $oFormClient, $kfdb, $raClients, $myPros, $client_key, $raPros) : "")
          ."</div>"
          ."<div class='col-md-6'>"
              ."<h3>Providers</h3>"
@@ -251,25 +265,29 @@ function drawClientList( KeyframeDatabase $kfdb )
 }
 
 
-function drawClientForm( $oFormClient, $kfdb, $raClients, $myPros, $client_key )
+function drawClientForm( $oFormClient, $kfdb, $raClients, $myPros, $client_key, $raPros )
 {
     $s = "";
 
     // The user clicked on a client name so show their form
     foreach( $raClients as $ra ) {
         if( $ra['_key'] == $client_key ) {
-            // Dad says: don't bother putting doctor, paed, slp names in this form. Instead we'll make a "connect-the-professionals" map
-            //    between the clients and professionals tables.
             $sPros = "<div style='padding:10px;border:1px solid #888'>"
-                    .SEEDCore_ArrayExpandRows( $myPros, "[[Pros_pro_name]] is my [[Pros_pro_role]]" )
+                    .SEEDCore_ArrayExpandRows( $myPros, "[[Pros_pro_name]] is my [[Pros_pro_role]]<br />" )
                     ."</div>";
+            $sPros .= "<form>"
+                ."<input type='hidden' name='cmd' value='update_client_add_pro'/>"
+                ."<input type='hidden' name='client_key' value='".$client_key."'/>"
+                ."<input type='hidden' name='screen' value='therapist-clientlist'/>"
+                ."<select name='add_pro_key'><option value='0'> Choose a provider</option>"
+                .SEEDCore_ArrayExpandRows( $raPros, "<option value='[[_key]]'>[[pro_name]] ([[pro_role]])</option>" )
+                ."</select><input type='submit' value='add'></form>";
 
-            //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
             $sForm =
                   "<form>"
                  ."<input type='hidden' name='cmd' value='update_client'/>"
                  ."<input type='hidden' name='client_key' value='$client_key'/>"
-                 ."<input type='hidden' name='screen' value='therapist-clientlist'/"
+                 ."<input type='hidden' name='screen' value='therapist-clientlist'/>"
                  ."<p>Client # $client_key</p>"
                  ."<table class='container-fluid table table-striped'>"
                  ."<tr>"
@@ -340,7 +358,7 @@ function drawProForm( $kfdb, $raPros, $pro_key )
                 ."<form>"
                 ."<input type='hidden' name='cmd' value='update_pro'/>"
                 ."<input type='hidden' name='pro_key' value='$pro_key'/>"
-                ."<input type='hidden' name='screen' value='therapist-clientlist'/"
+                ."<input type='hidden' name='screen' value='therapist-clientlist'/>"
                 ."<p>Professional # $pro_key</p>"
                 ."<p>Name <input type='text' name='pro_name' required maxlength='200' value='".htmlspecialchars($ra['pro_name'])."'/></p>"
                 ."<p>Address <input type='text' name='address' maxlength='200' value='".htmlspecialchars($ra['address'])."'/></p>"
