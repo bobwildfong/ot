@@ -3,7 +3,6 @@
 require_once SEEDROOT."Keyframe/KeyframeRelation.php";
 
 
-
 class ClientsDB
 {
     private $kfrel;
@@ -27,6 +26,7 @@ class ClientsDB
     }
 
 }
+
 class ProsDB
 {
     private $kfrel;
@@ -48,8 +48,8 @@ class ProsDB
     {
         return( $this->kfrel->GetRecordFromDBKey( $key ) );
     }
-
 }
+
 class Clients_ProsDB
 /*******************
     The connections between clients and professionals
@@ -92,21 +92,6 @@ class Clients_ProsDB
         return( $this->kfrel_X->GetRecordFromDB( "Clients._key='$client_key'" ) );
     }
 }
-
-
-$kfdb = new KeyframeDatabase( "localhost", "ot", "ot" );
-
-if( !($kfdb && $kfdb->Connect( "ot" )) ) {
-    die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"
-        ."CREATE DATABASE ot;<br/>GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
-}
-
-// table checks are done in this function now
-createTables($kfdb);
-
-$oClientsDB = new ClientsDB( $kfdb );
-$oProsDB = new ProsDB( $kfdb );
-$oClients_ProsDB = new Clients_ProsDB( $kfdb );
 
 function createTables( KeyframeDatabase $kfdb )
 {
