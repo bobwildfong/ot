@@ -42,7 +42,7 @@ class ClientList
                 break;
 
             case "update_pro":
-                $kfr = $oProsDB->GetPro( $pro_key );
+                $kfr = $this->oProsDB->GetPro( $this->pro_key );
                 foreach( $pro_fields as $field ) {
                     $kfr->SetValue( $field, SEEDInput_Str($field) );
                 }
@@ -50,8 +50,8 @@ class ClientList
                 break;
 
             case "update_client_add_pro":
-                $kfr = $oClients_ProsDB->KFRelBase()->CreateRecord();
-                $kfr->SetValue("fk_clients", $client_key);
+                $kfr = $this->oClients_ProsDB->KFRelBase()->CreateRecord();
+                $kfr->SetValue("fk_clients", $this->client_key);
                 $kfr->SetValue("fk_professionals", SEEDInput_Int("add_pro_key"));
                 $kfr->PutDBRow();
                 break;
