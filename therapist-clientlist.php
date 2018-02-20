@@ -122,47 +122,19 @@ class ClientList
                      ."<input type='hidden' name='screen' value='therapist-clientlist'/>"
                      ."<p>Client # {$this->client_key}</p>"
                      ."<table class='container-fluid table table-striped'>"
-                     ."<tr>"
-                         ."<td class='col-md-4'><p>Name</p></td>"
-                         ."<td class='col-md-8'>".$oFormClient->Text('client_name',"",array("attrs"=>"required maxlength='200' placeholder='Name'"))."</td>"
-                     ."</tr>"
-                     ."<tr>"
-                         ."<td class='col-md-4'><p>Parents Name</p></td>"
-                         ."<td class='col-md-8'>".$oFormClient->Text('parents_name',"",array("attrs"=>"maxlength='200' placeholder='Parents Name'"))."</td>"
-                     ."</tr>"
-
-                     ."<tr>"
-                        ."<td class='col-md-4'><p>Parents Separate</p></td>"
-                        ."<td class='col-md-8'><input type='checkbox' name='parents_separate' ".($ra['parents_separate']?"checked":"")."/></td>"
-                     ."</tr>"
-                     ."<tr>"
-                        ."<td class='col-md-4'><p>Address</p></td>"
-                        ."<td class='col-md-8'>".$oFormClient->Text('address',"",array("attrs"=>"maxlength='200' placeholder='Address'"))."</td>"
-                     ."</tr>"
-                     ."<tr>"
-                        ."<td class='col-md-4'><p>City</p></td>"
-                        ."<td class='col-md-8'>".$oFormClient->Text('city',"",array("attrs"=>"maxlength='200' placeholder='City'"))."</td>"
-                     ."</tr>"
-                     ."<tr>"
-                        ."<td class='col-md-4'><p>Postal Code</p></td>"
-                        ."<td class='col-md-8'>".$oFormClient->Text('Postal Code',"",array("attrs"=>"maxlength='200' placeholder='Postal Code' pattern='^[a-zA-Z]\d[a-zA-Z](\s+)?\d[a-zA-Z]\d$'"))."</td>"
-                     ."</tr>"
-                     ."<tr>"
-                        ."<td class='col-md-4'><p>Date Of Birth</p></td>"
-                        ."<td class='col-md-8'><input type='date' name='dob' value='".htmlspecialchars($ra['dob'])."' /></td>"
-                     ."</tr>"
-                     ."<tr>"
-                        ."<td class='col-md-4'><p>Phone Number</p></td>"
-                        ."<td class='col-md-8'><input type='text' name='phone_number' maxlength='200' value='".htmlspecialchars($ra['phone_number'])."' placeholder='Phone Number' pattern='^(\d{3}[-\s]?){2}\d{4}$' /></td>"
-                     ."</tr>"
-                     ."<tr>"
-                        ."<td class='col-md-4'><p>Email</p></td>"
-                        ."<td class='col-md-8'><input type='email' name='email' maxlength='200' value='".htmlspecialchars($ra['email'])."' placeholder='Email' /></td>"
-                     ."</tr>"
+                     .$this->drawFormRow( "Name", $oFormClient->Text('client_name',"",array("attrs"=>"required maxlength='200' placeholder='Name'") ) )
+                     .$this->drawFormRow( "Parents Name", $oFormClient->Text('parents_name',"",array("attrs"=>"maxlength='200' placeholder='Parents Name'") ) )
+                     .$this->drawFormRow( "Parents Separate", "", "<input type='checkbox' name='parents_separate' ".($ra['parents_separate']?"checked":"")."/>" )
+                     .$this->drawFormRow( "Address", $oFormClient->Text('address',"",array("attrs"=>"maxlength='200' placeholder='Address'") ) )
+                     .$this->drawFormRow( "City", $oFormClient->Text('city',"",array("attrs"=>"maxlength='200' placeholder='City'") ) )
+                     .$this->drawFormRow( "Postal Code", $oFormClient->Text('postal_code',"",array("attrs"=>"maxlength='200' placeholder='Postal Code' pattern='^[a-zA-Z]\d[a-zA-Z](\s+)?\d[a-zA-Z]\d$'") ) )
+                     .$this->drawFormRow( "Date Of Birth", $oFormClient->Date('dob') )
+                     .$this->drawFormRow( "Phone Number", $oFormClient->Text('phone_number', "", array("attrs"=>"maxlength='200' placeholder='Phone Number' pattern='^(\d{3}[-\s]?){2}\d{4}$'") ) )
+                     .$this->drawFormRow( "Email", $oFormClient->Email('email',"",array("attrs"=>"maxlength='200' placeholder='Email'") ) )
                      ."<tr>"
                         ."<td class='col-md-12'><input type='submit' value='Save' style='margin:auto' /></td>"
                      ."</tr>"
-                     ."</table>" // table container
+                     ."</table>"
                      ."</form>";
 
 
@@ -175,6 +147,14 @@ class ClientList
             }
         }
         return( $s );
+    }
+
+    private function drawFormRow( $label, $control )
+    {
+        return( "<tr>"
+                   ."<td class='col-md-4'><p>$label</p></td>"
+                   ."<td class='col-md-8'>$control</td>"
+               ."</tr>" );
     }
 
     function drawProForm( $raPros )
