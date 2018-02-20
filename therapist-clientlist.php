@@ -12,7 +12,6 @@ class ClientList
     private $client_key;
     private $pro_key;
 
-
     function __construct( KeyframeDatabase $kfdb )
     {
         $this->kfdb = $kfdb;
