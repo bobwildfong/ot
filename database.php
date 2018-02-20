@@ -116,10 +116,6 @@ function createTables( KeyframeDatabase $kfdb )
             dob VARCHAR(200) NOT NULL DEFAULT '',
             phone_number VARCHAR(200) NOT NULL DEFAULT '',
             email VARCHAR(200) NOT NULL DEFAULT '',
-            family_doc VARCHAR(200) NOT NULL DEFAULT '',
-            paediatrician VARCHAR(200) NOT NULL DEFAULT '',
-            slp VARCHAR(200) NOT NULL DEFAULT '',
-            psychologist VARCHAR(200) NOT NULL DEFAULT '',
             referal VARCHAR(500) NOT NULL DEFAULT '',
             background_info VARCHAR(500) NOT NULL DEFAULT '')" );
 
