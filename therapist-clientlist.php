@@ -113,6 +113,7 @@ class ClientList
                     .SEEDCore_ArrayExpandRows( $raPros, "<option value='[[_key]]'>[[pro_name]] ([[pro_role]])</option>" )
                     ."</select><input type='submit' value='add'></form>";
 
+                $oFormClient->SetStickyParms( array( 'raAttrs' => array( 'maxlength'=>'200' ) ) );
                 $sForm =
                       "<form>"
                      ."<input type='hidden' name='cmd' value='update_client'/>"
@@ -121,15 +122,15 @@ class ClientList
                      ."<input type='hidden' name='screen' value='therapist-clientlist'/>"
                      ."<p>Client # {$this->client_key}</p>"
                      ."<table class='container-fluid table table-striped'>"
-                     .$this->drawFormRow( "Name", $oFormClient->Text('client_name',"",array("attrs"=>"required maxlength='200' placeholder='Name'") ) )
-                     .$this->drawFormRow( "Parents Name", $oFormClient->Text('parents_name',"",array("attrs"=>"maxlength='200' placeholder='Parents Name'") ) )
+                     .$this->drawFormRow( "Name", $oFormClient->Text('client_name',"",array("attrs"=>"required placeholder='Name'") ) )
+                     .$this->drawFormRow( "Parents Name", $oFormClient->Text('parents_name',"",array("attrs"=>"placeholder='Parents Name'") ) )
                      .$this->drawFormRow( "Parents Separate", "", "<input type='checkbox' name='parents_separate' ".($ra['parents_separate']?"checked":"")."/>" )
-                     .$this->drawFormRow( "Address", $oFormClient->Text('address',"",array("attrs"=>"maxlength='200' placeholder='Address'") ) )
-                     .$this->drawFormRow( "City", $oFormClient->Text('city',"",array("attrs"=>"maxlength='200' placeholder='City'") ) )
-                     .$this->drawFormRow( "Postal Code", $oFormClient->Text('postal_code',"",array("attrs"=>"maxlength='200' placeholder='Postal Code' pattern='^[a-zA-Z]\d[a-zA-Z](\s+)?\d[a-zA-Z]\d$'") ) )
+                     .$this->drawFormRow( "Address", $oFormClient->Text('address',"",array("attrs"=>"placeholder='Address'") ) )
+                     .$this->drawFormRow( "City", $oFormClient->Text('city',"",array("attrs"=>"placeholder='City'") ) )
+                     .$this->drawFormRow( "Postal Code", $oFormClient->Text('postal_code',"",array("attrs"=>"placeholder='Postal Code' pattern='^[a-zA-Z]\d[a-zA-Z](\s+)?\d[a-zA-Z]\d$'") ) )
                      .$this->drawFormRow( "Date Of Birth", $oFormClient->Date('dob') )
-                     .$this->drawFormRow( "Phone Number", $oFormClient->Text('phone_number', "", array("attrs"=>"maxlength='200' placeholder='Phone Number' pattern='^(\d{3}[-\s]?){2}\d{4}$'") ) )
-                     .$this->drawFormRow( "Email", $oFormClient->Email('email',"",array("attrs"=>"maxlength='200' placeholder='Email'") ) )
+                     .$this->drawFormRow( "Phone Number", $oFormClient->Text('phone_number', "", array("attrs"=>"placeholder='Phone Number' pattern='^(\d{3}[-\s]?){2}\d{4}$'") ) )
+                     .$this->drawFormRow( "Email", $oFormClient->Email('email',"",array("attrs"=>"placeholder='Email'") ) )
                      ."<tr>"
                         ."<td class='col-md-12'><input type='submit' value='Save' style='margin:auto' /></td>"
                      ."</tr>"
