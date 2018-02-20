@@ -43,7 +43,7 @@ class ClientList
 
             case "update_pro":
                 $kfr = $this->oProsDB->GetPro( $this->pro_key );
-                foreach( $pro_fields as $field ) {
+                foreach( $this->pro_fields as $field ) {
                     $kfr->SetValue( $field, SEEDInput_Str($field) );
                 }
                 $kfr->PutDBRow();
