@@ -54,6 +54,12 @@ class ClientList
                 $kfr->SetValue("fk_professionals", SEEDInput_Int("add_pro_key"));
                 $kfr->PutDBRow();
                 break;
+            case "update_pro_add_client":
+                $kfr = $this->oClients_ProsDB->KFRelBase()->CreateRecord();
+                $kfr->SetValue("fk_professionals", $this->pro_key);
+                $kfr->SetValue("fk_clients", SEEDInput_Int("add_client_key"));
+                $kfr->PutDBRow();
+                break;
         }
 
         /* Set the form to use the selected client.
@@ -87,7 +93,7 @@ class ClientList
              ."<div class='col-md-6'>"
                  ."<h3>Providers</h3>"
                  .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'><a href='?pro_key=[[_key]]&screen=therapist-clientlist'>[[pro_name]]</a> is a [[pro_role]]</div>" )
-                 .($this->pro_key ? $this->drawProForm( $raPros ) : "")
+                 .($this->pro_key ? $this->drawProForm( $raPros, $myClients, $raClients ) : "")
              ."</div>"
              ."</div></div>";
 
@@ -157,17 +163,28 @@ class ClientList
                ."</tr>" );
     }
 
-    function drawProForm( $raPros )
+    function drawProForm( $raPros, $myClients, $raClients )
     {
         $s = "";
 
         // The user clicked on a professionals name so show their form
         foreach( $raPros as $ra ) {
             if( $ra['_key'] == $this->pro_key ) {
-
+                
+                $sClients = "<div style='padding:10px;border:1px solid #888'>"
+                    .SEEDCore_ArrayExpandRows( $myClients, "[[client_name]]<br />" )
+                    ."</div>";
+                $sClients .= "<form>"
+                        ."<input type='hidden' name='cmd' value='update_pro_add_client'/>"
+                        ."<input type='hidden' name='pro_key' value='{$this->pro_key}'/>"
+                        ."<input type='hidden' name='screen' value='therapist-clientlist'/>"
+                        ."<select name='add_client_key'><option value='0'> Choose a client</option>"
+                        .SEEDCore_ArrayExpandRows( $raClients, "<option value='[[_key]]'>[[client_name]]</option>" )
+                        ."</select><input type='submit' value='add'></form>";
+                
                 //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
-                $s .= "<div style='border:1px solid #aaa;padding:20px;margin:20px'>"
-                    ."<form>"
+                $sForm = 
+                    "<form>"
                     ."<input type='hidden' name='cmd' value='update_pro'/>"
                     ."<input type='hidden' name='pro_key' value='{$this->pro_key}'/>"
                     ."<input type='hidden' name='screen' value='therapist-clientlist'/>"
@@ -209,8 +226,15 @@ class ClientList
                         ."<td class='col-md-12'><input type='submit' value='Save'/></td>"
                     ."</tr>"
                     ."</table>"
-                    ."</form>"
-                    ."</div>";
+                    ."</form>";
+                    
+                    $s .= "<div class='container-fluid' style='border:1px solid #aaa;padding:20px;margin:20px'>"
+                        ."<div class='row'>"
+                        ."<div class='col-md-9'>".$sForm."</div>"
+                        ."<div class='col-md-3'>".$sClients."</div>"
+                        ."</div>"
+                        ."</div>";
+                    
             }
         }
         return( $s );
