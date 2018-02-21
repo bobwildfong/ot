@@ -179,7 +179,7 @@ function drawAdmin()
         $kfdb->Execute("drop table ot.clients");
         $kfdb->Execute("drop table ot.clients_pros");
         $kfdb->Execute("drop table ot.professionals");
-        $s .= "<div class='alert alert-success'> Oops I missed placed your data</div>";
+        $s .= "<div class='alert alert-success'> Oops I miss placed your data</div>";
     }
     $s .= "<h2>Admin</h2>";
     $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>"
