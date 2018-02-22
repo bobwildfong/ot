@@ -1,20 +1,17 @@
 <?php
 include_once "_config.php" ;
-include_once SEEDCore."SEEDCore.php" ;
-include_once SEEDROOT."Keyframe/KeyframeForm.php" ;
-include_once SEEDROOT."Keyframe/KeyframeDB.php" ;
-require_once "therapist-clientlist.php" ;
 require_once "database.php" ;
+require_once "cats_ui.php" ;
+require_once "therapist-clientlist.php" ;
 if( !($kfdb = new KeyframeDatabase( "localhost", "ot", "ot" )) ||
     !$kfdb->Connect( "ot" ) )
 {
     die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"
         ."CREATE DATABASE ot;<br/>GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
 }
-var_dump($_REQUEST);
 $kfdb->SetDebug(1);
-if( !isset($dirBootstrap) ) { $dirBootstrap = "./bootstrap3/"; }
-if( !isset($dirJQuery) )    { $dirJQuery =    "./jquery/"; }
+
+//var_dump($_REQUEST);
 $s =
 "<!DOCTYPE html>
 <html lang='en'>
@@ -57,6 +54,9 @@ function run() {
 </script>
 </head>
 <body>";
+
+$oUI = new CATS_UI();
+
 $screen = SEEDInput_Str( 'screen' );
 if( substr($screen,0,5) == 'admin' ) {
     $s .= drawAdmin();
@@ -73,14 +73,16 @@ echo $s
 ."</script></body></html>";
 function drawHome()
 {
-    $s = "<h2>Home</h2>";
+    global $oUI;
+
+    $s = $oUI->Header()."<h2>Home</h2>";
     $s .= "<a href='?screen=therapist' class='toCircle format-100-#b3f0ff-blue'>Therapist</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=admin' class='toCircle format-100-red-black'>Admin</a>";
     return( $s );
 }
 function drawTherapist( $screen )
 {
-    global $kfdb;
-    $s = "<h2>Therapist</h2>";
+    global $kfdb, $oUI;
+    $s = $oUI->Header()."<h2>Therapist</h2>";
     switch( $screen ) {
         case "therapist":
         default:
@@ -173,6 +175,7 @@ function drawTherapist( $screen )
 }
 function drawAdmin()
 {
+    global $oUI;
     $s = "";
     if(SEEDInput_Str("screen") == "admin-droptable"){
         global $kfdb;
@@ -181,7 +184,7 @@ function drawAdmin()
         $kfdb->Execute("drop table ot.professionals");
         $s .= "<div class='alert alert-success'> Oops I miss placed your data</div>";
     }
-    $s .= "<h2>Admin</h2>";
+    $s .= $oUI->Header()."<h2>Admin</h2>";
     $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>"
         ."<a href='?screen=admin-droptable' class='toCircle format-100-#99ff99-blue'>Drop Tables</a>";
         return( $s );
