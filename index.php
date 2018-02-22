@@ -58,6 +58,7 @@ function run() {
 $oUI = new CATS_UI();
 
 $screen = SEEDInput_Str( 'screen' );
+$oUI->SetScreen($screen == ""?"home":$screen);
 if( substr($screen,0,5) == 'admin' ) {
     $s .= drawAdmin();
 } else if( substr( $screen, 0, 9 ) == "therapist" ) {
