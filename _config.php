@@ -1,9 +1,10 @@
 <?php
 
 define( "SEEDROOT", "../seeds/" );
-define( "SEEDCore", SEEDROOT."seedcore/" );
+define( "SEEDCORE", SEEDROOT."seedcore/" );
 
-require_once SEEDCore."SEEDCore.php" ;
+require_once SEEDCORE."SEEDCore.php" ;
+require_once SEEDCORE."SEEDSession.php" ;
 require_once SEEDROOT."Keyframe/KeyframeForm.php" ;
 require_once SEEDROOT."Keyframe/KeyframeDB.php" ;
 
