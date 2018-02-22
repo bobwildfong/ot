@@ -13,7 +13,7 @@ class CATS_UI
     {
         return( "<div class='cats_header'>"
                ."<img src='".CATSDIR_IMG."CATS.png' style='max-width:300px;float:left;'/>"
-               .($this->screen != "home"?"<div style='float:right'><a href='?screen=home'>Home</a></div>":"")
+            ."<div style='float:right'>".($this->screen != "home"?"<a href='?screen=home'>Home</a>":"<a href='?screen=logout'>Logout</a>"."</div>")
                ."</div>"
                ."<div style='clear:both'>&nbsp;</div>"
               );

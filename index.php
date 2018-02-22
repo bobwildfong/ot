@@ -37,10 +37,17 @@ if( substr($screen,0,5) == 'admin' ) {
     $s .= drawAdmin();
 } else if( substr( $screen, 0, 9 ) == "therapist" ) {
     $s .= drawTherapist( $screen );
+} else if($screen == "logout"){
+    $s .= drawLogout();
 } else {
     $s .= drawHome();
 }
 echo $oUI->OutputPage( $s );
+
+function  drawLogout(){
+    $_SESSION['userid'] = "";
+    return("<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body>You have Been Logged out<br /><a href=".CATSDIR."\"\">Back to Login</a></body>");
+}
 
 function drawHome()
 {
