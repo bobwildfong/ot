@@ -27,6 +27,7 @@ if( !$userid ) {
 }
 
 //var_dump($_REQUEST);
+//var_dump($_SESSION);
 
 $s = "";
 

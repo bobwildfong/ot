@@ -1,5 +1,5 @@
 <?php
-
+require_once "client-modal.php" ;
 class ClientList
 {
     public $kfdb;
@@ -111,6 +111,7 @@ class ClientList
                 $sPros = "<div style='padding:10px;border:1px solid #888'>"
                         .SEEDCore_ArrayExpandRows( $myPros, "[[Pros_pro_name]] is my [[Pros_pro_role]]<br />" )
                         ."</div>";
+                $sPros .= drawModal($ra['client_name']);
                 $sPros .= "<form>"
                     ."<input type='hidden' name='cmd' value='update_client_add_pro'/>"
                     ."<input type='hidden' name='client_key' value='{$this->client_key}'/>"
