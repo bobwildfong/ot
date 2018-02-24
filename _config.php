@@ -1,6 +1,6 @@
 <?php
 
-define( "SEEDROOT", "../seeds/" );
+if( !defined("SEEDROOT") ) define( "SEEDROOT", "../seeds/" );
 define( "SEEDCORE", SEEDROOT."seedcore/" );
 
 require_once SEEDCORE."SEEDCore.php" ;
