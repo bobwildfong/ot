@@ -2,6 +2,7 @@
 
 require_once SEEDROOT."Keyframe/KeyframeRelation.php";
 
+define( "DBNAME", "ot" );
 
 class ClientsDB
 {
@@ -9,7 +10,7 @@ class ClientsDB
     private $raClients;
 
     private $kfreldef = array(
-        "Tables" => array( "Clients" => array( "Table" => 'ot.clients',
+        "Tables" => array( "Clients" => array( "Table" => DBNAME.'.clients',
                                                "Fields" => "Auto",
     )));
 
@@ -33,7 +34,7 @@ class ProsDB
     private $raPros;
 
     private $kfreldef = array(
-        "Tables" => array( "Pros" => array( "Table" => 'ot.professionals',
+        "Tables" => array( "Pros" => array( "Table" => DBNAME.'.professionals',
             "Fields" => "Auto",
         )));
 
@@ -60,16 +61,16 @@ class Clients_ProsDB
     private $raPros;
 
     private $kfreldef = array(
-        "Tables" => array( "Pros" => array( "Table" => 'ot.clients_pros',
+        "Tables" => array( "Pros" => array( "Table" => DBNAME.'.clients_pros',
                                             "Fields" => "Auto",
         )));
 
     private $kfreldef_X = array(
-        "Tables" => array( "Clients" => array( "Table" => 'ot.clients',
+        "Tables" => array( "Clients" => array( "Table" => DBNAME.'.clients',
                                                "Fields" => "Auto" ),
-                           "Pros"    => array( "Table" => 'ot.professionals',
+                           "Pros"    => array( "Table" => DBNAME.'.professionals',
                                                "Fields" => "Auto" ),
-                           "CxP"     => array( "Table" => 'ot.clients_pros',
+                           "CxP"     => array( "Table" => DBNAME.'.clients_pros',
                                                "Fields" => "Auto" )
         ));
 
@@ -95,11 +96,11 @@ class Clients_ProsDB
 
 function createTables( KeyframeDatabase $kfdb )
 {
-    if( !tableExists( $kfdb, "ot.clients" ) ) {
+    if( !tableExists( $kfdb, DBNAME.".clients" ) ) {
         echo "Creating the Client table";
 
         $kfdb->SetDebug(2);
-        $kfdb->Execute( "CREATE TABLE ot.clients (
+        $kfdb->Execute( "CREATE TABLE ".DBNAME.".clients (
             _key        INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
             _created    DATETIME,
             _created_by INTEGER,
@@ -119,16 +120,16 @@ function createTables( KeyframeDatabase $kfdb )
             referal VARCHAR(500) NOT NULL DEFAULT '',
             background_info VARCHAR(500) NOT NULL DEFAULT '')" );
 
-        $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name) values (null,'Eric')" );
-        $kfdb->Execute( "INSERT INTO ot.clients (_key,client_name) values (null,'Joe')" );
+        $kfdb->Execute( "INSERT INTO ".DBNAME.".clients (_key,client_name) values (null,'Eric')" );
+        $kfdb->Execute( "INSERT INTO ".DBNAME.".clients (_key,client_name) values (null,'Joe')" );
         $kfdb->SetDebug(0);
     }
 
-    if( !tableExists( $kfdb, "ot.professionals" ) ) {
+    if( !tableExists( $kfdb, DBNAME.".professionals" ) ) {
         echo "Creating the Pros table";
 
         $kfdb->SetDebug(2);
-        $kfdb->Execute( "CREATE TABLE ot.professionals (
+        $kfdb->Execute( "CREATE TABLE ".DBNAME.".professionals (
             _key        INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
             _created    DATETIME,
             _created_by INTEGER,
@@ -145,16 +146,16 @@ function createTables( KeyframeDatabase $kfdb )
             fax_number VARCHAR(200) NOT NULL DEFAULT '',
             email VARCHAR(200) NOT NULL DEFAULT '')" );
 
-        $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role) values (null,'Jose','Dentist')" );
-        $kfdb->Execute( "INSERT INTO ot.professionals (_key,pro_name,pro_role) values (null,'Darth Vader','Surgeon')" );
+        $kfdb->Execute( "INSERT INTO ".DBNAME.".professionals (_key,pro_name,pro_role) values (null,'Jose','Dentist')" );
+        $kfdb->Execute( "INSERT INTO ".DBNAME.".professionals (_key,pro_name,pro_role) values (null,'Darth Vader','Surgeon')" );
         $kfdb->SetDebug(0);
     }
 
-    if( !tableExists( $kfdb, "ot.clients_pros" ) ) {
+    if( !tableExists( $kfdb, DBNAME.".clients_pros" ) ) {
         echo "Creating the Client X Pros table";
 
         $kfdb->SetDebug(2);
-        $kfdb->Execute( "CREATE TABLE ot.clients_pros (
+        $kfdb->Execute( "CREATE TABLE ".DBNAME.".clients_pros (
             _key        INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
             _created    DATETIME,
             _created_by INTEGER,
@@ -174,8 +175,8 @@ function createTables( KeyframeDatabase $kfdb )
             fk_clients       INTEGER NOT NULL DEFAULT 0,
             fk_professionals INTEGER NOT NULL DEFAULT 0 )" );
 
-        $kfdb->Execute( "INSERT INTO ot.clients_pros (_key,fk_clients,fk_professionals) values (null,1,1)" );  // Jose is Eric's dentist
-        $kfdb->Execute( "INSERT INTO ot.clients_pros (_key,fk_clients,fk_professionals) values (null,2,2)" );  // Darth Vader is Joe's surgeon
+        $kfdb->Execute( "INSERT INTO ".DBNAME.".clients_pros (_key,fk_clients,fk_professionals) values (null,1,1)" );  // Jose is Eric's dentist
+        $kfdb->Execute( "INSERT INTO ".DBNAME.".clients_pros (_key,fk_clients,fk_professionals) values (null,2,2)" );  // Darth Vader is Joe's surgeon
         $kfdb->SetDebug(0);
     }
 }
