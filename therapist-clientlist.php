@@ -182,7 +182,7 @@ class ClientList
                         .SEEDCore_ArrayExpandRows( $raClients, "<option value='[[_key]]'>[[client_name]]</option>" )
                         ."</select><input type='submit' value='add'></form>";
                 
-                //TODO Joe: make this form into a nice bootstrappy table so the input controls are aligned vertically
+                
                 $sForm = 
                     "<form>"
                     ."<input type='hidden' name='cmd' value='update_pro'/>"

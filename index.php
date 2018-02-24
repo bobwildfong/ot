@@ -90,7 +90,7 @@ function drawTherapist( $screen )
                 ."<a href='?screen=therapist-ideas' class='toCircle format-100-#99ff99-blue'>Get Ideas</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-downloadcustommaterials' class='toCircle format-100-#99ff99-blue'>Download Marketable Materials</a>"
+                ."<a href='?screen=therapist-downloadcustommaterials' class='toCircle format-100-#b3f0ff-blue'>Download Marketable Materials</a>"
                 ."</div>"
                 ."</div>"
                 ."<div class='row'>"
@@ -101,7 +101,7 @@ function drawTherapist( $screen )
                 ."<a href='?screen=therapist-submitresources' class='toCircle format-100-#99ff99-blue'>Submit Resources to Share</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-clientlist' class='toCircle format-100-#99ff99-blue'>Clients and Providers</a>"
+                ."<a href='?screen=therapist-clientlist' class='toCircle format-100-#b3f0ff-blue'>Clients and Providers</a>"
                 ."</div>"
                 ."</div>"
                 ."</div>";
