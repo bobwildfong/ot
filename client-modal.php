@@ -12,6 +12,11 @@ function drawModal($client_name){
                         data: postData,
                         success: function(data, textStatus, jqXHR) {
                             $('#contact_dialog').modal('hide');
+                    $.ajax({
+                        type: \"POST\",
+                        data: postData,
+                        success: function(data, textStatus, jqXHR) {
+                            $('#contact_dialog').modal('hide');
                         },
                         error: function(jqXHR, status, error) {
                             console.log(status + \": \" + error);
