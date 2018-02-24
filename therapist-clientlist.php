@@ -176,7 +176,6 @@ class ClientList
                         ."<select name='add_client_key'><option value='0'> Choose a client</option>"
                         .SEEDCore_ArrayExpandRows( $raClients, "<option value='[[_key]]'>[[client_name]]</option>" )
                         ."</select><input type='submit' value='add'></form>";
-                
                 $sForm = 
                     "<form>"
                     ."<input type='hidden' name='cmd' value='update_pro'/>"
