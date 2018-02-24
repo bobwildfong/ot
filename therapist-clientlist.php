@@ -8,6 +8,7 @@ class ClientList
 
     private $client_fields = array("client_name","parents_name","address","city","postal_code","dob","phone_number","email","family_doc","paediatrician","slp","psychologist","referal","background_info");
     private $pro_fields    = array("pro_name","pro_role","address","city","postal_code","phone_number","fax_number","email");
+    private $pro_roles = array("Paediatrician", "Psychologist", "SLP", "PT", "OT", "Other");
 
     private $client_key;
     private $pro_key;
@@ -112,13 +113,6 @@ class ClientList
                         .SEEDCore_ArrayExpandRows( $myPros, "[[Pros_pro_name]] is my [[Pros_pro_role]]<br />" )
                         ."</div>";
                 $sPros .= drawModal($ra['client_name']);
-                $sPros .= "<form>"
-                    ."<input type='hidden' name='cmd' value='update_client_add_pro'/>"
-                    ."<input type='hidden' name='client_key' value='{$this->client_key}'/>"
-                    ."<input type='hidden' name='screen' value='therapist-clientlist'/>"
-                    ."<select name='add_pro_key'><option value='0'> Choose a provider</option>"
-                    .SEEDCore_ArrayExpandRows( $raPros, "<option value='[[_key]]'>[[pro_name]] ([[pro_role]])</option>" )
-                    ."</select><input type='submit' value='add'></form>";
 
                 $oFormClient->SetStickyParms( array( 'raAttrs' => array( 'maxlength'=>'200' ) ) );
                 $sForm =
@@ -182,8 +176,6 @@ class ClientList
                         ."<select name='add_client_key'><option value='0'> Choose a client</option>"
                         .SEEDCore_ArrayExpandRows( $raClients, "<option value='[[_key]]'>[[client_name]]</option>" )
                         ."</select><input type='submit' value='add'></form>";
-                
-                
                 $sForm = 
                     "<form>"
                     ."<input type='hidden' name='cmd' value='update_pro'/>"
@@ -221,13 +213,37 @@ class ClientList
                     ."</tr>"
                     ."<tr>"
                         ."<td class='col-md-4'><p>Role</p></td>"
-                        ."<td class='col-md-8'><input type='text' name='pro_role' maxlength='200' value='".htmlspecialchars($ra['pro_role'])."' placeholder='Role' /></td>"
+                        ."<td class='col-md-8'><select name='pro_role' id='mySelect' onchange='doUpdateForm();'>";
+                        foreach ($this->pro_roles as $role) {
+                            if($ra['pro_role'] == $role){
+                                $sForm .= "<option selected />".$role;
+                            } elseif($role == "Other" && !in_array($ra['pro_role'], $this->pro_roles)){
+                                $sForm .= "<option selected />".$role;
+                            } else{
+                                $sForm .= "<option />".$role;
+                            }
+                        }
+                    $sForm .= "</select>"
+                        ."<input type='text' ".(in_array($ra['pro_role'], $this->pro_roles)?"style='display:none' disabled ":"")."required id='other' name='pro_role' maxlength='200' value='".(in_array($ra['pro_role'], $this->pro_roles)?"":htmlspecialchars($ra['pro_role']))."' placeholder='Role' /></td>"
                     ."</tr>"
                     ."<tr>"
                         ."<td class='col-md-12'><input type='submit' value='Save'/></td>"
                     ."</tr>"
                     ."</table>"
-                    ."</form>";
+                    ."</form>"
+                    ."<script>function doUpdateForm()
+                    {
+                        var sel = document.getElementById('mySelect').value;
+                        if( sel == 'Other' ) {
+                            document.getElementById('other').style.display = 'inline';
+                    		document.getElementById('other').disabled = false;
+                        }
+                    	else {
+                    	    document.getElementById('other').style.display = 'none';
+                    		document.getElementById('other').disabled = true;
+                    	}
+                    }
+                    </script>";
                     
                     $s .= "<div class='container-fluid' style='border:1px solid #aaa;padding:20px;margin:20px'>"
                         ."<div class='row'>"
