@@ -10,11 +10,7 @@ function drawModal($client_name){
                     $.ajax({
                         type: \"POST\",
                         data: postData,
-                        success: function(data, textStatus, jqXHR) {
-                            $('#contact_dialog').modal('hide');
-                    $.ajax({
-                        type: \"POST\",
-                        data: postData,
+                        url: formURL,
                         success: function(data, textStatus, jqXHR) {
                             $('#contact_dialog').modal('hide');
                         },
@@ -34,7 +30,7 @@ function drawModal($client_name){
             });
         </script>
         
-        <button type=\"button\" class=\"btn btn-info\" data-toggle=\"modal\" data-target=\"#contact_dialog\">Contact</button>
+        <button type=\"button\" data-toggle=\"modal\" data-target=\"#contact_dialog\">Add Pro</button>
         
         <!-- the div that represents the modal dialog -->
         <div class=\"modal fade\" id=\"contact_dialog\" role=\"dialog\">
