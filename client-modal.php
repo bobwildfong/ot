@@ -48,11 +48,11 @@ function drawModal($ra, $oProsDB, $pro_roles){
              });
              foreach ($pro_roles as $role){
                  if($role == "Other"){
-                     $s .= "$role <select name='$role'>"
+                     $s .= "$role <select name='$role'><option selected value='0'>Select Provider"
                      .SEEDCore_ArrayExpandRows($oProsDB->KFRel()->GetRecordSetRA("pro_role NOT IN (".SEEDCore_ArrayExpandSeries($otherless, ",'[[]]'",TRUE,array("sTemplateFirst"=>"'[[]]'")).")"), "<option value='[[_key]]' />[[pro_name]] ([[pro_role]])")
                      ."</select><br />";
                  }else {
-                     $s .= "$role <select name='$role'>"
+                     $s .= "$role <select name='$role'><option selected value='0'>Select Provider"
                      .SEEDCore_ArrayExpandRows($oProsDB->KFRel()->GetRecordSetRA("pro_role='$role'"), "<option value='[[_key]]' />[[pro_name]]")
                      ."</select><br />";
                  }
