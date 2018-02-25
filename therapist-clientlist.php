@@ -8,7 +8,7 @@ class ClientList
 
     private $client_fields = array("client_name","parents_name","address","city","postal_code","dob","phone_number","email","family_doc","paediatrician","slp","psychologist","referal","background_info");
     private $pro_fields    = array("pro_name","pro_role","address","city","postal_code","phone_number","fax_number","email");
-    private $pro_roles = array("Paediatrician", "Psychologist", "SLP", "PT", "OT", "Other");
+    private $pro_roles = array("GP","Paediatrician", "Psychologist", "SLP", "PT", "OT", "Specialist Dr", "Resorce Teacher", "Teacher/Tutor", "Other");
 
     private $client_key;
     private $pro_key;
