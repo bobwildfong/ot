@@ -8,7 +8,10 @@ class ClientList
 
     private $client_fields = array("client_name","parents_name","address","city","postal_code","dob","phone_number","email","family_doc","paediatrician","slp","psychologist","referal","background_info");
     private $pro_fields    = array("pro_name","pro_role","address","city","postal_code","phone_number","fax_number","email");
-    private $pro_roles = array("GP","Paediatrician", "Psychologist", "SLP", "PT", "OT", "Specialist Dr", "Resorce Teacher", "Teacher/Tutor", "Other");
+    //Computer Valid Keys for Roles
+    public $pro_roles_key = array("GP","Paediatrician", "Psychologist", "SLP", "PT", "OT", "Specialist_Dr", "Resource_Teacher", "Teacher_Tutor", "Other");
+    //map of computer keys to human readable text
+    public $pro_roles_name = array("GP"=>"GP","Paediatrician"=>"Paediatrician", "Psychologist"=>"Psychologist", "SLP"=>"SLP", "PT"=>"PT", "OT"=>"OT", "Specialist_Dr"=>"Specialist Dr", "Resource_Teacher"=>"Resource_Teacher", "Teacher_Tutor"=>"Teacher/Tutor", "Other"=>"Other");
 
     private $client_key;
     private $pro_key;
@@ -46,13 +49,6 @@ class ClientList
                 foreach( $this->pro_fields as $field ) {
                     $kfr->SetValue( $field, SEEDInput_Str($field) );
                 }
-                $kfr->PutDBRow();
-                break;
-
-            case "update_client_add_pro":
-                $kfr = $this->oClients_ProsDB->KFRelBase()->CreateRecord();
-                $kfr->SetValue("fk_clients", $this->client_key);
-                $kfr->SetValue("fk_professionals", SEEDInput_Int("add_pro_key"));
                 $kfr->PutDBRow();
                 break;
             case "update_pro_add_client":
@@ -112,7 +108,7 @@ class ClientList
                 $sPros = "<div style='padding:10px;border:1px solid #888'>"
                         .SEEDCore_ArrayExpandRows( $myPros, "[[Pros_pro_name]] is my [[Pros_pro_role]]<br />" )
                         ."</div>";
-                $sPros .= drawModal($ra, $this->oProsDB,$this->pro_roles);
+                $sPros .= drawModal($ra, $this->oProsDB,$this->pro_roles_name);
 
                 $oFormClient->SetStickyParms( array( 'raAttrs' => array( 'maxlength'=>'200' ) ) );
                 $sForm =
@@ -214,17 +210,17 @@ class ClientList
                     ."<tr>"
                         ."<td class='col-md-4'><p>Role</p></td>"
                         ."<td class='col-md-8'><select name='pro_role' id='mySelect' onchange='doUpdateForm();'>";
-                        foreach ($this->pro_roles as $role) {
+                        foreach ($this->pro_roles_name as $role) {
                             if($ra['pro_role'] == $role){
                                 $sForm .= "<option selected />".$role;
-                            } elseif($role == "Other" && !in_array($ra['pro_role'], $this->pro_roles)){
+                            } elseif($role == "Other" && !in_array($ra['pro_role'], $this->pro_roles_name)){
                                 $sForm .= "<option selected />".$role;
                             } else{
                                 $sForm .= "<option />".$role;
                             }
                         }
                     $sForm .= "</select>"
-                        ."<input type='text' ".(in_array($ra['pro_role'], $this->pro_roles)?"style='display:none' disabled ":"")."required id='other' name='pro_role' maxlength='200' value='".(in_array($ra['pro_role'], $this->pro_roles)?"":htmlspecialchars($ra['pro_role']))."' placeholder='Role' /></td>"
+                        ."<input type='text' ".(in_array($ra['pro_role'], $this->pro_roles_name)?"style='display:none' disabled ":"")."required id='other' name='pro_role' maxlength='200' value='".(in_array($ra['pro_role'], $this->pro_roles_name)?"":htmlspecialchars($ra['pro_role']))."' placeholder='Role' /></td>"
                     ."</tr>"
                     ."<tr>"
                         ."<td class='col-md-12'><input type='submit' value='Save'/></td>"

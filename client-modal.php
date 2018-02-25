@@ -1,6 +1,6 @@
 <?php
 
-function drawModal($ra, $oProsDB, $pro_roles){
+function drawModal($ra, $oProsDB, $pro_roles_name){
     $s = "<script>
             /* must apply only after HTML has loaded */
             $(document).ready(function () {
@@ -30,29 +30,28 @@ function drawModal($ra, $oProsDB, $pro_roles){
             });
         </script>
         
-        <button type=\"button\" data-toggle=\"modal\" data-target=\"#contact_dialog\">Add Pro</button>
+        <button type=\"button\" data-toggle=\"modal\" data-target=\"#contact_dialog\">Connect Providers</button>
         
         <!-- the div that represents the modal dialog -->
         <div class=\"modal fade\" id=\"contact_dialog\" role=\"dialog\">
             <div class=\"modal-dialog\">
                 <div class=\"modal-content\">
                     <div class=\"modal-header\">
-                        <h4 class=\"modal-title\">Add Providers to ".$ra['client_name']."</h4>
-                        <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>
+                        <h4 class=\"modal-title\">Connect Providers to ".$ra['client_name']."</h4>
                     </div>
                     <div class=\"modal-body\">
                         <form id=\"contact_form\" action=\"modal-submit.php\" method=\"POST\">
-                            <input type='hidden' value='{$ra['_key']}' />";
-             $otherless = array_filter($pro_roles,function($var){
+                            <input type='hidden' name='client_key' value='{$ra['_key']}' />";
+             $otherless = array_filter($pro_roles_name,function($var){
                 return($var != "Other");  
              });
-             foreach ($pro_roles as $role){
+             foreach ($pro_roles_name as $k => $role){
                  if($role == "Other"){
-                     $s .= "$role <select name='$role'><option selected value='0'>Select Provider"
+                     $s .= "$role <select name='$k'><option selected value='0'>Select Provider"
                      .SEEDCore_ArrayExpandRows($oProsDB->KFRel()->GetRecordSetRA("pro_role NOT IN (".SEEDCore_ArrayExpandSeries($otherless, ",'[[]]'",TRUE,array("sTemplateFirst"=>"'[[]]'")).")"), "<option value='[[_key]]' />[[pro_name]] ([[pro_role]])")
                      ."</select><br />";
                  }else {
-                     $s .= "$role <select name='$role'><option selected value='0'>Select Provider"
+                     $s .= "$role <select name='$k'><option selected value='0'>Select Provider"
                      .SEEDCore_ArrayExpandRows($oProsDB->KFRel()->GetRecordSetRA("pro_role='$role'"), "<option value='[[_key]]' />[[pro_name]]")
                      ."</select><br />";
                  }
@@ -60,8 +59,8 @@ function drawModal($ra, $oProsDB, $pro_roles){
               $s .= "</form>
                     </div>
                     <div class=\"modal-footer\">
-                        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>
-                        <button type=\"button\" id=\"submitForm\" class=\"btn btn-default\">Send</button>
+                        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>
+                        <button type=\"button\" id=\"submitForm\" class=\"btn btn-default\">Connect</button>
                     </div>
                 </div>
             </div>
