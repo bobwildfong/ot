@@ -1,7 +1,7 @@
 <?php
 
-function drawModal($client_name){
-    return ("<script>
+function drawModal($ra, $oProsDB, $pro_roles){
+    $s = "<script>
             /* must apply only after HTML has loaded */
             $(document).ready(function () {
                 $(\"#contact_form\").on(\"submit\", function(e) {
@@ -37,14 +37,27 @@ function drawModal($client_name){
             <div class=\"modal-dialog\">
                 <div class=\"modal-content\">
                     <div class=\"modal-header\">
+                        <h4 class=\"modal-title\">Add Providers to ".$ra['client_name']."</h4>
                         <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>
-                        <h4 class=\"modal-title\">Add Providers to ".$client_name."</h4>
                     </div>
                     <div class=\"modal-body\">
                         <form id=\"contact_form\" action=\"modal-submit.php\" method=\"POST\">
-                            First name: <input type=\"text\" name=\"first_name\"><br/>
-                            Last name: <input type=\"text\" name=\"last_name\"><br/>
-                        </form>
+                            <input type='hidden' value='{$ra['_key']}' />";
+             $otherless = array_filter($pro_roles,function($var){
+                return($var != "Other");  
+             });
+             foreach ($pro_roles as $role){
+                 if($role == "Other"){
+                     $s .= "$role <select name='$role'>"
+                     .SEEDCore_ArrayExpandRows($oProsDB->KFRel()->GetRecordSetRA("pro_role NOT IN (".SEEDCore_ArrayExpandSeries($otherless, ",'[[]]'",TRUE,array("sTemplateFirst"=>"'[[]]'")).")"), "<option value='[[_key]]' />[[pro_name]] ([[pro_role]])")
+                     ."</select><br />";
+                 }else {
+                     $s .= "$role <select name='$role'>"
+                     .SEEDCore_ArrayExpandRows($oProsDB->KFRel()->GetRecordSetRA("pro_role='$role'"), "<option value='[[_key]]' />[[pro_name]]")
+                     ."</select><br />";
+                 }
+              }
+              $s .= "</form>
                     </div>
                     <div class=\"modal-footer\">
                         <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>
@@ -52,5 +65,6 @@ function drawModal($client_name){
                     </div>
                 </div>
             </div>
-        </div>");
+        </div>";
+    return($s);
 }
