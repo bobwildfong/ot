@@ -65,6 +65,13 @@ class ClientList
                 $kfr->PutDBRow();
                 $this->client_key = $kfr->Key();
                 break;
+            case "new_pro":
+                $name = SEEDInput_Str("new_pro_name");
+                $kfr = $this->oProsDB->KFRel()->CreateRecord();
+                $kfr->SetValue("pro_name", $name);
+                $kfr->PutDBRow();
+                $this->pro_key = $kfr->Key();
+                break;
         }
 
         /* Set the form to use the selected client.
@@ -72,6 +79,7 @@ class ClientList
         if( $this->client_key && ($kfrClient = $this->oClientsDB->GetClient( $this->client_key )) ) {
             $oFormClient->SetKFR( $kfrClient );
         } else {
+            //XXX Is this nessisary?
             $oFormClient->SetKFR($this->oClientsDB->KFRel()->CreateRecord());
         }
 
@@ -105,6 +113,12 @@ class ClientList
              ."</div>"
              ."<div class='col-md-6'>"
                  ."<h3>Providers</h3>"
+                 ."<button onclick='add_new();'>Add Professional</button>"
+                 ."<script>function add_new(){var value = prompt('Enter Professionals Name');
+                 document.getElementById('new_pro_name').value = value;
+                 document.getElementById('new_pro').submit();
+                 }</script><form id='new_pro'><input type='hidden' value='' name='new_pro_name' id='new_pro_name'><input type='hidden' name='cmd' value='new_pro'/>
+                 <input type='hidden' name='screen' value='therapist-clientlist'/></form>"
                  .SEEDCore_ArrayExpandRows( $raPros, "<div style='padding:5px;'><a href='?pro_key=[[_key]]&screen=therapist-clientlist'>[[pro_name]]</a> is a [[pro_role]]</div>" )
                  .($this->pro_key ? $this->drawProForm( $raPros, $myClients, $raClients ) : "")
              ."</div>"
