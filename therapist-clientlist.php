@@ -29,13 +29,14 @@ class ClientList
 
         $this->client_key = SEEDInput_Int( 'client_key' );
         $this->pro_key = SEEDInput_Int( 'pro_key' );
+        
     }
 
     function DrawClientList()
     {
         $s = "";
 
-        $oFormClient = new KeyframeForm( $this->oClientsDB->KFRel(), "A" );
+        $oFormClient = new KeyframeForm( $this->oClientsDB->KFRel(), "A", array("fields"=>array("parents_separate"=>array("control"=>"checkbox"))));
 
         // Put this before the GetClients call so the changes are shown in the list
         $cmd = SEEDInput_Str('cmd');
@@ -57,6 +58,13 @@ class ClientList
                 $kfr->SetValue("fk_clients", SEEDInput_Int("add_client_key"));
                 $kfr->PutDBRow();
                 break;
+            case "new_client":
+                $name = SEEDInput_Str("new_client_name");
+                $kfr = $this->oClientsDB->KFRel()->CreateRecord();
+                $kfr->SetValue("client_name", $name);
+                $kfr->PutDBRow();
+                $this->client_key = $kfr->Key();
+                break;
         }
 
         /* Set the form to use the selected client.
@@ -64,11 +72,13 @@ class ClientList
         if( $this->client_key && ($kfrClient = $this->oClientsDB->GetClient( $this->client_key )) ) {
             $oFormClient->SetKFR( $kfrClient );
         } else {
-            // set the form to a blank client kfr
+            $oFormClient->SetKFR($this->oClientsDB->KFRel()->CreateRecord());
         }
 
         $clientPros = array();
         $proClients = array();
+        $myPros = array();
+        $myClients = array();
         if( $this->client_key ) {
             // A client has been clicked. Who are their pros?
             $myPros = $this->oClients_ProsDB->KFRel()->GetRecordSetRA("Clients._key='{$this->client_key}'" );
@@ -84,6 +94,12 @@ class ClientList
         $s .= "<div class='container-fluid'><div class='row'>"
              ."<div class='col-md-6'>"
                  ."<h3>Clients</h3>"
+                 ."<button onclick='add_new();'>Add Client</button>"
+                 ."<script>function add_new(){var value = prompt('Enter Clients Name');
+                 document.getElementById('new_client_name').value = value;
+                 document.getElementById('new_client').submit();
+                 }</script><form id='new_client'><input type='hidden' value='' name='new_client_name' id='new_client_name'><input type='hidden' name='cmd' value='new_client'/>
+                 <input type='hidden' name='screen' value='therapist-clientlist'/></form>"
                  .SEEDCore_ArrayExpandRows( $raClients, "<div style='padding:5px;'><a href='?client_key=[[_key]]&screen=therapist-clientlist'>[[client_name]]</a></div>" )
                  .($this->client_key ? $this->drawClientForm( $oFormClient, $raClients, $myPros, $raPros) : "")
              ."</div>"
@@ -121,7 +137,7 @@ class ClientList
                      ."<table class='container-fluid table table-striped'>"
                      .$this->drawFormRow( "Name", $oFormClient->Text('client_name',"",array("attrs"=>"required placeholder='Name'") ) )
                      .$this->drawFormRow( "Parents Name", $oFormClient->Text('parents_name',"",array("attrs"=>"placeholder='Parents Name'") ) )
-                     .$this->drawFormRow( "Parents Separate", "", "<input type='checkbox' name='parents_separate' ".($ra['parents_separate']?"checked":"")."/>" )
+                     .$this->drawFormRow( "Parents Separate", $oFormClient->Checkbox('parents_separate') )
                      .$this->drawFormRow( "Address", $oFormClient->Text('address',"",array("attrs"=>"placeholder='Address'") ) )
                      .$this->drawFormRow( "City", $oFormClient->Text('city',"",array("attrs"=>"placeholder='City'") ) )
                      .$this->drawFormRow( "Postal Code", $oFormClient->Text('postal_code',"",array("attrs"=>"placeholder='Postal Code' pattern='^[a-zA-Z]\d[a-zA-Z](\s+)?\d[a-zA-Z]\d$'") ) )
