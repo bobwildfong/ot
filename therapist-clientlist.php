@@ -113,8 +113,8 @@ class ClientList
              ."</div>"
              ."<div class='col-md-6'>"
                  ."<h3>Providers</h3>"
-                 ."<button onclick='add_new();'>Add Professional</button>"
-                 ."<script>function add_new(){var value = prompt('Enter Professionals Name');
+                 ."<button onclick='add_new_pro();'>Add Professional</button>"
+                 ."<script>function add_new_pro(){var value = prompt('Enter Professionals Name');
                  document.getElementById('new_pro_name').value = value;
                  document.getElementById('new_pro').submit();
                  }</script><form id='new_pro'><input type='hidden' value='' name='new_pro_name' id='new_pro_name'><input type='hidden' name='cmd' value='new_pro'/>
