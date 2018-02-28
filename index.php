@@ -164,7 +164,22 @@ function drawAdmin()
     }
     $s .= $oUI->Header()."<h2>Admin</h2>";
     $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>"
-        ."<a href='?screen=admin-droptable' class='toCircle format-100-#99ff99-blue'>Drop Tables</a>";
+        ."<button onclick='drop();' class='toCircle format-100-#99ff99-blue'>Drop Tables</button>"
+        ."<script>function drop(){
+          var password = prompt('Enter the admin password');
+          $.ajax({
+                url: 'administrator-password.php',
+                type: 'POST',
+                data: {'password':password},
+                cache: 'false',
+                success: function(result){
+                    location.href('?screen=admin-droptable');
+                },
+                error: function(jqXHR, status, error){
+                    alert('You are not authorized to preform this action');
+                }
+          });
+          }</script>";
         return( $s );
 }
 ?>

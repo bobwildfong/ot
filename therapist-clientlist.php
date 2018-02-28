@@ -11,7 +11,7 @@ class ClientList
     //Computer Valid Keys for Roles
     public $pro_roles_key = array("GP","Paediatrician", "Psychologist", "SLP", "PT", "OT", "Specialist_Dr", "Resource_Teacher", "Teacher_Tutor", "Other");
     //map of computer keys to human readable text
-    public $pro_roles_name = array("GP"=>"GP","Paediatrician"=>"Paediatrician", "Psychologist"=>"Psychologist", "SLP"=>"SLP", "PT"=>"PT", "OT"=>"OT", "Specialist_Dr"=>"Specialist Dr", "Resource_Teacher"=>"Resource_Teacher", "Teacher_Tutor"=>"Teacher/Tutor", "Other"=>"Other");
+    public $pro_roles_name = array("GP"=>"GP","Paediatrician"=>"Paediatrician", "Psychologist"=>"Psychologist", "SLP"=>"SLP", "PT"=>"PT", "OT"=>"OT", "Specialist_Dr"=>"Specialist Dr", "Resource_Teacher"=>"Resource Teacher", "Teacher_Tutor"=>"Teacher/Tutor", "Other"=>"Other");
 
     private $client_key;
     private $pro_key;
@@ -44,7 +44,6 @@ class ClientList
             case "update_client":
                 $oFormClient->Update();
                 break;
-
             case "update_pro":
                 $kfr = $this->oProsDB->GetPro( $this->pro_key );
                 foreach( $this->pro_fields as $field ) {
@@ -113,7 +112,7 @@ class ClientList
                  .($this->client_key ? $this->drawClientForm( $oFormClient, $raClients, $myPros, $raPros) : "")
              ."</div>"
              ."<div class='col-md-6'>"
-                 ."<h3>Providers</h3>"
+                 ."<h3>External Providers</h3>"
                  ."<button onclick='add_new_pro();'>Add Professional</button>"
                  ."<script>function add_new_pro(){var value = prompt('Enter Professionals Name');
                  if(!value){return;}

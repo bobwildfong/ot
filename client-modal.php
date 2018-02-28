@@ -46,7 +46,7 @@ function drawModal($ra, $oProsDB, $pro_roles_name){
                 return($var != "Other");  
              });
              foreach ($pro_roles_name as $k => $role){
-                 if($role == "Other"){
+                 if($k == "Other"){
                      $s .= "$role <select name='$k'><option selected value='0'>Select Provider"
                      .SEEDCore_ArrayExpandRows($oProsDB->KFRel()->GetRecordSetRA("pro_role NOT IN (".SEEDCore_ArrayExpandSeries($otherless, ",'[[]]'",TRUE,array("sTemplateFirst"=>"'[[]]'")).")"), "<option value='[[_key]]' />[[pro_name]] ([[pro_role]])")
                      ."</select><br />";
