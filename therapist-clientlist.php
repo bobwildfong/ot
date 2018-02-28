@@ -104,6 +104,7 @@ class ClientList
                  ."<h3>Clients</h3>"
                  ."<button onclick='add_new();'>Add Client</button>"
                  ."<script>function add_new(){var value = prompt('Enter Clients Name');
+                 if(!value){return;}
                  document.getElementById('new_client_name').value = value;
                  document.getElementById('new_client').submit();
                  }</script><form id='new_client'><input type='hidden' value='' name='new_client_name' id='new_client_name'><input type='hidden' name='cmd' value='new_client'/>
@@ -115,6 +116,7 @@ class ClientList
                  ."<h3>Providers</h3>"
                  ."<button onclick='add_new_pro();'>Add Professional</button>"
                  ."<script>function add_new_pro(){var value = prompt('Enter Professionals Name');
+                 if(!value){return;}
                  document.getElementById('new_pro_name').value = value;
                  document.getElementById('new_pro').submit();
                  }</script><form id='new_pro'><input type='hidden' value='' name='new_pro_name' id='new_pro_name'><input type='hidden' name='cmd' value='new_pro'/>
