@@ -9,6 +9,14 @@ if( !($kfdb = new KeyframeDatabase( "localhost", "ot", "ot" )) ||
     die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"
         ."CREATE DATABASE ot;<br/>GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
 }
+if (!file_exists('pending_resources')) {
+    mkdir('pending_resources', 0777, true);
+    echo "Pending Resources Directiory Created<br />";
+}
+if (!file_exists('accepted_resources')) {
+    mkdir('accepted_resources', 0777, true);
+    echo "Accepted Resources Directiory Created<br />";
+}
 $kfdb->SetDebug(1);
 
 $sess = new SEEDSession();
