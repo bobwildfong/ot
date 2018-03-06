@@ -73,6 +73,7 @@ function createCircle(elements, styles) {
 		elements[x].style.marginBottom = '20px';
 		elements[x].style.color = textColor;
 		elements[x].style.borderStyle = 'inset outset outset inset';
+        elements[x].style.borderWidth = '3px';
 		if(color == '#b3f0ff') {
 			elements[x].style.animation = 'colorChange 6s linear infinite alternate';
 		} else {
@@ -83,7 +84,7 @@ function createCircle(elements, styles) {
 return true;
 }
 function run() {
-    var x = document.querySelectorAll('a.toCircle');
+    var x = document.querySelectorAll('.toCircle');
     var parse = [], elements = [];
     for(var y = 0; y < x.length; y++) {
 	   var classes = x[y].classList;

@@ -77,9 +77,6 @@ class ClientList
          */
         if( $this->client_key && ($kfrClient = $this->oClientsDB->GetClient( $this->client_key )) ) {
             $oFormClient->SetKFR( $kfrClient );
-        } else {
-            //XXX Is this nessisary?
-            $oFormClient->SetKFR($this->oClientsDB->KFRel()->CreateRecord());
         }
 
         $clientPros = array();
