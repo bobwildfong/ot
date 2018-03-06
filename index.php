@@ -19,7 +19,17 @@ if (!file_exists('accepted_resources')) {
 }
 $kfdb->SetDebug(1);
 
-$sess = new SEEDSession();
+// check that the tables exist and recreate them if necessary
+createTables($kfdb);
+
+$sess = new SEEDSessionAccount( $kfdb, array(), array( 'logfile' => "seedsession.log") );
+//var_dump($sess->oDB->GetUserInfo(1));
+
+if( !$sess->IsLogin() ) {
+    echo "Login Form, or use this: <a href='?seedsession_uid=dev&seedsession_pwd=cats'>?seedsession_uid=dev&seedsession_pwd=cats</a>";
+    exit;
+}
+
 
 $oUI = new CATS_UI();
 

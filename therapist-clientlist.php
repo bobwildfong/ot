@@ -20,16 +20,13 @@ class ClientList
     {
         $this->kfdb = $kfdb;
 
-        // check that the tables exist and recreate them if necessary
-        createTables($kfdb);
-
         $this->oClientsDB = new ClientsDB( $kfdb );
         $this->oProsDB = new ProsDB( $kfdb );
         $this->oClients_ProsDB = new Clients_ProsDB( $kfdb );
 
         $this->client_key = SEEDInput_Int( 'client_key' );
         $this->pro_key = SEEDInput_Int( 'pro_key' );
-        
+
     }
 
     function DrawClientList()
@@ -189,7 +186,7 @@ class ClientList
         // The user clicked on a professionals name so show their form
         foreach( $raPros as $ra ) {
             if( $ra['_key'] == $this->pro_key ) {
-                
+
                 $sClients = "<div style='padding:10px;border:1px solid #888'>"
                     .SEEDCore_ArrayExpandRows( $myClients, "[[client_name]]<br />" )
                     ."</div>";
@@ -200,7 +197,7 @@ class ClientList
                         ."<select name='add_client_key'><option value='0'> Choose a client</option>"
                         .SEEDCore_ArrayExpandRows( $raClients, "<option value='[[_key]]'>[[client_name]]</option>" )
                         ."</select><input type='submit' value='add'></form>";
-                $sForm = 
+                $sForm =
                     "<form>"
                     ."<input type='hidden' name='cmd' value='update_pro'/>"
                     ."<input type='hidden' name='pro_key' value='{$this->pro_key}'/>"
@@ -268,14 +265,14 @@ class ClientList
                     	}
                     }
                     </script>";
-                    
+
                     $s .= "<div class='container-fluid' style='border:1px solid #aaa;padding:20px;margin:20px'>"
                         ."<div class='row'>"
                         ."<div class='col-md-9'>".$sForm."</div>"
                         ."<div class='col-md-3'>".$sClients."</div>"
                         ."</div>"
                         ."</div>";
-                    
+
             }
         }
         return( $s );
