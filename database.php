@@ -179,6 +179,53 @@ function createTables( KeyframeDatabase $kfdb )
         $kfdb->Execute( "INSERT INTO ".DBNAME.".clients_pros (_key,fk_clients,fk_professionals) values (null,2,2)" );  // Darth Vader is Joe's surgeon
         $kfdb->SetDebug(0);
     }
+
+
+    // Also make the SEEDSession tables
+    if( !tableExists( $kfdb, DBNAME.".SEEDSession_Users" ) ) {
+        echo "Creating the Session tables";
+
+        $kfdb->SetDebug(2);
+        SEEDSessionAccountDBCreateTables( $kfdb, DBNAME );
+        $kfdb->SetDebug(0);
+
+        foreach( array( 1 => array('Developer',  'dev',    1),
+                        2 => array('Sue Wahl',   'sue',    2),
+                        3 => array('Mr. Client', 'client', 3) )  as $uid => $ra )
+        {
+            $kfdb->Execute( "INSERT INTO SEEDSession_Users (_key,_created,_updated,realname,email,password,gid1,eStatus) "
+                           ."VALUES ($uid, NOW(), NOW(), '{$ra[0]}', '{$ra[1]}', 'cats', {$ra[2]}, 'ACTIVE')");
+        }
+
+        foreach( array( 1 => 'Admin Group',
+                        2 => 'Therapists Group',
+                        3 => 'Clients Group' )  as $uid => $sGroup )
+        {
+            $bRet = $kfdb->Execute( "INSERT INTO SEEDSession_Groups (_key,_created,_updated,groupname) "
+                                           ."VALUES ($uid, NOW(), NOW(), '$sGroup')");
+        }
+
+        foreach( array( array(1,2), // dev (uid 1) is in group Therapists (2)
+                        array(1,3), // dev (uid 1) is in group Clients (3)
+                        array(2,3)  // sue (2)  is in group Clients (3)
+                      ) as $ra )
+        {
+            $bRet = $kfdb->Execute( "INSERT INTO SEEDSession_UsersXGroups (_key,_created,_updated,uid,gid) "
+                                           ."VALUES (NULL, NOW(), NOW(), '{$ra[0]}', '{$ra[1]}')");
+        }
+                          //  perm              modes   uid     gid
+        foreach( array( array('SEEDSessionUGP', 'RWA',       1,  'NULL'),
+                        array('SEEDPerms',      'RWA',       1,  'NULL'),
+                        array('DocRepMgr',      'A',         1,  'NULL'),
+                        array('DocRepMgr',      'W',    'NULL',       2),
+                        array('DocRepMgr',      'R',    'NULL',       3),
+                        array('DropTables',     'RWA',       1,  'NULL'),
+                      ) as $ra )
+        {
+            $bRet = $kfdb->Execute( "INSERT INTO SEEDSession_Perms (_key,_created,_updated,perm,modes,uid,gid) "
+                                           ."VALUES (NULL, NOW(), NOW(), '{$ra[0]}', '{$ra[1]}', {$ra[2]}, {$ra[3]})");
+        }
+    }
 }
 
 function tableExists( KeyframeDatabase $kfdb, $tablename )

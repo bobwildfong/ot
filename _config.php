@@ -4,7 +4,7 @@ if( !defined("SEEDROOT") ) define( "SEEDROOT", "../seeds/" );
 define( "SEEDCORE", SEEDROOT."seedcore/" );
 
 require_once SEEDCORE."SEEDCore.php" ;
-require_once SEEDCORE."SEEDSession.php" ;
+require_once SEEDCORE."SEEDSessionAccount.php" ;
 require_once SEEDROOT."Keyframe/KeyframeForm.php" ;
 require_once SEEDROOT."Keyframe/KeyframeDB.php" ;
 
