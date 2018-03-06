@@ -149,14 +149,14 @@ class ClientList
                      .$oFormClient->HiddenKey()
                      ."<input type='hidden' name='screen' value='therapist-clientlist'/>"
                      ."<p>Client # {$this->client_key}</p>"
-                     ."<table class='container-fluid table table-striped'>"
+                     ."<table class='container-fluid table table-striped table-sm'>"
                      .$this->drawFormRow( "Name", $oFormClient->Text('client_name',"",array("attrs"=>"required placeholder='Name'") ) )
                      .$this->drawFormRow( "Parents Name", $oFormClient->Text('parents_name',"",array("attrs"=>"placeholder='Parents Name'") ) )
                      .$this->drawFormRow( "Parents Separate", $oFormClient->Checkbox('parents_separate') )
                      .$this->drawFormRow( "Address", $oFormClient->Text('address',"",array("attrs"=>"placeholder='Address'") ) )
                      .$this->drawFormRow( "City", $oFormClient->Text('city',"",array("attrs"=>"placeholder='City'") ) )
                      .$this->drawFormRow( "Postal Code", $oFormClient->Text('postal_code',"",array("attrs"=>"placeholder='Postal Code' pattern='^[a-zA-Z]\d[a-zA-Z](\s+)?\d[a-zA-Z]\d$'") ) )
-                     .$this->drawFormRow( "Date Of Birth", $oFormClient->Date('dob') )
+                     .$this->drawFormRow( "Date Of Birth", $oFormClient->Date('dob',"",array("attrs"=>"style='border:1px solid gray'")) )
                      .$this->drawFormRow( "Phone Number", $oFormClient->Text('phone_number', "", array("attrs"=>"placeholder='Phone Number' pattern='^(\d{3}[-\s]?){2}\d{4}$'") ) )
                      .$this->drawFormRow( "Email", $oFormClient->Email('email',"",array("attrs"=>"placeholder='Email'") ) )
                      ."<tr>"

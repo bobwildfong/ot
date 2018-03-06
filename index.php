@@ -54,7 +54,7 @@ function drawHome()
     global $oUI;
 
     $s = $oUI->Header()."<h2>Home</h2>";
-    $s .= "<a href='?screen=therapist' class='toCircle format-100-#b3f0ff-blue'>Therapist</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=admin' class='toCircle format-100-red-black'>Admin</a>";
+    $s .= "<a href='?screen=therapist' class='toCircle format-100-#b3f0ff-blue'>Therapist</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=admin' class='toCircle format-100-red-blue'>Admin</a>";
     return( $s );
 }
 function drawTherapist( $screen )
