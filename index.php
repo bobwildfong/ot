@@ -63,7 +63,9 @@ if( substr($screen,0,5) == 'admin' ) {
 echo $oUI->OutputPage( $s );
 
 function  drawLogout(){
+    global $sess;
     $_SESSION['userid'] = "";
+    $sess->LogoutSession();
     return("<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body>You have Been Logged out<br /><a href=".CATSDIR."\"\">Back to Login</a></body>");
 }
 
