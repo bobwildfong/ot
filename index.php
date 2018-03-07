@@ -77,7 +77,7 @@ function drawHome()
     global $oUI,$sess;
 
     $s = $oUI->Header()."<h2>Home</h2>";
-    $s .= $sess->CanRead('therapist')?"<a href='?screen=therapist' class='toCircle format-100-#b3f0ff-blue'>Therapist</a>":"".$sess->CanRead('admin')?"<a href='?screen=admin' class='toCircle format-100-red-blue'>Admin</a>":"";
+    $s .= ($sess->CanRead('therapist')?"<a href='?screen=therapist' class='toCircle format-100-#b3f0ff-blue'>Therapist</a>":"").($sess->CanRead('admin')?"<a href='?screen=admin' class='toCircle format-100-red-blue'>Admin</a>":"");
     return( $s );
 }
 function drawTherapist( $screen )
