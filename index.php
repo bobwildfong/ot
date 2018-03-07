@@ -38,6 +38,15 @@ if( !$sess->IsLogin() ) {
 }
 
 
+if( $sess->CanRead('admin') ) echo "<p>I can read Administration things</p>";
+if( $sess->CanWrite('admin') ) echo "<p>I can write Administration things</p>";
+if( $sess->CanRead('therapist') ) echo "<p>I can read Therapist things</p>";
+if( $sess->CanWrite('therapist') ) echo "<p>I can write Therapist things</p>";
+if( $sess->CanRead('client') ) echo "<p>I can read Client things</p>";
+if( $sess->CanWrite('client') ) echo "<p>I can write Client things</p>";
+
+
+
 $oUI = new CATS_UI();
 
 
