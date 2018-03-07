@@ -40,17 +40,6 @@ if( !$sess->IsLogin() ) {
 
 $oUI = new CATS_UI();
 
-
-if( ($userid = SEEDInput_Str('userid')) ) {
-    $sess->VarSet( 'userid', $userid );
-} else {
-    $userid = $sess->VarGet( 'userid' );
-}
-if( !$userid ) {
-    echo $oUI->OutputPage( $oUI->Header().$oUI->Login() );
-    exit;
-}
-
 //var_dump($_REQUEST);
 //var_dump($_SESSION);
 
@@ -71,7 +60,6 @@ echo $oUI->OutputPage( $s );
 
 function  drawLogout(){
     global $sess;
-    $_SESSION['userid'] = "";
     $sess->LogoutSession();
     return("<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body>You have Been Logged out<br /><a href=".CATSDIR."\"\">Back to Login</a></body>");
 }
