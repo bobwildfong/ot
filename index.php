@@ -174,7 +174,7 @@ function drawTherapist( $screen )
 }
 function drawAdmin()
 {
-    global $oUI;
+    global $oUI,$sess;
     $s = "";
     if(SEEDInput_Str("screen") == "admin-droptable"){
         global $kfdb;
@@ -188,8 +188,9 @@ function drawAdmin()
         $s .= "<div class='alert alert-success'> Oops I miss placed your data</div>";
     }
     $s .= $oUI->Header()."<h2>Admin</h2>";
-    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a><a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>"
-        ."<button onclick='drop();' class='toCircle format-100-#99ff99-blue'>Drop Tables</button>"
+    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a><a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>";
+    if($sess->CanAdmin("DropTables")){
+        $s .= "<button onclick='drop();' class='toCircle format-100-#99ff99-blue'>Drop Tables</button>"
         ."<script>function drop(){
           var password = prompt('Enter the admin password');
           $.ajax({
@@ -204,8 +205,9 @@ function drawAdmin()
                     alert('You are not authorized to preform this action');
                 }
           });
-          }</script>"
-        ."<a href='pending_resources' class='toCircle format-100-#99ff99-blue'>Reveiw Resources</a>";
+          }</script>";
+    }
+        $s .= "<a href='pending_resources' class='toCircle format-100-#99ff99-blue'>Reveiw Resources</a>";
         return( $s );
 }
 ?>
