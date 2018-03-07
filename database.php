@@ -189,25 +189,31 @@ function createTables( KeyframeDatabase $kfdb )
         SEEDSessionAccountDBCreateTables( $kfdb, DBNAME );
         $kfdb->SetDebug(0);
 
-        foreach( array( 1 => array('Developer',  'dev',    1),
-                        2 => array('Sue Wahl',   'sue',    2),
-                        3 => array('Mr. Client', 'client', 3) )  as $uid => $ra )
+                        //uid      realname                 username/email      group
+        foreach( array( 1 => array('Developer',             'dev',              1),
+                        2 => array('Sue Wahl',              'sue',              2),
+                        3 => array('Jose the Group Leader', 'jose',             3),
+                        4 => array('A. Therapist',          'therapist',        4),
+                        5 => array('Mr. Client',            'client',           5) )  as $uid => $ra )
         {
             $kfdb->Execute( "INSERT INTO SEEDSession_Users (_key,_created,_updated,realname,email,password,gid1,eStatus) "
                            ."VALUES ($uid, NOW(), NOW(), '{$ra[0]}', '{$ra[1]}', 'cats', {$ra[2]}, 'ACTIVE')");
         }
 
         foreach( array( 1 => 'Admin Group',
-                        2 => 'Therapists Group',
-                        3 => 'Clients Group' )  as $uid => $sGroup )
+                        2 => 'Owners Group',
+                        3 => 'Leaders Group',
+                        4 => 'Therapists Group',
+                        5 => 'Clients Group' )  as $uid => $sGroup )
         {
             $bRet = $kfdb->Execute( "INSERT INTO SEEDSession_Groups (_key,_created,_updated,groupname) "
                                            ."VALUES ($uid, NOW(), NOW(), '$sGroup')");
         }
 
-        foreach( array( array(1,2), // dev (uid 1) is in group Therapists (2)
-                        array(1,3), // dev (uid 1) is in group Clients (3)
-                        array(2,3)  // sue (2)  is in group Clients (3)
+        foreach( array( array(1,2), array(1,3), array(1,4), array(1,5), // dev (uid 1) is in all groups
+                        array(2,3), array(2,4), array(2,5),             // sue (2) is in all groups except Developer
+                        array(3,4), array(3,5),
+                        array(4,5)
                       ) as $ra )
         {
             $bRet = $kfdb->Execute( "INSERT INTO SEEDSession_UsersXGroups (_key,_created,_updated,uid,gid) "
@@ -219,12 +225,11 @@ function createTables( KeyframeDatabase $kfdb )
                         array('DocRepMgr',      'A',         1,  'NULL'),
                         array('DocRepMgr',      'W',    'NULL',       2),
                         array('DocRepMgr',      'R',    'NULL',       3),
-                        array('client',         'RWA',       1,  'NULL'),
-                        array('client',         'RWA',       2,  'NULL'),
-                        array('client',         'RWA',       3,  'NULL'),
-                        array('therapist',      'RWA',       1,  'NULL'),
-                        array('therapist',      'RWA',       2,  'NULL'),
-                        array('admin',          'RWA',       1,  'NULL'),
+                        array('admin',          'RWA',  'NULL',       1),
+                        array('owner',          'RWA',  'NULL',       2),
+                        array('leader',         'RWA',  'NULL',       3),
+                        array('therapist',      'RWA',  'NULL',       4),
+                        array('client',         'RWA',  'NULL',       5),
                         array('DropTables',     'RWA',       1,  'NULL'),
                       ) as $ra )
         {
