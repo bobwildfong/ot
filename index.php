@@ -26,7 +26,14 @@ $sess = new SEEDSessionAccount( $kfdb, array(), array( 'logfile' => "seedsession
 //var_dump($sess->oDB->GetUserInfo(1));
 
 if( !$sess->IsLogin() ) {
-    echo "Login Form, or use this: <a href='?seedsession_uid=dev&seedsession_pwd=cats'>?seedsession_uid=dev&seedsession_pwd=cats</a>";
+    echo "<form style='margin:auto;border:1px solid gray; width:33%; padding: 10px; border-radius:10px; background-color:#b3f0ff; margin-top:10em;' method='post'>"
+         ."<h1 style='text-align:center; font-family: sans-serif'>Login to CATS</h1>"
+         ."<input type='text' placeholder='Username' style='display:block; margin:auto; border-radius:5px; border-style: inset outset outset inset; background-color:#99ff99;' name='seedsession_uid' />"
+         ."<br />"
+         ."<input type='password' placeholder='Password' style='display:block; margin:auto; border-radius:5px; border-style: inset outset outset inset; background-color:#99ff99;' name='seedsession_pwd' />"
+         ."<br />"
+         ."<input type='submit' value='Login' style='border-style: inset outset outset inset; background-color:#99ff99; border-radius:5px; display:block; margin:auto;' />"
+         ."</form>";
     exit;
 }
 
