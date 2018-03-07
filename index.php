@@ -37,7 +37,6 @@ if( !$sess->IsLogin() ) {
     exit;
 }
 
-
 if( $sess->CanRead('admin') ) echo "<p>I can read Administration things</p>";
 if( $sess->CanWrite('admin') ) echo "<p>I can write Administration things</p>";
 if( $sess->CanRead('therapist') ) echo "<p>I can read Therapist things</p>";
@@ -75,10 +74,10 @@ function  drawLogout(){
 
 function drawHome()
 {
-    global $oUI;
+    global $oUI,$sess;
 
     $s = $oUI->Header()."<h2>Home</h2>";
-    $s .= "<a href='?screen=therapist' class='toCircle format-100-#b3f0ff-blue'>Therapist</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='?screen=admin' class='toCircle format-100-red-blue'>Admin</a>";
+    $s .= $sess->CanRead('therapist')?"<a href='?screen=therapist' class='toCircle format-100-#b3f0ff-blue'>Therapist</a>":"".$sess->CanRead('admin')?"<a href='?screen=admin' class='toCircle format-100-red-blue'>Admin</a>":"";
     return( $s );
 }
 function drawTherapist( $screen )
@@ -182,6 +181,10 @@ function drawAdmin()
         $kfdb->Execute("drop table ot.clients");
         $kfdb->Execute("drop table ot.clients_pros");
         $kfdb->Execute("drop table ot.professionals");
+        $kfdb->Execute("drop table ot.SEEDSession_Users");
+        $kfdb->Execute("drop table ot.SEEDSession_Groups");
+        $kfdb->Execute("drop table ot.SEEDSession_UsersXGroups");
+        $kfdb->Execute("drop table ot.SEEDSession_Perms");
         $s .= "<div class='alert alert-success'> Oops I miss placed your data</div>";
     }
     $s .= $oUI->Header()."<h2>Admin</h2>";
@@ -195,7 +198,7 @@ function drawAdmin()
                 data: {'password':password},
                 cache: 'false',
                 success: function(result){
-                    location.href('?screen=admin-droptable');
+                    location.href = '?screen=admin-droptable';
                 },
                 error: function(jqXHR, status, error){
                     alert('You are not authorized to preform this action');
