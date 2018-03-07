@@ -219,6 +219,12 @@ function createTables( KeyframeDatabase $kfdb )
                         array('DocRepMgr',      'A',         1,  'NULL'),
                         array('DocRepMgr',      'W',    'NULL',       2),
                         array('DocRepMgr',      'R',    'NULL',       3),
+                        array('client',         'RWA',       1,  'NULL'),
+                        array('client',         'RWA',       2,  'NULL'),
+                        array('client',         'RWA',       3,  'NULL'),
+                        array('therapist',      'RWA',       1,  'NULL'),
+                        array('therapist',      'RWA',       2,  'NULL'),
+                        array('admin',          'RWA',       1,  'NULL'),
                         array('DropTables',     'RWA',       1,  'NULL'),
                       ) as $ra )
         {
