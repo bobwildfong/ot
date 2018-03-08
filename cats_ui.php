@@ -11,9 +11,21 @@ class CATS_UI
 
     function Header()
     {
+        if( !($kfdb = new KeyframeDatabase( "localhost", "ot", "ot" )) ||
+            !$kfdb->Connect( "ot" ) )
+        {
+            die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"
+                ."CREATE DATABASE ot;<br/>GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
+        }
+        
+        $sess = new SEEDSessionAccount( $kfdb, array(), array( 'logfile' => "seedsession.log") );
+        if(!$sess->IsLogin()){
+            echo "<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body>You have Been Logged out<br /><a href=".CATSDIR."\"\">Back to Login</a></body>";
+            exit;
+        }
         return( "<div class='cats_header'>"
                ."<img src='".CATSDIR_IMG."CATS.png' style='max-width:300px;float:left;'/>"
-            ."<div style='float:right'>".($this->screen != "home"?"<a href='?screen=home'>Home</a>":"<a href='?screen=logout'>Logout</a>"."</div>")
+            ."<div style='float:right'>"."Welcome, ".$sess->GetName()." ".($this->screen != "home"?"<a href='".CATSDIR."?screen=home'><button>Home</button></a>":"<a href='".CATSDIR."?screen=logout'><button>Logout</button></a>"."</div>")
                ."</div>"
                ."<div style='clear:both'>&nbsp;</div>"
               );

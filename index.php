@@ -37,15 +37,6 @@ if( !$sess->IsLogin() ) {
     exit;
 }
 
-if( $sess->CanRead('admin') ) echo "<p>I can read Administration things</p>";
-if( $sess->CanWrite('admin') ) echo "<p>I can write Administration things</p>";
-if( $sess->CanRead('therapist') ) echo "<p>I can read Therapist things</p>";
-if( $sess->CanWrite('therapist') ) echo "<p>I can write Therapist things</p>";
-if( $sess->CanRead('client') ) echo "<p>I can read Client things</p>";
-if( $sess->CanWrite('client') ) echo "<p>I can write Client things</p>";
-
-
-
 $oUI = new CATS_UI();
 
 //var_dump($_REQUEST);
@@ -159,7 +150,7 @@ function drawTherapist( $screen )
             $s .= "<a href='?screen=therapist' >Therapist</a><br />";
             $s .= "SUBMIT RESOURCES";
             $s .= "<form action=\"share_resorces_upload.php\" method=\"post\" enctype=\"multipart/form-data\">
-                Select image to upload:
+                Select resource to upload:
                 <input type=\"file\" name=\"fileToUpload\" id=\"fileToUpload\">
                 <br /><input type=\"submit\" value=\"Upload File\" name=\"submit\">
                 </form>";
@@ -207,7 +198,7 @@ function drawAdmin()
           });
           }</script>";
     }
-        $s .= "<a href='pending_resources' class='toCircle format-100-#99ff99-blue'>Reveiw Resources</a>";
+    if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle format-100-#99ff99-blue'>Reveiw Resources</a>";}
         return( $s );
 }
 ?>
