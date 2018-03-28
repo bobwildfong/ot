@@ -73,7 +73,7 @@ function drawHome()
 }
 function drawTherapist( $screen )
 {
-    global $kfdb, $oUI;
+    global $kfdb, $sess, $oUI;
     $s = $oUI->Header()."<h2>Therapist</h2>";
     switch( $screen ) {
         case "therapist":
@@ -114,6 +114,9 @@ function drawTherapist( $screen )
                 ."</div>"
                 ."<div class='col-md-3'>"
                 ."<a href='?screen=therapist-clientlist' class='toCircle format-100-#b3f0ff-blue'>Clients and Providers</a>"
+                ."</div>"
+                ."<div class='col-md-3'>"
+                ."<a href='?screen=therapist-calendar' class='toCircle format-100-#b3f0ff-blue'>Calendar</a>"
                 ."</div>"
                 ."</div>"
                 ."</div>";
@@ -160,6 +163,11 @@ function drawTherapist( $screen )
             $s .= "<a href='?screen=therapist' >Therapist</a><br />";
             $s .= $o->DrawClientList();
             break;
+        case "therapist-calendar":
+            require_once "calendar.php";
+            $o = new Calendar( $sess );
+            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= $o->DrawCalendar();
     }
     return( $s );
 }
