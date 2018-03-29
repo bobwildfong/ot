@@ -68,7 +68,7 @@ function drawHome()
     global $oUI,$sess;
 
     $s = $oUI->Header()."<h2>Home</h2>";
-    $s .= ($sess->CanRead('therapist')?"<a href='?screen=therapist' class='toCircle' data-format='200px #b3f0ff blue'>Therapist</a>":"").($sess->CanRead('admin')?"<a href='?screen=admin' class='toCircle' data-format='200px red blue'>Admin</a>":"");
+    $s .= ($sess->CanRead('therapist')?"<a href='?screen=therapist' class='toCircle catsCircle1'>Therapist</a>":"").($sess->CanRead('admin')?"<a href='?screen=admin' class='toCircle' data-format='200px red blue'>Admin</a>":"");
     return( $s );
 }
 function drawTherapist( $screen )
@@ -82,41 +82,41 @@ function drawTherapist( $screen )
                 ."<div class='container-fluid'>"
                 ."<div class='row'>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=home' class='toCircle' data-format='200px #b3f0ff blue'>Home</a>"
+                ."<a href='?screen=home' class='toCircle catsCircle1'>Home</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-materials' class='toCircle' data-format='200px #99ff99 blue'>Print Handouts</a>"
+                ."<a href='?screen=therapist-materials' class='toCircle catsCircle2'>Print Handouts</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-formscharts' class='toCircle' data-format='200px #b3f0ff blue'>Print Forms for Charts</a>"
+                ."<a href='?screen=therapist-formscharts' class='toCircle catsCircle1'>Print Forms for Charts</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-linedpapers' class='toCircle' data-format='200px #99ff99 blue'>Print Different Lined Papers</a>"
+                ."<a href='?screen=therapist-linedpapers' class='toCircle catsCircle2'>Print Different Lined Papers</a>"
                 ."</div>"
                 ."</div>"
                 ."<div class='row'>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-entercharts' class='toCircle' data-format='200px #99ff99 blue'>Enter Clients</a>"
+                ."<a href='?screen=therapist-entercharts' class='toCircle catsCircle2'>Enter Clients</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-ideas' class='toCircle' data-format='200px #99ff99 blue'>Get Ideas</a>"
+                ."<a href='?screen=therapist-ideas' class='toCircle catsCircle2'>Get Ideas</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-downloadcustommaterials' class='toCircle' data-format='200px #b3f0ff blue'>Download Marketable Materials</a>"
+                ."<a href='?screen=therapist-downloadcustommaterials' class='toCircle catsCircle1'>Download Marketable Materials</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-team' class='toCircle' data-format='200px #b3f0ff blue'>Meet the Team</a>"
+                ."<a href='?screen=therapist-team' class='toCircle catsCircle1'>Meet the Team</a>"
                 ."</div>"
                 ."</div>"
                 ."<div class='row'>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-submitresources' class='toCircle' data-format='200px #99ff99 blue'>Submit Resources to Share</a>"
+                ."<a href='?screen=therapist-submitresources' class='toCircle catsCircle2'>Submit Resources to Share</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-clientlist' class='toCircle' data-format='200px #b3f0ff blue'>Clients and Providers</a>"
+                ."<a href='?screen=therapist-clientlist' class='toCircle catsCircle1'>Clients and Providers</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-calendar' class='toCircle' data-format='200px #b3f0ff blue'>Calendar</a>"
+                ."<a href='?screen=therapist-calendar' class='toCircle catsCircle1'>Calendar</a>"
                 ."</div>"
                 ."</div>"
                 ."</div>";
@@ -187,9 +187,9 @@ function drawAdmin()
         $s .= "<div class='alert alert-success'> Oops I miss placed your data</div>";
     }
     $s .= $oUI->Header()."<h2>Admin</h2>";
-    $s .= "<a href='?screen=home' class='toCircle' data-format='200px #99ff99 blue'>Home</a><a href='?screen=therapist' class='toCircle' data-format='200px #99ff99 blue'>Therapist</a>";
+    $s .= "<a href='?screen=home' class='toCircle catsCircle2'>Home</a><a href='?screen=therapist' class='toCircle catsCircle2'>Therapist</a>";
     if($sess->CanAdmin("DropTables")){
-        $s .= "<button onclick='drop();' class='toCircle' data-format='200px #99ff99 blue'>Drop Tables</button>"
+        $s .= "<button onclick='drop();' class='toCircle catsCircle2'>Drop Tables</button>"
         ."<script>function drop(){
           var password = prompt('Enter the admin password');
           $.ajax({
@@ -206,7 +206,7 @@ function drawAdmin()
           });
           }</script>";
     }
-    if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle' data-format='200px #99ff99 blue'>Reveiw Resources</a>";}
+    if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle catsCircle2'>Reveiw Resources</a>";}
         return( $s );
 }
 ?>

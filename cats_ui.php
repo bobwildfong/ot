@@ -45,18 +45,32 @@ class CATS_UI
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js' integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl' crossorigin='anonymous'></script>
     <style>
     a:link.toCircle, a:visited.toCircle, a:hover.toCircle, a:active.toCircle {
-	   text-decoration: none;
-	   display: flex;
-	   justify-content: center;
-	   align-items: center;
-	   text-align: center;
-	   margin-bottom: 20px;
-	   margin-left: 10px;
-	   border-style: inset outset outset inset;
+    	text-decoration: none;
+    	display: flex;
+    	justify-content: center;
+    	align-items: center;
+    	text-align: center;
+    	margin-bottom: 20px;
+    	margin-left: 10px;
+    	border-style: inset outset outset inset;
     }
     @keyframes colorChange {
         from {background-color: #b3f0ff; border-color: #b3f0ff;}
         to {background-color: #99ff99; border-color: #99ff99;}
+    }
+    a.catsCircle1 {
+    	height: 200px;
+    	width: 200px;
+    	border-radius: 100px;
+    	color: blue;
+    	animation: colorChange 10s linear infinite alternate;
+    }
+    a.catsCircle2 {
+    	height: 200px;
+    	width: 200px;
+    	border-radius: 100px;
+    	color: blue;
+    	animation: colorChange 10s linear -5s infinite alternate;
     }
     </style>
     <script>
@@ -70,16 +84,17 @@ class CATS_UI
             elements[x].style.backgroundColor = color;
             elements[x].style.borderColor = color;
     		if(color == '#b3f0ff') {
-    			elements[x].style.animation = 'colorChange 2s linear infinite alternate';
+    			elements[x].style.animation = 'colorChange 10s linear infinite alternate';
     		} else if(color == '#99ff99') {
-    			elements[x].style.animation = 'colorChange 2s linear -1s infinite alternate';
+    			elements[x].style.animation = 'colorChange 10s linear -5s infinite alternate';
     		}
     		elements[x].style.borderRadius = diameter;
     	}
     return true;
     }
     function run() {
-        var x = document.querySelectorAll('a.toCircle');
+debugger;
+        var x = document.querySelectorAll('a.toCircle:not([class*=\"catsCircle\"])');
         var elements = [], styles = [];
         for(var y = 0; y < x.length; y++) {
 	       elements.push(x[y]);
