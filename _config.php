@@ -7,6 +7,7 @@ require_once SEEDCORE."SEEDCore.php" ;
 require_once SEEDCORE."SEEDSessionAccount.php" ;
 require_once SEEDROOT."Keyframe/KeyframeForm.php" ;
 require_once SEEDROOT."Keyframe/KeyframeDB.php" ;
+require_once SEEDROOT."DocRep/DocRepDB.php" ;
 
 if( !defined("CATSDIR") ) { define( "CATSDIR", "./" ); }
 if( !defined("CATSDIR_IMG") ) { define( "CATSDIR_IMG", CATSDIR."i/img/" ); }

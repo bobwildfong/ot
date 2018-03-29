@@ -39,6 +39,8 @@ if( !$sess->IsLogin() ) {
 
 if( $sess->CanRead('admin') ) echo "<p>I can read Administration things</p>";
 if( $sess->CanWrite('admin') ) echo "<p>I can write Administration things</p>";
+if( $sess->CanRead('leader') ) echo "<p>I can read Leader things</p>";
+if( $sess->CanWrite('leader') ) echo "<p>I can write Leader things</p>";
 if( $sess->CanRead('therapist') ) echo "<p>I can read Therapist things</p>";
 if( $sess->CanWrite('therapist') ) echo "<p>I can write Therapist things</p>";
 if( $sess->CanRead('client') ) echo "<p>I can read Client things</p>";
@@ -149,7 +151,7 @@ function drawTherapist( $screen )
             break;
         case "therapist-downloadcustommaterials":
             $s .= "<a href='?screen=therapist' >Therapist</a><br />";
-            $s .= "DOWNLOAD AND CUSTOMIZE MARKETABLE MATERIALS";
+            $s .= DownloadMaterials();
             break;
         case "therapist-team":
             $s .= "<a href='?screen=therapist' >Therapist</a><br />";
@@ -207,5 +209,19 @@ function drawAdmin()
           }</script>"
         ."<a href='pending_resources' class='toCircle format-100-#99ff99-blue'>Reveiw Resources</a>";
         return( $s );
+}
+
+
+function DownloadMaterials()
+{
+    global $oUI, $kfdb;
+
+    $s = "";
+
+    $oDR = new DocRepDB2( $kfdb, 0, array( 'raPermClassesR'=>array(1) ) );
+
+    $ra = $oDR->GetSubtree( 0 );
+    var_dump($ra);
+    // insert a last child
 }
 ?>

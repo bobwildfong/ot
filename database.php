@@ -96,6 +96,8 @@ class Clients_ProsDB
 
 function createTables( KeyframeDatabase $kfdb )
 {
+    DRSetup( $kfdb );
+
     if( !tableExists( $kfdb, DBNAME.".clients" ) ) {
         echo "Creating the Client table";
 
