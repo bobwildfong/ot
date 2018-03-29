@@ -37,6 +37,7 @@ if( !$sess->IsLogin() ) {
     exit;
 }
 
+/*
 if( $sess->CanRead('admin') ) echo "<p>I can read Administration things</p>";
 if( $sess->CanWrite('admin') ) echo "<p>I can write Administration things</p>";
 if( $sess->CanRead('leader') ) echo "<p>I can read Leader things</p>";
@@ -45,8 +46,7 @@ if( $sess->CanRead('therapist') ) echo "<p>I can read Therapist things</p>";
 if( $sess->CanWrite('therapist') ) echo "<p>I can write Therapist things</p>";
 if( $sess->CanRead('client') ) echo "<p>I can read Client things</p>";
 if( $sess->CanWrite('client') ) echo "<p>I can write Client things</p>";
-
-
+*/
 
 $oUI = new CATS_UI();
 
@@ -84,7 +84,7 @@ function drawHome()
 }
 function drawTherapist( $screen )
 {
-    global $kfdb, $oUI;
+    global $kfdb, $sess, $oUI;
     $s = $oUI->Header()."<h2>Therapist</h2>";
     switch( $screen ) {
         case "therapist":
@@ -126,6 +126,9 @@ function drawTherapist( $screen )
                 ."<div class='col-md-3'>"
                 ."<a href='?screen=therapist-clientlist' class='toCircle format-100-#b3f0ff-blue'>Clients and Providers</a>"
                 ."</div>"
+                ."<div class='col-md-3'>"
+                ."<a href='?screen=therapist-calendar' class='toCircle format-100-#b3f0ff-blue'>Calendar</a>"
+                ."</div>"
                 ."</div>"
                 ."</div>";
                 break;
@@ -161,7 +164,7 @@ function drawTherapist( $screen )
             $s .= "<a href='?screen=therapist' >Therapist</a><br />";
             $s .= "SUBMIT RESOURCES";
             $s .= "<form action=\"share_resorces_upload.php\" method=\"post\" enctype=\"multipart/form-data\">
-                Select image to upload:
+                Select resource to upload:
                 <input type=\"file\" name=\"fileToUpload\" id=\"fileToUpload\">
                 <br /><input type=\"submit\" value=\"Upload File\" name=\"submit\">
                 </form>";
@@ -171,12 +174,17 @@ function drawTherapist( $screen )
             $s .= "<a href='?screen=therapist' >Therapist</a><br />";
             $s .= $o->DrawClientList();
             break;
+        case "therapist-calendar":
+            require_once "calendar.php";
+            $o = new Calendar( $sess );
+            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= $o->DrawCalendar();
     }
     return( $s );
 }
 function drawAdmin()
 {
-    global $oUI;
+    global $oUI,$sess;
     $s = "";
     if(SEEDInput_Str("screen") == "admin-droptable"){
         global $kfdb;
@@ -190,8 +198,9 @@ function drawAdmin()
         $s .= "<div class='alert alert-success'> Oops I miss placed your data</div>";
     }
     $s .= $oUI->Header()."<h2>Admin</h2>";
-    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a><a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>"
-        ."<button onclick='drop();' class='toCircle format-100-#99ff99-blue'>Drop Tables</button>"
+    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a><a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>";
+    if($sess->CanAdmin("DropTables")){
+        $s .= "<button onclick='drop();' class='toCircle format-100-#99ff99-blue'>Drop Tables</button>"
         ."<script>function drop(){
           var password = prompt('Enter the admin password');
           $.ajax({
@@ -206,8 +215,9 @@ function drawAdmin()
                     alert('You are not authorized to preform this action');
                 }
           });
-          }</script>"
-        ."<a href='pending_resources' class='toCircle format-100-#99ff99-blue'>Reveiw Resources</a>";
+          }</script>";
+    }
+    if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle format-100-#99ff99-blue'>Reveiw Resources</a>";}
         return( $s );
 }
 
