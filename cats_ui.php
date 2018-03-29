@@ -45,50 +45,47 @@ class CATS_UI
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js' integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl' crossorigin='anonymous'></script>
     <style>
     a:link.toCircle, a:visited.toCircle, a:hover.toCircle, a:active.toCircle {
-    	text-decoration: none;
-    	color: black;
+	   text-decoration: none;
+	   display: flex;
+	   justify-content: center;
+	   align-items: center;
+	   text-align: center;
+	   margin-bottom: 20px;
+	   margin-left: 10px;
+	   border-style: inset outset outset inset;
     }
     @keyframes colorChange {
-    from {background-color: #b3f0ff; border-color: #b3f0ff;}
-    to {background-color: #99ff99; border-color: #99ff99;}
+        from {background-color: #b3f0ff; border-color: #b3f0ff;}
+        to {background-color: #99ff99; border-color: #99ff99;}
     }
     </style>
     <script>
     function createCircle(elements, styles) {
+        debugger;
     	for (var x in elements) {
-    		var radius = styles[x][1], color = styles[x][2], textColor = styles[x][3];
-    		elements[x].style.display = 'flex';
-    		elements[x].style.height = 2 * radius + 'px';
-    		elements[x].style.width = elements[x].style.height;
-    		elements[x].style.justifyContent = 'center';
-    		elements[x].style.alignItems = 'center';
-    		elements[x].style.textAlign = 'center';
-    		elements[x].style.marginBottom = '20px';
+    	   	var diameter = styles[x][0], color = styles[x][1], textColor = styles[x][2];
+    		elements[x].style.height = diameter;
+    		elements[x].style.width = diameter;
     		elements[x].style.color = textColor;
-    		elements[x].style.borderStyle = 'inset outset outset inset';
-            elements[x].style.borderWidth = '3px';
+            elements[x].style.backgroundColor = color;
+            elements[x].style.borderColor = color;
     		if(color == '#b3f0ff') {
-    			elements[x].style.animation = 'colorChange 6s linear infinite alternate';
-    		} else {
-    			elements[x].style.animation = 'colorChange 6s linear -3s infinite alternate';
+    			elements[x].style.animation = 'colorChange 2s linear infinite alternate';
+    		} else if(color == '#99ff99') {
+    			elements[x].style.animation = 'colorChange 2s linear -1s infinite alternate';
     		}
-    		elements[x].style.borderRadius = radius + 'px';
+    		elements[x].style.borderRadius = diameter;
     	}
     return true;
     }
     function run() {
-        var x = document.querySelectorAll('.toCircle');
-        var parse = [], elements = [];
+        var x = document.querySelectorAll('a.toCircle');
+        var elements = [], styles = [];
         for(var y = 0; y < x.length; y++) {
-    	   var classes = x[y].classList;
-    	       for(var loop = 0; loop < classes.length; loop++) {
-    		      if (classes.item(loop).search(/format-\d+-#?[\d\w]+-#?[\d\w]+/) !== -1) {
-    			     elements.push(x[y]);
-    			     parse.push(classes.item(loop).split('-'));
-    		      }
-    	       }
+	       elements.push(x[y]);
+	       styles.push(x[y].dataset.format.split(' '));
         }
-    createCircle(elements, parse);
+        createCircle(elements, styles);
     }
     </script>
     </head>
