@@ -25,7 +25,7 @@ if( !defined("SEEDROOT") ) define( "SEEDROOT", "../seeds/" );
 if( !defined("W_ROOT") )   define( "W_ROOT", "../w/" );
 
 if( !file_exists(SEEDROOT."seedcore/SEEDCore.php") ) die( "SEEDROOT is not correct: ".SEEDROOT );
-if( !file_exists(W_ROOT."cats/i/img/CATS.png") )     die( "W_ROOT is not correct: ".W_ROOT );
+//if( !file_exists(W_ROOT."cats/i/img/CATS.png") )     die( "W_ROOT is not correct: ".W_ROOT );
 
 
 define( "SEEDCORE", SEEDROOT."seedcore/" );

@@ -28,7 +28,7 @@ class Calendar
         $service = new Google_Service_Calendar($oG->client);
 
         // Print the next 10 events on the user's calendar.
-        $calendarId = 'primary';
+        $calendarId = '4dfi42qffha2crceil97rfimn0@group.calendar.google.com';
         $optParams = array(
             'maxResults' => 10,
             'orderBy' => 'startTime',
