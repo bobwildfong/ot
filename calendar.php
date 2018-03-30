@@ -36,21 +36,32 @@ class Calendar
             'timeMin' => date('c'),
         );
         $results = $service->events->listEvents($calendarId, $optParams);
-
+        
         $raEvents = $results->getItems();
-
+        
         $s = "";
 
         if( !count($raEvents) ) {
             $s .= "No upcoming events found.";
         } else {
-            $s .= "<h3>Upcoming events</h3>";
+            $s .= "<h3>Upcoming Events</h3>";
             foreach( $raEvents as $event ) {
                 $start = $event->start->dateTime;
+                $tz = "";
                 if( empty($start) ) {
                     $start = $event->start->date;
                 }
-                $s .= "<p>".$event->getSummary()." ($start)</p>";
+                elseif ($event->start->timeZone) {
+                    $tz = $event->start->timeZone;
+                }
+                else{
+                    $tz = substr($start, -6);
+                    $start = substr($start, 0,-6);
+                }
+                if(strtolower($event->getSummary()) == "free"){
+                    $time = new DateTime($start, new DateTimeZone($tz));
+                    $s .= "<div class='free'>".$time->format("l F jS Y g:i A T")."</div>";
+                }
             }
         }
 
