@@ -4,7 +4,7 @@ require_once "cats_ui.php" ;
 $dir_name = "pending_resources";
 $dir_accept = "accepted_resources";
 
-if( !($kfdb = new KeyframeDatabase( "localhost", "ot", "ot" )) ||
+if( !($kfdb = new KeyframeDatabase( "ot", "ot" )) ||
     !$kfdb->Connect( "ot" ) )
 {
     die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"

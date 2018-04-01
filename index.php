@@ -3,12 +3,24 @@ require_once "_config.php" ;
 require_once "database.php" ;
 require_once "cats_ui.php" ;
 require_once "therapist-clientlist.php" ;
-if( !($kfdb = new KeyframeDatabase( "localhost", "ot", "ot" )) ||
-    !$kfdb->Connect( "ot" ) )
-{
-    die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"
-        ."CREATE DATABASE ot;<br/>GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
-}
+
+$oApp = new SEEDAppSessionAccount( array( 'kfdbUserid' => 'ot',
+                                          'kfdbPassword' => 'ot',
+                                          'kfdbDatabase' => 'ot',
+                                          'sessPermsRequired' => array(),
+                                          'sessParms' => array( 'logfile' => "seedsession.log")
+) );
+$oApp->kfdb->SetDebug(1);
+
+/* If you get the error Cannot connect to database, you probably have to execute these two MySQL commands:
+        CREATE DATABASE ot;
+        GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
+
+   Check that the tables exist and recreate them if necessary
+*/
+createTables($oApp->kfdb);
+
+
 if (!file_exists('pending_resources')) {
     mkdir('pending_resources', 0777, true);
     echo "Pending Resources Directiory Created<br />";
@@ -17,15 +29,15 @@ if (!file_exists('accepted_resources')) {
     mkdir('accepted_resources', 0777, true);
     echo "Accepted Resources Directiory Created<br />";
 }
-$kfdb->SetDebug(1);
 
-// check that the tables exist and recreate them if necessary
-createTables($kfdb);
 
-$sess = new SEEDSessionAccount( $kfdb, array(), array( 'logfile' => "seedsession.log") );
-//var_dump($sess->oDB->GetUserInfo(1));
+// Our code used to create these objects separately and it still refers to the two variables separately.
+// Transition to always use oApp, and pass it to functions/methods. Then remove this when we don't have the two separate variables anymore.
+$kfdb = $oApp->kfdb;
+$sess = $oApp->sess;
 
-if( !$sess->IsLogin() ) {
+
+if( !$oApp->sess->IsLogin() ) {
     echo "<form style='margin:auto;border:1px solid gray; width:33%; padding: 10px; border-radius:10px; background-color:#b3f0ff; margin-top:10em;' method='post'>"
          ."<h1 style='text-align:center; font-family: sans-serif'>Login to CATS</h1>"
          ."<input type='text' placeholder='Username' style='display:block; margin:auto; border-radius:5px; border-style: inset outset outset inset; background-color:#99ff99;' name='seedsession_uid' />"
@@ -79,7 +91,8 @@ function drawHome()
     global $oUI,$sess;
 
     $s = $oUI->Header()."<h2>Home</h2>";
-    $s .= ($sess->CanRead('therapist')?"<a href='?screen=therapist' class='toCircle format-100-#b3f0ff-blue'>Therapist</a>":"").($sess->CanRead('admin')?"<a href='?screen=admin' class='toCircle format-100-red-blue'>Admin</a>":"");
+    $s .= ($sess->CanRead('therapist')?"<a href='?screen=therapist' class='toCircle catsCircle1'>Therapist</a>":"").($sess->CanRead('admin')?"<a href='?screen=admin' class='toCircle' data-format='200px red blue'>Admin</a>":"");
+    $s .= (!$sess->CanAdmin('therapist')?"<a href='?screen=therapist-calendar' class='toCircle catsCircle1'>Calendar</a>":"");
     return( $s );
 }
 function drawTherapist( $screen )
@@ -93,75 +106,75 @@ function drawTherapist( $screen )
                 ."<div class='container-fluid'>"
                 ."<div class='row'>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=home' class='toCircle format-100-#b3f0ff-blue'>Home</a>"
+                ."<a href='?screen=home' class='toCircle catsCircle1'>Home</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-materials' class='toCircle format-100-#99ff99-blue'>Print Handouts</a>"
+                ."<a href='?screen=therapist-materials' class='toCircle catsCircle2'>Print Handouts</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-formscharts' class='toCircle format-100-#b3f0ff-blue'>Print Forms for Charts</a>"
+                ."<a href='?screen=therapist-formscharts' class='toCircle catsCircle1'>Print Forms for Charts</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-linedpapers' class='toCircle format-100-#99ff99-blue'>Print Different Lined Papers</a>"
+                ."<a href='?screen=therapist-linedpapers' class='toCircle catsCircle2'>Print Different Lined Papers</a>"
                 ."</div>"
                 ."</div>"
                 ."<div class='row'>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-entercharts' class='toCircle format-100-#99ff99-blue'>Enter Clients</a>"
+                ."<a href='?screen=therapist-entercharts' class='toCircle catsCircle2'>Enter Clients</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-ideas' class='toCircle format-100-#99ff99-blue'>Get Ideas</a>"
+                ."<a href='?screen=therapist-ideas' class='toCircle catsCircle2'>Get Ideas</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-downloadcustommaterials' class='toCircle format-100-#b3f0ff-blue'>Download Marketable Materials</a>"
+                ."<a href='?screen=therapist-downloadcustommaterials' class='toCircle catsCircle1'>Download Marketable Materials</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-team' class='toCircle format-100-#b3f0ff-blue'>Meet the Team</a>"
+                ."<a href='?screen=therapist-team' class='toCircle catsCircle1'>Meet the Team</a>"
                 ."</div>"
                 ."</div>"
                 ."<div class='row'>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-submitresources' class='toCircle format-100-#99ff99-blue'>Submit Resources to Share</a>"
+                ."<a href='?screen=therapist-submitresources' class='toCircle catsCircle2'>Submit Resources to Share</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-clientlist' class='toCircle format-100-#b3f0ff-blue'>Clients and Providers</a>"
+                ."<a href='?screen=therapist-clientlist' class='toCircle catsCircle1'>Clients and Providers</a>"
                 ."</div>"
                 ."<div class='col-md-3'>"
-                ."<a href='?screen=therapist-calendar' class='toCircle format-100-#b3f0ff-blue'>Calendar</a>"
+                ."<a href='?screen=therapist-calendar' class='toCircle catsCircle1'>Calendar</a>"
                 ."</div>"
                 ."</div>"
                 ."</div>";
                 break;
         case "therapist-materials":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "PRINT HANDOUTS";
             break;
         case "therapist-formscharts":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "PRINT FORMS FOR CHARTS";
             break;
         case "therapist-linedpapers":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "PRINT DIFFERENT LINED PAPERS";
             break;
         case "therapist-entercharts":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "ENTER CHARTS";
             break;
         case "therapist-ideas":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "GET IDEAS";
             break;
         case "therapist-downloadcustommaterials":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= DownloadMaterials();
             break;
         case "therapist-team":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "MEET THE TEAM";
             break;
         case "therapist-submitresources":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "SUBMIT RESOURCES";
             $s .= "<form action=\"share_resorces_upload.php\" method=\"post\" enctype=\"multipart/form-data\">
                 Select resource to upload:
@@ -171,13 +184,13 @@ function drawTherapist( $screen )
             break;
         case "therapist-clientlist":
             $o = new ClientList( $kfdb );
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= $o->DrawClientList();
             break;
         case "therapist-calendar":
             require_once "calendar.php";
             $o = new Calendar( $sess );
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= $o->DrawCalendar();
     }
     return( $s );
@@ -198,9 +211,9 @@ function drawAdmin()
         $s .= "<div class='alert alert-success'> Oops I miss placed your data</div>";
     }
     $s .= $oUI->Header()."<h2>Admin</h2>";
-    $s .= "<a href='?screen=home' class='toCircle format-100-#99ff99-blue'>Home</a><a href='?screen=therapist' class='toCircle format-100-#99ff99-blue'>Therapist</a>";
+    $s .= "<a href='?screen=home' class='toCircle catsCircle2'>Home</a><a href='?screen=therapist' class='toCircle catsCircle2'>Therapist</a>";
     if($sess->CanAdmin("DropTables")){
-        $s .= "<button onclick='drop();' class='toCircle format-100-#99ff99-blue'>Drop Tables</button>"
+        $s .= "<button onclick='drop();' class='toCircle catsCircle2'>Drop Tables</button>"
         ."<script>function drop(){
           var password = prompt('Enter the admin password');
           $.ajax({
@@ -217,7 +230,7 @@ function drawAdmin()
           });
           }</script>";
     }
-    if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle format-100-#99ff99-blue'>Reveiw Resources</a>";}
+    if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle catsCircle2'>Reveiw Resources</a>";}
         return( $s );
 }
 
@@ -234,4 +247,5 @@ function DownloadMaterials()
     var_dump($ra);
     // insert a last child
 }
+
 ?>
