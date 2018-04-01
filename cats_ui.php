@@ -11,13 +11,13 @@ class CATS_UI
 
     function Header()
     {
-        if( !($kfdb = new KeyframeDatabase( "localhost", "ot", "ot" )) ||
+        if( !($kfdb = new KeyframeDatabase( "ot", "ot" )) ||
             !$kfdb->Connect( "ot" ) )
         {
             die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"
                 ."CREATE DATABASE ot;<br/>GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
         }
-        
+
         $sess = new SEEDSessionAccount( $kfdb, array(), array( 'logfile' => "seedsession.log") );
         if(!$sess->IsLogin()){
             echo "<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body>You have Been Logged out<br /><a href=".CATSDIR."\"\">Back to Login</a></body>";
@@ -46,58 +46,70 @@ class CATS_UI
     <style>
     a:link.toCircle, a:visited.toCircle, a:hover.toCircle, a:active.toCircle {
     	text-decoration: none;
-    	color: black;
+    	display: flex;
+    	justify-content: center;
+    	align-items: center;
+    	text-align: center;
+    	margin-bottom: 20px;
+    	margin-left: 10px;
+    	border-style: inset outset outset inset;
     }
     @keyframes colorChange {
-    from {background-color: #b3f0ff; border-color: #b3f0ff;}
-    to {background-color: #99ff99; border-color: #99ff99;}
+        from {background-color: #b3f0ff; border-color: #b3f0ff;}
+        to {background-color: #99ff99; border-color: #99ff99;}
+    }
+    a.catsCircle1 {
+    	height: 200px;
+    	width: 200px;
+    	border-radius: 100px;
+    	color: blue;
+    	animation: colorChange 10s linear infinite alternate;
+    }
+    a.catsCircle2 {
+    	height: 200px;
+    	width: 200px;
+    	border-radius: 100px;
+    	color: blue;
+    	animation: colorChange 10s linear -5s infinite alternate;
     }
     </style>
     <script>
     function createCircle(elements, styles) {
+        debugger;
     	for (var x in elements) {
-    		var radius = styles[x][1], color = styles[x][2], textColor = styles[x][3];
-    		elements[x].style.display = 'flex';
-    		elements[x].style.height = 2 * radius + 'px';
-    		elements[x].style.width = elements[x].style.height;
-    		elements[x].style.justifyContent = 'center';
-    		elements[x].style.alignItems = 'center';
-    		elements[x].style.textAlign = 'center';
-    		elements[x].style.marginBottom = '20px';
+    	   	var diameter = styles[x][0], color = styles[x][1], textColor = styles[x][2];
+    		elements[x].style.height = diameter;
+    		elements[x].style.width = diameter;
     		elements[x].style.color = textColor;
-    		elements[x].style.borderStyle = 'inset outset outset inset';
-            elements[x].style.borderWidth = '3px';
+            elements[x].style.backgroundColor = color;
+            elements[x].style.borderColor = color;
     		if(color == '#b3f0ff') {
-    			elements[x].style.animation = 'colorChange 6s linear infinite alternate';
-    		} else {
-    			elements[x].style.animation = 'colorChange 6s linear -3s infinite alternate';
+    			elements[x].style.animation = 'colorChange 10s linear infinite alternate';
+    		} else if(color == '#99ff99') {
+    			elements[x].style.animation = 'colorChange 10s linear -5s infinite alternate';
     		}
-    		elements[x].style.borderRadius = radius + 'px';
+    		elements[x].style.borderRadius = diameter;
     	}
     return true;
     }
     function run() {
-        var x = document.querySelectorAll('.toCircle');
-        var parse = [], elements = [];
+debugger;
+        var x = document.querySelectorAll('a.toCircle:not([class*=\"catsCircle\"])');
+        var elements = [], styles = [];
         for(var y = 0; y < x.length; y++) {
-    	   var classes = x[y].classList;
-    	       for(var loop = 0; loop < classes.length; loop++) {
-    		      if (classes.item(loop).search(/format-\d+-#?[\d\w]+-#?[\d\w]+/) !== -1) {
-    			     elements.push(x[y]);
-    			     parse.push(classes.item(loop).split('-'));
-    		      }
-    	       }
+	       elements.push(x[y]);
+	       styles.push(x[y].dataset.format.split(' '));
         }
-    createCircle(elements, parse);
+        createCircle(elements, styles);
     }
     </script>
     </head>
     <body>"
-    
+
     .$body
-    
-    
-    
+
+
+
     ."<script> run(); </script>"
     ."</body></html>";
 
