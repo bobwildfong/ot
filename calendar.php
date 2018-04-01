@@ -61,11 +61,11 @@ class Calendar
                 if($this->sess->CanAdmin('Calendar')){
                     if(strtolower($event->getSummary()) == "free"){
                         $time = new DateTime($start, new DateTimeZone($tz));
-                        $s .= "<div class='free'> $event->getSummary()".$time->format("l F jS Y g:i A T")."</div>";
+                        $s .= "<div class='free'> ".$event->getSummary()." ".$time->format("l F jS Y g:i A T")."</div>";
                     }
                     else{
                         $time = new DateTime($start, new DateTimeZone($tz));
-                        $s .= "<div class='busy'> $event->getSummary()".$time->format("l F jS Y g:i A T")."</div>";
+                        $s .= "<div class='busy'> ".$event->getSummary()." ".$time->format("l F jS Y g:i A T")."</div>";
                     }
                 }
                 else{
