@@ -58,9 +58,21 @@ class Calendar
                     $tz = substr($start, -6);
                     $start = substr($start, 0,-6);
                 }
-                if(strtolower($event->getSummary()) == "free"){
-                    $time = new DateTime($start, new DateTimeZone($tz));
-                    $s .= "<div class='free'>".$time->format("l F jS Y g:i A T")."</div>";
+                if($this->sess->CanAdmin('Calendar')){
+                    if(strtolower($event->getSummary()) == "free"){
+                        $time = new DateTime($start, new DateTimeZone($tz));
+                        $s .= "<div class='free'> $event->getSummary()".$time->format("l F jS Y g:i A T")."</div>";
+                    }
+                    else{
+                        $time = new DateTime($start, new DateTimeZone($tz));
+                        $s .= "<div class='busy'> $event->getSummary()".$time->format("l F jS Y g:i A T")."</div>";
+                    }
+                }
+                else{
+                    if(strtolower($event->getSummary()) == "free"){
+                        $time = new DateTime($start, new DateTimeZone($tz));
+                        $s .= "<div class='free'>".$time->format("l F jS Y g:i A T")."</div>";
+                    }
                 }
             }
         }

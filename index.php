@@ -69,6 +69,7 @@ function drawHome()
 
     $s = $oUI->Header()."<h2>Home</h2>";
     $s .= ($sess->CanRead('therapist')?"<a href='?screen=therapist' class='toCircle catsCircle1'>Therapist</a>":"").($sess->CanRead('admin')?"<a href='?screen=admin' class='toCircle' data-format='200px red blue'>Admin</a>":"");
+    $s .= (!$sess->CanAdmin('therapist')?"<a href='?screen=therapist-calendar' class='toCircle catsCircle1'>Calendar</a>":"");
     return( $s );
 }
 function drawTherapist( $screen )
@@ -122,35 +123,35 @@ function drawTherapist( $screen )
                 ."</div>";
                 break;
         case "therapist-materials":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "PRINT HANDOUTS";
             break;
         case "therapist-formscharts":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "PRINT FORMS FOR CHARTS";
             break;
         case "therapist-linedpapers":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "PRINT DIFFERENT LINED PAPERS";
             break;
         case "therapist-entercharts":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "ENTER CHARTS";
             break;
         case "therapist-ideas":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "GET IDEAS";
             break;
         case "therapist-downloadcustommaterials":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "DOWNLOAD AND CUSTOMIZE MARKETABLE MATERIALS";
             break;
         case "therapist-team":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "MEET THE TEAM";
             break;
         case "therapist-submitresources":
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= "SUBMIT RESOURCES";
             $s .= "<form action=\"share_resorces_upload.php\" method=\"post\" enctype=\"multipart/form-data\">
                 Select resource to upload:
@@ -160,13 +161,13 @@ function drawTherapist( $screen )
             break;
         case "therapist-clientlist":
             $o = new ClientList( $kfdb );
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= $o->DrawClientList();
             break;
         case "therapist-calendar":
             require_once "calendar.php";
             $o = new Calendar( $sess );
-            $s .= "<a href='?screen=therapist' >Therapist</a><br />";
+            $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= $o->DrawCalendar();
     }
     return( $s );
