@@ -47,6 +47,9 @@ class Calendar
             $s .= "<h3>Upcoming Events</h3>";
             $lastday = "";
             foreach( $raEvents as $event ) {
+                if(strtolower($event->getSummary()) != "free" && !$this->sess->CanAdmin('Calendar')){
+                    continue;
+                }
                 $start = $event->start->date;
                 if(!$start){
                     $start = substr($event->start->dateTime, 0, strpos($event->start->dateTime, "T"));
