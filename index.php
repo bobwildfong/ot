@@ -46,6 +46,10 @@ if( !$oApp->sess->IsLogin() ) {
          ."<br />"
          ."<input type='submit' value='Login' style='border-style: inset outset outset inset; background-color:#99ff99; border-radius:5px; display:block; margin:auto;' />"
          ."</form>";
+
+    // This is where we store the user's current screen. If they have logged out, or the login expired, reset their screen to the default.
+    $oApp->sess->VarSet( 'screen', "" );
+
     exit;
 }
 
@@ -67,12 +71,12 @@ $oUI = new CATS_UI();
 
 $s = "";
 
-$screen = SEEDInput_Str( 'screen' );
+$screen = $oApp->sess->SmartGPC( 'screen' ); // SEEDInput_Str( 'screen' );
 $oUI->SetScreen($screen == ""?"home":$screen);
 if( substr($screen,0,5) == 'admin' ) {
     $s .= drawAdmin();
 } else if( substr( $screen, 0, 9 ) == "therapist" ) {
-    $s .= drawTherapist( $screen );
+    $s .= drawTherapist( $screen, $oApp );
 } else if($screen == "logout"){
     $s .= drawLogout();
 } else {
@@ -95,7 +99,7 @@ function drawHome()
     $s .= (!$sess->CanAdmin('therapist')?"<a href='?screen=therapist-calendar' class='toCircle catsCircle1'>Calendar</a>":"");
     return( $s );
 }
-function drawTherapist( $screen )
+function drawTherapist( $screen, $oApp )
 {
     global $kfdb, $sess, $oUI;
     $s = $oUI->Header()."<h2>Therapist</h2>";
@@ -167,7 +171,7 @@ function drawTherapist( $screen )
             break;
         case "therapist-downloadcustommaterials":
             $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
-            $s .= DownloadMaterials();
+            $s .= DownloadMaterials( $oApp );
             break;
         case "therapist-team":
             $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
@@ -225,27 +229,61 @@ function drawAdmin()
                     location.href = '?screen=admin-droptable';
                 },
                 error: function(jqXHR, status, error){
-                    alert('You are not authorized to preform this action');
+                    alert('You are not authorized to perform this action');
                 }
           });
           }</script>";
     }
-    if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle catsCircle2'>Reveiw Resources</a>";}
+    if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle catsCircle2'>Review Resources</a>";}
         return( $s );
 }
 
-
-function DownloadMaterials()
+class CATSDocumentManager
 {
-    global $oUI, $kfdb;
+    private $oApp;
+    private $oDocRepDB;
+    private $oDocRepUI;
 
+    function __construct( SEEDAppSessionAccount $oApp )
+    {
+        $this->oApp = $oApp;
+        $this->oDocRepDB = new DocRepDB2( $oApp->kfdb, $oApp->sess->GetUID(), array( 'raPermClassesR'=>array(1) ) );
+        $this->oDocRepUI = new DocRepUI( $this->oDocRepDB );
+    }
+
+    function DrawDocTree( $kTree )
+    {
+        $s = $this->oDocRepUI->DrawTree( $kTree, array('kSelectedDoc'=>3) );
+
+        return( $s );
+    }
+
+}
+
+function DownloadMaterials( SEEDAppSessionAccount $oApp )
+{
     $s = "";
 
-    $oDR = new DocRepDB2( $kfdb, 0, array( 'raPermClassesR'=>array(1) ) );
+    $oDocMan = new CATSDocumentManager( $oApp );
+    $s .= "
+<style>
+.DocRepTree_level { margin-left:30px; }
 
-    $ra = $oDR->GetSubtree( 0 );
-    var_dump($ra);
-    // insert a last child
+.cats_doctree {
+        border:1px solid #888;
+        background-color:#ddd;
+        border-radius:10px;
+        margin:20px;
+        padding:20px;
+</style>
+";
+
+
+    $s .= "<div class='cats_doctree'>"
+         .$oDocMan->DrawDocTree( 0 )
+         ."</div>";
+
+    return( $s );
 }
 
 ?>
