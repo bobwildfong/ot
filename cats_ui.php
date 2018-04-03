@@ -11,13 +11,13 @@ class CATS_UI
 
     function Header()
     {
-        if( !($kfdb = new KeyframeDatabase( "localhost", "ot", "ot" )) ||
+        if( !($kfdb = new KeyframeDatabase( "ot", "ot" )) ||
             !$kfdb->Connect( "ot" ) )
         {
             die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"
                 ."CREATE DATABASE ot;<br/>GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
         }
-        
+
         $sess = new SEEDSessionAccount( $kfdb, array(), array( 'logfile' => "seedsession.log") );
         if(!$sess->IsLogin()){
             echo "<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body>You have Been Logged out<br /><a href=".CATSDIR."\"\">Back to Login</a></body>";
@@ -105,11 +105,11 @@ debugger;
     </script>
     </head>
     <body>"
-    
+
     .$body
-    
-    
-    
+
+
+
     ."<script> run(); </script>"
     ."</body></html>";
 

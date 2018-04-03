@@ -96,6 +96,8 @@ class Clients_ProsDB
 
 function createTables( KeyframeDatabase $kfdb )
 {
+    DRSetup( $kfdb );
+
     if( !tableExists( $kfdb, DBNAME.".clients" ) ) {
         echo "Creating the Client table";
 
@@ -231,8 +233,6 @@ function createTables( KeyframeDatabase $kfdb )
                         array('therapist',      'RWA',  'NULL',       4),
                         array('client',         'RWA',  'NULL',       5),
                         array('DropTables',     'RWA',       1,  'NULL'),
-                        array('Calendar',     'RW',       'NULL',  5),
-                        array('Calendar',     'A',       'NULL',  4),
                       ) as $ra )
         {
             $bRet = $kfdb->Execute( "INSERT INTO SEEDSession_Perms (_key,_created,_updated,perm,modes,uid,gid) "

@@ -36,9 +36,9 @@ class Calendar
             'timeMin' => date('c'),
         );
         $results = $service->events->listEvents($calendarId, $optParams);
-        
+
         $raEvents = $results->getItems();
-        
+
         $s = "";
 
         if( !count($raEvents) ) {

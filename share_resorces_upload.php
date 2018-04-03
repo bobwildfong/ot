@@ -2,7 +2,7 @@
 require_once '_config.php';
 require_once "cats_ui.php" ;
 
-if( !($kfdb = new KeyframeDatabase( "localhost", "ot", "ot" )) ||
+if( !($kfdb = new KeyframeDatabase( "ot", "ot" )) ||
     !$kfdb->Connect( "ot" ) )
 {
     die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"

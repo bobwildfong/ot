@@ -3,12 +3,24 @@ require_once "_config.php" ;
 require_once "database.php" ;
 require_once "cats_ui.php" ;
 require_once "therapist-clientlist.php" ;
-if( !($kfdb = new KeyframeDatabase( "localhost", "ot", "ot" )) ||
-    !$kfdb->Connect( "ot" ) )
-{
-    die( "Cannot connect to database<br/><br/>You probably have to execute these two MySQL commands<br/>"
-        ."CREATE DATABASE ot;<br/>GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
-}
+
+$oApp = new SEEDAppSessionAccount( array( 'kfdbUserid' => 'ot',
+                                          'kfdbPassword' => 'ot',
+                                          'kfdbDatabase' => 'ot',
+                                          'sessPermsRequired' => array(),
+                                          'sessParms' => array( 'logfile' => "seedsession.log")
+) );
+$oApp->kfdb->SetDebug(1);
+
+/* If you get the error Cannot connect to database, you probably have to execute these two MySQL commands:
+        CREATE DATABASE ot;
+        GRANT ALL ON ot.* to 'ot'@'localhost' IDENTIFIED BY 'ot'" );
+
+   Check that the tables exist and recreate them if necessary
+*/
+createTables($oApp->kfdb);
+
+
 if (!file_exists('pending_resources')) {
     mkdir('pending_resources', 0777, true);
     echo "Pending Resources Directiory Created<br />";
@@ -17,15 +29,15 @@ if (!file_exists('accepted_resources')) {
     mkdir('accepted_resources', 0777, true);
     echo "Accepted Resources Directiory Created<br />";
 }
-$kfdb->SetDebug(1);
 
-// check that the tables exist and recreate them if necessary
-createTables($kfdb);
 
-$sess = new SEEDSessionAccount( $kfdb, array(), array( 'logfile' => "seedsession.log") );
-//var_dump($sess->oDB->GetUserInfo(1));
+// Our code used to create these objects separately and it still refers to the two variables separately.
+// Transition to always use oApp, and pass it to functions/methods. Then remove this when we don't have the two separate variables anymore.
+$kfdb = $oApp->kfdb;
+$sess = $oApp->sess;
 
-if( !$sess->IsLogin() ) {
+
+if( !$oApp->sess->IsLogin() ) {
     echo "<form style='margin:auto;border:1px solid gray; width:33%; padding: 10px; border-radius:10px; background-color:#b3f0ff; margin-top:10em;' method='post'>"
          ."<h1 style='text-align:center; font-family: sans-serif'>Login to CATS</h1>"
          ."<input type='text' placeholder='Username' style='display:block; margin:auto; border-radius:5px; border-style: inset outset outset inset; background-color:#99ff99;' name='seedsession_uid' />"
@@ -36,6 +48,17 @@ if( !$sess->IsLogin() ) {
          ."</form>";
     exit;
 }
+
+/*
+if( $sess->CanRead('admin') ) echo "<p>I can read Administration things</p>";
+if( $sess->CanWrite('admin') ) echo "<p>I can write Administration things</p>";
+if( $sess->CanRead('leader') ) echo "<p>I can read Leader things</p>";
+if( $sess->CanWrite('leader') ) echo "<p>I can write Leader things</p>";
+if( $sess->CanRead('therapist') ) echo "<p>I can read Therapist things</p>";
+if( $sess->CanWrite('therapist') ) echo "<p>I can write Therapist things</p>";
+if( $sess->CanRead('client') ) echo "<p>I can read Client things</p>";
+if( $sess->CanWrite('client') ) echo "<p>I can write Client things</p>";
+*/
 
 $oUI = new CATS_UI();
 
@@ -144,7 +167,7 @@ function drawTherapist( $screen )
             break;
         case "therapist-downloadcustommaterials":
             $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
-            $s .= "DOWNLOAD AND CUSTOMIZE MARKETABLE MATERIALS";
+            $s .= DownloadMaterials();
             break;
         case "therapist-team":
             $s .= ($sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
@@ -210,4 +233,19 @@ function drawAdmin()
     if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle catsCircle2'>Reveiw Resources</a>";}
         return( $s );
 }
+
+
+function DownloadMaterials()
+{
+    global $oUI, $kfdb;
+
+    $s = "";
+
+    $oDR = new DocRepDB2( $kfdb, 0, array( 'raPermClassesR'=>array(1) ) );
+
+    $ra = $oDR->GetSubtree( 0 );
+    var_dump($ra);
+    // insert a last child
+}
+
 ?>
