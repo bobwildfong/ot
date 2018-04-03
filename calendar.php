@@ -45,40 +45,54 @@ class Calendar
             $s .= "No upcoming events found.";
         } else {
             $s .= "<h3>Upcoming Events</h3>";
+            $lastday = "";
             foreach( $raEvents as $event ) {
-                $start = $event->start->dateTime;
-                $tz = "";
-                if( empty($start) ) {
-                    $start = $event->start->date;
+                $start = $event->start->date;
+                if(!$start){
+                    $start = substr($event->start->dateTime, 0, strpos($event->start->dateTime, "T"));
                 }
-                elseif ($event->start->timeZone) {
-                    $tz = $event->start->timeZone;
-                }
-                else{
-                    $tz = substr($start, -6);
-                    $start = substr($start, 0,-6);
-                }
-                if($this->sess->CanAdmin('Calendar')){
-                    if(strtolower($event->getSummary()) == "free"){
-                        $time = new DateTime($start, new DateTimeZone($tz));
-                        $s .= "<div class='free'> ".$event->getSummary()." ".$time->format("l F jS Y g:i A T")."</div>";
+                if($start != $lastday){
+                    if($lastday != ""){
+                        $s .= "</div>";
                     }
-                    else{
-                        $time = new DateTime($start, new DateTimeZone($tz));
-                        $s .= "<div class='busy'> ".$event->getSummary()." ".$time->format("l F jS Y g:i A T")."</div>";
-                    }
+                    $s .= "<div class='day'>";
+                    $time = new DateTime($start);
+                    $s .= "<span class='dayname'>".$time->format("l F jS Y")."</span>";
+                    $lastday = $start;
                 }
-                else{
-                    if(strtolower($event->getSummary()) == "free"){
-                        $time = new DateTime($start, new DateTimeZone($tz));
-                        $s .= "<div class='free'>".$time->format("l F jS Y g:i A T")."</div>";
-                    }
-                }
+                $s .= $this->DrawEvent($event,$this->sess->CanAdmin('Calendar'));
             }
+            $s .= "</div>";
         }
 
         return( $s );
     }
+    
+    private function DrawEvent($event, $admin = FALSE){
+        if(strtolower($event->getSummary()) != "free" && !$admin){
+            return "";
+        }
+        $s = "";
+        $start = $event->start->dateTime;
+        $tz = "";
+        if( empty($start) ) {
+            $start = $event->start->date;
+        }
+        elseif ($event->start->timeZone) {
+            $tz = $event->start->timeZone;
+        }
+        else{
+            $tz = substr($start, -6);
+            $start = substr($start, 0,-6);
+        }
+        $time = new DateTime($start, new DateTimeZone($tz));
+        $s .= "<div class='appointment ".(strtolower($event->getSummary()) == "free"?"free":"busy")."'>";
+        $s .= "<span class='appt-time'>".$time->format("g:ia")."</span>";
+        $s .= ($admin?"<span class='appt-summary'>".$event->getSummary()."</span>":"");
+        $s .= "</div>";
+        return $s;
+    }
+    
 }
 
 ?>
