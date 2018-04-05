@@ -8,16 +8,9 @@ if( !defined("CATSDIR") ) { define( "CATSDIR", "./" ); }
 
 
 /* catsConfig.php
- * You have to create a file "catsConfig.php" in the directory above this one, to define directory dependencies.
- * Since the dependencies can be different for every installation, that file is not stored in git.
- * The following values should be defined. If you don't the defaults below will be used instead.
-
- * You probably want to define theses locations using CATSDIR, since it's probably the only fixed location that php knows.
- * e.g. defined( "SEEDROOT", CATSDIR."../seeds/" );
- *
- * SEEDROOT        = location of the "seeds" library e.g seeds/seedcore, seeds/seedlib.  Must have a trailing slash.
- * W_ROOT          = location of the directory where third-party software is collected.  Must have a trailing slash.
- * CATS_CONFIG_DIR = absolute directory where you keep your config files e.g. google api client keys
+ * 
+ * Copy catsConfig_sample.php to the directory above this one and rename it to catsConfig.php.
+ * Since the dependencies can be different for every installation, the config file is not stored in git.
  */
 include( CATSDIR."../catsConfig.php" );
 
