@@ -14,7 +14,9 @@ class Calendar
     function DrawCalendar()
     {
         $s = "";
-
+        
+        $bookSlot = SEEDInput_Str("bookSlot");
+        
         $raGoogleParms = array(
                 'application_name' => "Google Calendar API PHP Quickstart",
                 // If modifying these scopes, regenerate the credentials at ~/seed_config/calendar-php-quickstart.json
@@ -29,7 +31,7 @@ class Calendar
         $oG = new SEEDGoogleService( $raGoogleParms, false );
         $oG->GetClient();
         $service = new Google_Service_Calendar($oG->client);
-
+        
         /* Get a list of all the calendars that this user can see
          */
         $raCalendars = array();
@@ -52,6 +54,12 @@ class Calendar
          */
         $sCalendarIdCurrent = $this->sess->SmartGPC( 'calendarIdCurrent' ) ?: $sCalendarIdPrimary;
 
+        if($bookSlot){
+            $event = $service->events->get($sCalendarIdCurrent, $bookSlot);
+            $event->setSummary(SEEDInput_Str("bookingSumary"));
+            $service->events->update($sCalendarIdCurrent, $event->getId(), $event);
+        }
+        
         /* Show the list of calendars so we can choose which one to look at
          * The current calendar will be selected in the list.
          */
@@ -124,13 +132,22 @@ class Calendar
         }
         if( !$tz ) $tz = 'America/Toronto';
         $time = new DateTime($start, new DateTimeZone($tz));
-        $s .= "<div class='appointment ".(strtolower($event->getSummary()) == "free"?"free":"busy")."'>";
+        $s .= "<div class='appointment ".(strtolower($event->getSummary()) == "free"?"free":"busy")."'".(strtolower($event->getSummary()) == "free"?$this->bookable($event->id):"").">";
         $s .= "<span class='appt-time'>".$time->format("g:ia")."</span>";
         $s .= ($admin?"<span class='appt-summary'>".$event->getSummary()."</span>":"");
         $s .= "</div>";
         return $s;
     }
 
+    private function bookable($id){
+        $s = " onclick=\"";
+        $s .= "";
+        $s .= "window.location='?bookSlot=$id&bookingSumary=";
+        $s .= "' + prompt('Who is this appointment for?');";
+        $s .= "\"";
+        return $s;
+    }
+    
 }
 
 ?>
