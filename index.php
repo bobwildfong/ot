@@ -22,11 +22,11 @@ createTables($oApp->kfdb);
 
 
 if (!file_exists('pending_resources')) {
-    mkdir('pending_resources', 0777, true);
+    @mkdir('pending_resources', 0777, true);
     echo "Pending Resources Directiory Created<br />";
 }
 if (!file_exists('accepted_resources')) {
-    mkdir('accepted_resources', 0777, true);
+    @mkdir('accepted_resources', 0777, true);
     echo "Accepted Resources Directiory Created<br />";
 }
 
@@ -236,54 +236,6 @@ function drawAdmin()
     }
     if($sess->CanWrite("admin")){$s .= "<a href='review_resources.php' class='toCircle catsCircle2'>Review Resources</a>";}
         return( $s );
-}
-
-class CATSDocumentManager
-{
-    private $oApp;
-    private $oDocRepDB;
-    private $oDocRepUI;
-
-    function __construct( SEEDAppSessionAccount $oApp )
-    {
-        $this->oApp = $oApp;
-        $this->oDocRepDB = new DocRepDB2( $oApp->kfdb, $oApp->sess->GetUID(), array( 'raPermClassesR'=>array(1) ) );
-        $this->oDocRepUI = new DocRepUI( $this->oDocRepDB );
-    }
-
-    function DrawDocTree( $kTree )
-    {
-        $s = $this->oDocRepUI->DrawTree( $kTree, array('kSelectedDoc'=>3) );
-
-        return( $s );
-    }
-
-}
-
-function DownloadMaterials( SEEDAppSessionAccount $oApp )
-{
-    $s = "";
-
-    $oDocMan = new CATSDocumentManager( $oApp );
-    $s .= "
-<style>
-.DocRepTree_level { margin-left:30px; }
-
-.cats_doctree {
-        border:1px solid #888;
-        background-color:#ddd;
-        border-radius:10px;
-        margin:20px;
-        padding:20px;
-</style>
-";
-
-
-    $s .= "<div class='cats_doctree'>"
-         .$oDocMan->DrawDocTree( 0 )
-         ."</div>";
-
-    return( $s );
 }
 
 ?>

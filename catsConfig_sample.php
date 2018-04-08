@@ -1,7 +1,7 @@
 <?php
 
 /* catsConfig
- 
+
    Copy this file to the directory above CATSDIR and change the definitions below as needed.
    The config information can be different for every installation, so it is not versioned in git.
 
