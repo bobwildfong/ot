@@ -49,8 +49,10 @@ function expandHomeDirectory($path) {
   return str_replace('~', realpath($homeDirectory), $path);
 }
 
-$oG = new SEEDGoogleService( $raGoogleParms, true );
-if( !$oG->client ) die( "Could not create Google Client" );
+$oG = new SEEDGoogleService( $raGoogleParms, false );   // don't create the Google_Client because the credentials file isn't there yet
+//if( !$oG->client ) die( "Could not create Google Client" );
+$oG->GetCredentials( true );
+
 $service = new Google_Service_Calendar($oG->client);
 
 // Print the next 10 events on the user's calendar.
