@@ -94,6 +94,30 @@ class Clients_ProsDB
     }
 }
 
+class AppointmentsDB
+{
+    private $kfrel;
+    private $raAppts;
+
+    private $kfreldef = array(
+        "Tables" => array( "Appts" => array( "Table" => DBNAME.'.cats_appointments',
+            "Fields" => "Auto",
+        )));
+
+    function KFRel()  { return( $this->kfrel ); }
+
+    function __construct( SEEDAppSessionAccount $oApp )
+    {
+        $this->kfrel = new KeyFrame_Relation( $oApp->kfdb, $this->kfreldef, $oApp->sess->GetUID() );
+    }
+
+    function GetList( $sCond )
+    {
+        return( $this->kfrel->GetRecordSetRA( $sCond, $raKFParms = array() ) );
+    }
+}
+
+
 function createTables( KeyframeDatabase $kfdb )
 {
     DRSetup( $kfdb );
@@ -182,6 +206,29 @@ function createTables( KeyframeDatabase $kfdb )
         $kfdb->SetDebug(0);
     }
 
+    if( !tableExists( $kfdb, DBNAME.".cats_appointments" ) ) {
+        echo "Creating the Appointment table";
+
+        $kfdb->SetDebug(2);
+        $kfdb->Execute( "CREATE TABLE ".DBNAME.".cats_appointments (
+            _key        INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            _created    DATETIME,
+            _created_by INTEGER,
+            _updated    DATETIME,
+            _updated_by INTEGER,
+            _status     INTEGER DEFAULT 0,
+
+            google_event_id  VARCHAR(200) NOT NULL DEFAULT '',
+            eStatus          ENUM('NEW','REVIEWED','COMPLETED','CANCELLED') NOT NULL DEFAULT 'NEW',
+            start_time       DATETIME NULL,
+            fk_clients       INTEGER NOT NULL DEFAULT 0,
+            fk_professionals INTEGER NOT NULL DEFAULT 0,
+            note             TEXT,
+            fk_cats_invoices INTEGER NOT NULL DEFAULT 0)" );
+
+        $kfdb->SetDebug(0);
+    }
+
 
     // Also make the SEEDSession tables
     if( !tableExists( $kfdb, DBNAME.".SEEDSession_Users" ) ) {
@@ -245,7 +292,7 @@ function createTables( KeyframeDatabase $kfdb )
 
 function tableExists( KeyframeDatabase $kfdb, $tablename )
 {
-    return( $kfdb->Query1( "SELECT count(*) FROM $tablename" ) ? true : false );
+    return( $kfdb->TableExists( $tablename ) );
 }
 
 ?>
