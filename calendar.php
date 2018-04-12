@@ -116,70 +116,7 @@ class Calendar
             $sList .= "</div>";
         }
         
-        $s .= "
-<style>
-span.appt-time,span.appt-summary {
-	font-family: 'Roboto', sans-serif;
-}
-.drop-arrow {
-	transition: all 0.2s ease;
-	width: 10px;
-	height: 10px;
-	display: inline;
-	transform: none;
-}
-.collapsed .drop-arrow {
-	transform: rotate(-90deg);
-}
-.appointment {
-	transition: all 0.2s ease;
-	overflow: hidden;
-	height: 20px;
-	border: 1px dotted gray;
-	border-radius: 5px;
-	width: 105px;
-	padding: 2px;
-	background-color: #99ff99;
-	margin-top: 5px;
-	margin-bottom: 5px;
-    box-sizing: content-box;
-}
-.collapsed .appointment {
-	height: 0;
-	border: none;
-	padding: 0;
-	margin: 0;
-}
-.day {
-	margin: 2px;
-}
-</style>
-<script>
-var x = document.createElement('img');
-x.src = 'https://cdn1.iconfinder.com/data/icons/pixel-perfect-at-16px-volume-2/16/5001-128.png';
-x.className = 'drop-arrow';
-var z = document.getElementsByClassName('day');
-for(y = 0; y < z.length; y++) {
-	var w = x.cloneNode();
-	z[y].insertBefore(w, z[y].firstChild);
-	w.onclick = rotateMe;
-}
-function rotateMe() {
-	this.parentElement.classList.toggle('collapsed');
-}
-function expand() {
-	var days = document.getElementsByClassName('day');
-	for (var loop = 0; loop < days.length; loop++) {
-		days[loop].classList.remove('collapsed');
-	}
-}
-function collapse() {
-	var days = document.getElementsByClassName('day');
-	for (var loop = 0; loop < days.length; loop++) {
-		days[loop].classList.add('collapsed');
-	}
-}
-</script>";
+        
         
 
         /* Get the list of appointments known in CATS
@@ -200,7 +137,71 @@ function collapse() {
         }
 
         $s .= "<div class='row'><div class='col-md-6'>$sList</div><div class='col-md-6'>$sAppts</div></div>";
-
+        
+        $s .= "
+    <style>
+       span.appt-time,span.appt-summary {
+	       font-family: 'Roboto', sans-serif;
+        }
+       .drop-arrow {
+	       transition: all 0.2s ease;
+	       width: 10px;
+	       height: 10px;
+	       display: inline;
+	       transform: none;
+        }
+        .collapsed .drop-arrow {
+	       transform: rotate(-90deg);
+        }
+        .appointment {
+	       transition: all 0.2s ease;
+	       overflow: hidden;
+	       border: 1px dotted gray;
+	       border-radius: 5px;
+	       width: 105px;
+	       padding: 2px;
+	       background-color: #99ff99;
+	       margin-top: 5px;
+	       margin-bottom: 5px;
+           box-sizing: content-box;
+        }
+        .collapsed .appointment {
+	       height: 0;
+	       border: none;
+	       padding: 0;
+	       margin: 0;
+        }
+        .day {
+	       margin: 2px;
+        }
+    </style>
+    <script>
+        var x = document.createElement('img');
+        x.src = 'https://cdn1.iconfinder.com/data/icons/pixel-perfect-at-16px-volume-2/16/5001-128.png';
+        x.className = 'drop-arrow';
+        var z = document.getElementsByClassName('day');
+        for(y = 0; y < z.length; y++) {
+	       var w = x.cloneNode();
+	       z[y].insertBefore(w, z[y].firstChild);
+	       w.onclick = rotateMe;
+        }
+        function rotateMe() {
+	       this.parentElement.classList.toggle('collapsed');
+        }
+        function expand() {
+	       var days = document.getElementsByClassName('day');
+	       for (var loop = 0; loop < days.length; loop++) {
+		   days[loop].classList.remove('collapsed');
+	   }
+    }
+    function collapse() {
+	   var days = document.getElementsByClassName('day');
+	   for (var loop = 0; loop < days.length; loop++) {
+	       days[loop].classList.add('collapsed');
+	   }
+    }
+</script>";
+        
         return( $s );
     }
 
