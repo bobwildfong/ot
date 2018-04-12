@@ -185,7 +185,7 @@ function drawTherapist( $screen, $oApp )
             break;
         case "therapist-calendar":
             require_once "calendar.php";
-            $o = new Calendar( $oApp->sess );
+            $o = new Calendar( $oApp );
             $s .= ($oApp->sess->CanAdmin('therapist')?"<a href='?screen=therapist' >Therapist</a><br />":"");
             $s .= $o->DrawCalendar();
     }

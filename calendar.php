@@ -4,19 +4,21 @@ include( SEEDROOT."seedlib/SEEDGoogleService.php" );
 
 class Calendar
 {
-    private $sess;
+    private $oApp;
+    private $sess;  // remove this, use oApp->sess instead
 
-    function __construct( SEEDSessionAccount $sess )
+    function __construct( SEEDAppSessionAccount $oApp )
     {
-        $this->sess = $sess;
+        $this->oApp = $oApp;
+        $this->sess = $oApp->sess;  // remove this
     }
 
     function DrawCalendar()
     {
         $s = "";
-        
+
         $bookSlot = SEEDInput_Str("bookSlot");
-        
+
         $raGoogleParms = array(
                 'application_name' => "Google Calendar API PHP Quickstart",
                 // If modifying these scopes, regenerate the credentials at ~/seed_config/calendar-php-quickstart.json
@@ -31,7 +33,7 @@ class Calendar
         $oG = new SEEDGoogleService( $raGoogleParms, false );
         $oG->GetClient();
         $service = new Google_Service_Calendar($oG->client);
-        
+
         /* Get a list of all the calendars that this user can see
          */
         $raCalendars = array();
@@ -61,7 +63,7 @@ class Calendar
             echo("<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body><a href=".CATSDIR."\"\">Redirectn</a></body>");
             die();
         }
-        
+
         /* Show the list of calendars so we can choose which one to look at
          * The current calendar will be selected in the list.
          */
@@ -84,11 +86,13 @@ class Calendar
 
         $raEvents = $results->getItems();
 
-
+        /* Get the list of calendar events from Google
+         */
+        $sList = "";
         if( !count($raEvents) ) {
-            $s .= "No upcoming events found.";
+            $sList .= "No upcoming events found.";
         } else {
-            $s .= "<h3>Upcoming Events</h3>";
+            $sList .= "<h3>Upcoming Events</h3>";
             $lastday = "";
             foreach( $raEvents as $event ) {
                 if(strtolower($event->getSummary()) != "free" && !$this->sess->CanAdmin('Calendar')){
@@ -100,17 +104,36 @@ class Calendar
                 }
                 if($start != $lastday){
                     if($lastday != ""){
-                        $s .= "</div>";
+                        $sList .= "</div>";
                     }
-                    $s .= "<div class='day'>";
+                    $sList .= "<div class='day'>";
                     $time = new DateTime($start);
-                    $s .= "<span class='dayname'>".$time->format("l F jS Y")."</span>";
+                    $sList .= "<span class='dayname'>".$time->format("l F jS Y")."</span>";
                     $lastday = $start;
                 }
-                $s .= $this->DrawEvent($event,$this->sess->CanAdmin('Calendar'));
+                $sList .= $this->DrawEvent($event,$this->sess->CanAdmin('Calendar'));
             }
-            $s .= "</div>";
+            $sList .= "</div>";
         }
+
+        /* Get the list of appointments known in CATS
+         */
+        $sAppts = "<h3>CATS appointments</h3>";
+        $oApptDB = new AppointmentsDB( $this->oApp );
+        $raAppts = $oApptDB->GetList( "eStatus in ('NEW','REVIEWED')" );
+        foreach( $raAppts as $ra ) {
+            $eventId = $ra['google_event_id'];
+            $eStatus = $ra['eStatus'];
+            $startTime = $ra['start_time'];
+            $clientId = $ra['fk_clients'];
+
+            // Now look through the $raEvents that you got from google and try to find the google event with the same event id.
+            // If the date/time is different (someone changed it it google calendar), give a warning in $sAppts.
+            // If the client is not known clientId==0, give a warning in $sAppts.
+
+        }
+
+        $s .= "<div class='row'><div class='col-md-6'>$sList</div><div class='col-md-6'>$sAppts</div></div>";
 
         return( $s );
     }
@@ -149,7 +172,7 @@ class Calendar
         $s .= "\"";
         return $s;
     }
-    
+
 }
 
 ?>
