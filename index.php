@@ -67,7 +67,7 @@ $s = "";
 $screen = $oApp->sess->SmartGPC( 'screen' ); // SEEDInput_Str( 'screen' );
 $oUI->SetScreen($screen == ""?"home":$screen);
 if( substr($screen,0,5) == 'admin' ) {
-    $s .= drawAdmin();
+    $s .= drawAdmin($oApp);
 } else if( substr( $screen, 0, 9 ) == "therapist" ) {
     $s .= drawTherapist( $screen, $oApp );
 } else if($screen == "logout"){

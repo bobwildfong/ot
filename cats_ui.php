@@ -75,7 +75,6 @@ class CATS_UI
     </style>
     <script>
     function createCircle(elements, styles) {
-        debugger;
     	for (var x in elements) {
     	   	var diameter = styles[x][0], color = styles[x][1], textColor = styles[x][2];
     		elements[x].style.height = diameter;
@@ -83,17 +82,11 @@ class CATS_UI
     		elements[x].style.color = textColor;
             elements[x].style.backgroundColor = color;
             elements[x].style.borderColor = color;
-    		if(color == '#b3f0ff') {
-    			elements[x].style.animation = 'colorChange 10s linear infinite alternate';
-    		} else if(color == '#99ff99') {
-    			elements[x].style.animation = 'colorChange 10s linear -5s infinite alternate';
-    		}
     		elements[x].style.borderRadius = diameter;
     	}
     return true;
     }
     function run() {
-debugger;
         var x = document.querySelectorAll('a.toCircle:not([class*=\"catsCircle\"])');
         var elements = [], styles = [];
         for(var y = 0; y < x.length; y++) {
