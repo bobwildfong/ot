@@ -86,6 +86,8 @@ class Calendar
 
         $raEvents = $results->getItems();
 
+        $oApptDB = new AppointmentsDB( $this->oApp );
+        
         /* Get the list of calendar events from Google
          */
         $sList = "";
@@ -112,6 +114,14 @@ class Calendar
                     $lastday = $start;
                 }
                 $sList .= $this->DrawEvent($event,$this->sess->CanAdmin('Calendar'));
+                
+                if(!$kfr = $oApptDB->KFRel()->GetRecordFromDB("google_event_id = '".$event->id."'")){
+                    $kfr = $oApptDB->KFRel()->CreateRecord();
+                    $kfr->SetValue("google_event_id", $event->id);
+                    $kfr->SetValue("start_time", $event->start->dateTime);
+                    $kfr->PutDBRow();
+                }
+                
             }
             $sList .= "</div>";
         }
@@ -119,7 +129,6 @@ class Calendar
         /* Get the list of appointments known in CATS
          */
         $sAppts = "<h3>CATS appointments</h3>";
-        $oApptDB = new AppointmentsDB( $this->oApp );
         $raAppts = $oApptDB->GetList( "eStatus in ('NEW','REVIEWED')" );
         foreach( $raAppts as $ra ) {
             $eventId = $ra['google_event_id'];
@@ -130,7 +139,7 @@ class Calendar
             // Now look through the $raEvents that you got from google and try to find the google event with the same event id.
             // If the date/time is different (someone changed it it google calendar), give a warning in $sAppts.
             // If the client is not known clientId==0, give a warning in $sAppts.
-
+            $sAppts .= "<div>$startTime : $clientId</div>";
         }
 
         $s .= "<div class='row'><div class='col-md-6'>$sList</div><div class='col-md-6'>$sAppts</div></div>";

@@ -280,8 +280,8 @@ function createTables( KeyframeDatabase $kfdb )
                         array('therapist',      'RWA',  'NULL',       4),
                         array('client',         'RWA',  'NULL',       5),
                         array('DropTables',     'RWA',       1,  'NULL'),
-                        array('Calendar',     'RW',       'NULL',  5),
-                        array('Calendar',     'A',       'NULL',  4),
+                        array('Calendar',       'RW',   'NULL',       5),
+                        array('Calendar',       'A',    'NULL',       4),
                       ) as $ra )
         {
             $bRet = $kfdb->Execute( "INSERT INTO SEEDSession_Perms (_key,_created,_updated,perm,modes,uid,gid) "
