@@ -53,10 +53,12 @@ $service = $oGC->service;
         // 'next sunday' or 'this sunday' but if it happens to be sunday evening right now you can get the next sunday i.e. a two-week
         // span. Instead we get the date of the next monday and subtract an hour to make it sunday.
         // "this monday" means the monday contained within the next 7 days
-        $dMonThisWeek = date('Y-m-d', strtotime('last monday'));
-        $dSunThisWeek = date('Y-m-d', strtotime('this monday')-3600);
+        $tMonThisWeek = strtotime('last monday');
+        $tSunThisWeek = strtotime('this monday')-3600;
+        $dMonThisWeek = date('Y-m-d', $tMonThisWeek);
+        $dSunThisWeek = date('Y-m-d', $tSunThisWeek);
 
-        $raEvents = $oGC->GetEvents( $calendarIdCurrent, $dMonThisWeek, $dSunThisWeek );
+        $raEvents = $oGC->GetEvents( $calendarIdCurrent, $tMonThisWeek, $tSunThisWeek );
 
         $oApptDB = new AppointmentsDB( $this->oApp );
 
@@ -273,12 +275,11 @@ class CATS_GoogleCalendar
 
     function GetEvents( $calendarId, $startdate, $enddate )
     {
-        // Print the next 10 events on the user's calendar.
         $optParams = array(
-            'maxResults' => 10,
             'orderBy' => 'startTime',
             'singleEvents' => TRUE,
-            'timeMin' => date('c'),
+            'timeMin' => date("Y-m-d\TH:i:s\Z", $startdate),
+            'timeMax' => date("Y-m-d\TH:i:s\Z", $enddate),
         );
         $results = $this->service->events->listEvents($calendarId, $optParams);
 
