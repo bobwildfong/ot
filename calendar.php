@@ -17,10 +17,8 @@ class Calendar
     {
         $s = "";
 
-        $bookSlot = SEEDInput_Str("bookSlot");
-
         $oGC = new CATS_GoogleCalendar();
-$service = $oGC->service;
+
         /* Get a list of all the calendars that this user can see
          */
         list($raCalendars,$sCalendarIdPrimary) = $oGC->GetAllMyCalendars();
@@ -29,10 +27,10 @@ $service = $oGC->service;
          */
         $calendarIdCurrent = $this->sess->SmartGPC( 'calendarIdCurrent' ) ?: $sCalendarIdPrimary;
 
-        if($bookSlot){
-            $event = $service->events->get($sCalendarIdCurrent, $bookSlot);
-            $event->setSummary(SEEDInput_Str("bookingSumary"));
-            $service->events->update($sCalendarIdCurrent, $event->getId(), $event);
+        /* If the user has booked a free slot, store the booking
+         */
+        if( ($bookSlot = SEEDInput_Str("bookSlot")) && ($sSummary = SEEDInput_Str("bookingSumary")) ) {
+            $oGC->BookSlot( $calendarIdCurrent, $bookSlot, $sSummary );
             echo("<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body><a href=".CATSDIR."\"\">Redirectn</a></body>");
             die();
         }
@@ -286,6 +284,15 @@ class CATS_GoogleCalendar
 
         return( $raEvents );
     }
+
+    function BookSlot( $calendarId, $slot, $sSummary )
+    {
+        if( ($event = $this->service->events->get($calendarId, $slot)) ) {
+            $event->setSummary($sSummary);
+            $this->service->events->update($calendarId, $event->getId(), $event);
+        }
+    }
+
 }
 
 
