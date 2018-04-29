@@ -116,8 +116,7 @@ class Calendar
                         // If they're the same, draw the normal appt. If they're different, show a notice.
                         $dGoogle = substr($event->start->dateTime, 0, 19);  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
                         $dCats = $kfrAppt->Value('start_time');
-
-                        if( $dGoogle == $dCats ) {
+                        if( (substr($dGoogle,0,strpos($dGoogle, "T"))." ".substr($dGoogle,strpos($dGoogle, "T")+1) == $dCats )) {
                             $eType = 'normal';
                         } else {
                             $eType = 'moved';
