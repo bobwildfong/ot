@@ -17,7 +17,8 @@ class Calendar
     {
         $s = "";
 
-        $oGC = new CATS_GoogleCalendar();
+        $oGC = new CATS_GoogleCalendar();               // for appointments on the google calendar
+        $oApptDB = new AppointmentsDB( $this->oApp );   // for appointments saved in cats_appointments
 
         /* Get a list of all the calendars that this user can see
          */
@@ -35,6 +36,16 @@ class Calendar
             die();
         }
 
+        if( false ) {   // when a new appointment is made via the new-appointment form use this code
+/*
+                $kfr = $oApptDB->KFRel()->CreateRecord();
+                    $kfr->SetValue("google_event_id", $event->id);
+                    $kfr->SetValue("start_time", substr($event->start->dateTime, 0, 19) );  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
+                    $kfr->PutDBRow();
+*/
+        }
+
+
         /* Show the list of calendars so we can choose which one to look at
          * The current calendar will be selected in the list.
          */
@@ -46,19 +57,21 @@ class Calendar
              ."</form>";
 
 
-        // Yes, php can do this and a lot of other cool natural-language dates
-        // The idea is to get the dates of the monday-sunday that contain the current time. Usually, the sunday can be gotten via
-        // 'next sunday' or 'this sunday' but if it happens to be sunday evening right now you can get the next sunday i.e. a two-week
-        // span. Instead we get the date of the next monday and subtract an hour to make it sunday.
-        // "this monday" means the monday contained within the next 7 days
-        $tMonThisWeek = strtotime('last monday');
-        $tSunThisWeek = strtotime('this monday')-3600;
-        $dMonThisWeek = date('Y-m-d', $tMonThisWeek);
-        $dSunThisWeek = date('Y-m-d', $tSunThisWeek);
+        // Get the dates of the monday-sunday period that includes the current day.
+        // Yes, php can do this and a lot of other cool natural-language dates.
+        //
+        // Note that "this monday" means the monday contained within the next 7 days, "last monday" gives a week ago if today is monday,
+        // so "monday this week" is better than those
+        $tMonThisWeek = strtotime('monday this week');
 
-        $raEvents = $oGC->GetEvents( $calendarIdCurrent, $tMonThisWeek, $tSunThisWeek );
+        if( !($tMon = SEEDInput_Int('tMon')) ) {
+            $tMon = $tMonThisWeek;
+        }
+        $tSun = $tMon + (3600 * 24 * 7 ) - 60;    // Add seven days (in seconds) then subtract a minute. That's the end of next sunday.
 
-        $oApptDB = new AppointmentsDB( $this->oApp );
+        /* Get the google calendar events for the given week
+         */
+        $raEvents = $oGC->GetEvents( $calendarIdCurrent, $tMon, $tSun );
 
         /* Get the list of calendar events from Google
          */
@@ -66,15 +79,12 @@ class Calendar
         if( !count($raEvents) ) {
             $sList .= "No upcoming events found.";
         } else {
-            $sList .= "<h3>Appointments from $dMonThisWeek to $dSunThisWeek</h3>";
             $lastday = "";
             foreach( $raEvents as $event ) {
-                if(strtolower($event->getSummary()) != "free" && !$this->sess->CanAdmin('Calendar')){
-                    continue;
-                }
-                $start = $event->start->date;
-                if(!$start){
-                    $start = substr($event->start->dateTime, 0, strpos($event->start->dateTime, "T"));
+                /* Surround the events of each day in a <div class='day'> wrapper
+                 */
+                if( !($start = $event->start->date) ) {
+                    $start = strtok( $event->start->dateTime, "T" );    // strtok returns string before T, or whole string if there is no T
                 }
                 if($start != $lastday){
                     if($lastday != ""){
@@ -85,20 +95,50 @@ class Calendar
                     $sList .= "<span class='dayname'>".$time->format("l F jS Y")."</span>";
                     $lastday = $start;
                 }
-                $sList .= $this->DrawEvent($event,$this->sess->CanAdmin('Calendar'));
 
-                if(!$kfr = $oApptDB->KFRel()->GetRecordFromDB("google_event_id = '".$event->id."'")){
-                    $kfr = $oApptDB->KFRel()->CreateRecord();
-                    $kfr->SetValue("google_event_id", $event->id);
-                    $kfr->SetValue("start_time", substr($event->start->dateTime, 0, 19) );  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
-                    $kfr->PutDBRow();
+                /* Non-admin users are only allowed to see Free slots and book them
+                 */
+                if( !$this->sess->CanAdmin('Calendar') ) {
+                    // The current user is only allowed to see Free slots and book them
+                    if( strtolower($event->getSummary()) != "free" )  continue;
+
+                    $sList .= $this->drawEvent( $event, 'nonadmin', null );
+
+                } else {
+                    // Admin user: check this google event against our appointment list
+                    $kfrAppt = $oApptDB->KFRel()->GetRecordFromDB("google_event_id = '".$event->id."'");
+
+                    if( !$kfrAppt ) {
+                        // NEW: this google event is not yet in cat_appointments; show the form to add the appointment
+                        $eType = 'new';
+                    } else {
+                        // Compare the start time of the google event and the cats appointment.
+                        // If they're the same, draw the normal appt. If they're different, show a notice.
+                        $dGoogle = substr($event->start->dateTime, 0, 19);  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
+                        $dCats = $kfrAppt->Value('start_time');
+
+                        if( $dGoogle == $dCats ) {
+                            $eType = 'normal';
+                        } else {
+                            $eType = 'moved';
+                        }
+                    }
+
+                    $sList .= $this->drawEvent( $event, $eType, $kfrAppt );
                 }
 
             }
-            $sList .= "</div>";
+            if( $sList )  $sList .= "</div>";   // end the last <div class='day'>
         }
 
-
+        $linkGoToThisWeek = ( $tMon != $tMonThisWeek ) ? "<a href='?tMon=$tMonThisWeek'> Back to the current week </a>" : "";
+        $sCalendar = "<div class='row'>"
+                        ."<div class='col-md-1'><a href='?tMon=".($tMon-3600*24*7)."'> &lt;- </a></div>"
+                        ."<div class='col-md-8'><h3>Appointments from ".date('Y-m-d', $tMon)." to ".date('Y-m-d', $tSun)."</h3></div>"
+                        ."<div class='col-md-2'>$linkGoToThisWeek</div>"
+                        ."<div class='col-md-1'><a href='?tMon=".($tMon+3600*24*7)."'> -&gt; </a></div>"
+                    ."</div>";
+        $sCalendar .= $sList;
 
 
         /* Get the list of appointments known in CATS
@@ -118,7 +158,8 @@ class Calendar
 //            $sAppts .= "<div>$startTime : $clientId</div>";
         }
 
-        $s .= "<div class='row'><div class='col-md-6'>$sList</div><div class='col-md-6'>$sAppts</div></div>";
+        //$s .= "<div class='row'><div class='col-md-6'>$sCalendar</div><div class='col-md-6'>$sAppts</div></div>";
+        $s .= $sCalendar;
 
         $s .= "
     <style>
@@ -187,14 +228,25 @@ class Calendar
         return( $s );
     }
 
-    private function DrawEvent($event, $admin = FALSE){
+    private function drawEvent( $event, $eType, KeyframeRecord $kfrAppt = null )
+    /***************************************************************************
+        eType:
+            nonadmin = the user is only allowed to see Free slots and book them. This method is only called for Free slots.
+            normal   = this event matches the appointment in cats_appointments
+            moved    = this event is in cats_appointments but it has been moved to a different datetime.
+            new      = this event is not stored in cats_appointments so show a form for adding it.
+     */
+    {
+        $s = "";
+
+        $admin = $eType != 'nonadmin';
+
         if(strtolower($event->getSummary()) != "free" && !$admin){
             return "";
         }
-        $s = "";
-        $start = $event->start->dateTime;
+
         $tz = "";
-        if( empty($start) ) {
+        if( !($start = $event->start->dateTime) ) {
             $start = $event->start->date;
         }
         elseif ($event->start->timeZone) {
@@ -206,10 +258,29 @@ class Calendar
         }
         if( !$tz ) $tz = 'America/Toronto';
         $time = new DateTime($start, new DateTimeZone($tz));
-        $s .= "<div class='appointment ".(strtolower($event->getSummary()) == "free"?"free":"busy")."'".(strtolower($event->getSummary()) == "free"?$this->bookable($event->id):"").">";
-        $s .= "<span class='appt-time'>".$time->format("g:ia")."</span>";
-        $s .= ($admin?"<span class='appt-summary'>".$event->getSummary()."</span>":"");
-        $s .= "</div>";
+
+
+        $classFree = strtolower($event->getSummary()) == "free" ? "free" : "busy";
+        $sOnClick = strtolower($event->getSummary()) == "free" ? $this->bookable($event->id) : "";
+
+        switch( $eType ) {
+            case 'new':
+                $sSpecial = "THIS APPOINTMENT IS NEW - PUT FORM HERE";
+                break;
+            case 'moved':
+                $sSpecial = "NOTICE: THIS APPOINTMENT HAS MOVED - OK";
+                break;
+            default:
+                $sSpecial = "";
+                break;
+        }
+
+        $s .= "<div class='appointment $classFree' $sOnClick >"
+             ."<span class='appt-time'>".$time->format("g:ia")."</span>"
+             .($admin ? ("<span class='appt-summary'>".$event->getSummary()."</span>") : "")
+             .$sSpecial
+             ."</div>";
+
         return $s;
     }
 
