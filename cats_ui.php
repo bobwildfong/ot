@@ -94,6 +94,30 @@ class CATS_UI
 	       styles.push(x[y].dataset.format.split(' '));
         }
         createCircle(elements, styles);
+
+        $(document).ready( function () {
+            $('.appt-newform').submit( function (e) {
+                e.preventDefault();
+                var gid = $(this).find('#appt-gid').val();
+                var cid = $(this).find('#appt-clientid').val();
+                var divSpecial = $(this).closest('.appt-special');
+
+                $.ajax({
+                    type: 'POST',
+                    data: { cmd: 'appt-newform', gid: gid, cid: cid },
+                    url: 'jx.php',
+                    success: function(data, textStatus, jqXHR) {
+                        var jsData = JSON.parse(data);
+                        var sSpecial = jsData.bOk ? jsData.sOut : 'No, something is wrong';
+                        divSpecial.html( sSpecial );
+                    },
+                    error: function(jqXHR, status, error) {
+                        console.log(status + \": \" + error);
+                    }
+                });
+            });
+        });
+
     }
     </script>
     </head>

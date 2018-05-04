@@ -265,7 +265,7 @@ class Calendar
 
         switch( $eType ) {
             case 'new':
-                $sSpecial = "THIS APPOINTMENT IS NEW - PUT FORM HERE";
+                $sSpecial = $this->formNewAppt( $event );
                 break;
             case 'moved':
                 $sSpecial = "NOTICE: THIS APPOINTMENT HAS MOVED - OK";
@@ -278,10 +278,22 @@ class Calendar
         $s .= "<div class='appointment $classFree' $sOnClick >"
              ."<span class='appt-time'>".$time->format("g:ia")."</span>"
              .($admin ? ("<span class='appt-summary'>".$event->getSummary()."</span>") : "")
-             .$sSpecial
+             ."<div class='appt-special'>$sSpecial</div>"
              ."</div>";
 
         return $s;
+    }
+
+    private function formNewAppt( $event )
+    {
+        $s = "<h5>This appointment is new:</h5>"
+            ."<form method='post' action='' class='appt-newform'>"
+            ."<input type='hidden' id='appt-gid' name='appt-gid' value='".$event->id."'>"
+            ."What is the client's full name? <input name='appt-clientid'/>"
+            ."<input type='submit' value='Save'/>"
+            ."</form>";
+
+        return( $s );
     }
 
     private function bookable($id){
