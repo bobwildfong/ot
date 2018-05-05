@@ -104,7 +104,7 @@ class CATS_UI
 
                 $.ajax({
                     type: 'POST',
-                    data: { cmd: 'appt-newform', gid: gid, cid: cid },
+                    data: { cmd: 'appt-newform', appt_gid: gid, cid: cid },
                     url: 'jx.php',
                     success: function(data, textStatus, jqXHR) {
                         var jsData = JSON.parse(data);

@@ -1,9 +1,8 @@
 <?php
-require_once "_config.php" ;
-require_once "database.php" ;
-require_once "cats_ui.php" ;
-require_once "therapist-clientlist.php" ;
-
+require_once "_config.php";
+require_once "database.php";
+require_once "cats_ui.php";
+require_once "therapist-clientlist.php";
 $oApp = new SEEDAppSessionAccount( array( 'kfdbUserid' => 'ot',
                                           'kfdbPassword' => 'ot',
                                           'kfdbDatabase' => 'ot',

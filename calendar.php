@@ -5,12 +5,10 @@ include( SEEDROOT."seedlib/SEEDGoogleService.php" );
 class Calendar
 {
     private $oApp;
-    private $sess;  // remove this, use oApp->sess instead
 
     function __construct( SEEDAppSessionAccount $oApp )
     {
         $this->oApp = $oApp;
-        $this->sess = $oApp->sess;  // remove this
     }
 
     function DrawCalendar()
@@ -26,13 +24,13 @@ class Calendar
 
         /* Get the id of the calendar that we're currently looking at. If there isn't one, use the primary.
          */
-        $calendarIdCurrent = $this->sess->SmartGPC( 'calendarIdCurrent' ) ?: $sCalendarIdPrimary;
+        $calendarIdCurrent = $this->oApp->sess->SmartGPC( 'calendarIdCurrent' ) ?: $sCalendarIdPrimary;
 
         /* If the user has booked a free slot, store the booking
          */
         if( ($bookSlot = SEEDInput_Str("bookSlot")) && ($sSummary = SEEDInput_Str("bookingSumary")) ) {
             $oGC->BookSlot( $calendarIdCurrent, $bookSlot, $sSummary );
-            echo("<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body><a href=".CATSDIR."\"\">Redirectn</a></body>");
+            echo("<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body><a href=".CATSDIR."\"\">Redirect</a></body>");
             die();
         }
 
@@ -98,7 +96,7 @@ class Calendar
 
                 /* Non-admin users are only allowed to see Free slots and book them
                  */
-                if( !$this->sess->CanAdmin('Calendar') ) {
+                if( !$this->oApp->sess->CanAdmin('Calendar') ) {
                     // The current user is only allowed to see Free slots and book them
                     if( strtolower($event->getSummary()) != "free" )  continue;
 
@@ -303,6 +301,20 @@ class Calendar
         $s .= "\"";
         return $s;
     }
+    
+    public function createAppt($ra){
+        //Nessisary variables needed to create new appointments
+        $oGC = new CATS_GoogleCalendar();               // for appointments on the google calendar
+        $oApptDB = new AppointmentsDB( $this->oApp );   // for appointments saved in cats_appointments
+        $calendarIdCurrent = $this->oApp->sess->SmartGPC( 'calendarIdCurrent' ) ?: $sCalendarIdPrimary;
+        //Actual code responcible for creating the appoinment
+        $event = $oGC->getEventByID($calendarIdCurrent,$ra['appt_gid']);
+        $kfr = $oApptDB->KFRel()->CreateRecord();
+        $kfr->SetValue("google_event_id", $event->id);
+        $kfr->SetValue("start_time", substr($event->start->dateTime, 0, 19) );  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
+        $kfr->PutDBRow();
+    }
+    
 }
 
 
@@ -376,6 +388,10 @@ class CATS_GoogleCalendar
         }
     }
 
+    function getEventByID($calendarID,$id){
+        return $this->service->events->get($calendarID, $id);
+    }
+    
 }
 
 

@@ -34,6 +34,15 @@ $cmd = SEEDInput_Str('cmd');
 
 switch( $cmd ) {
     case 'appt-newform':
+        require_once "calendar.php";
+        $oApp = new SEEDAppSessionAccount( array( 'kfdbUserid' => 'ot',
+            'kfdbPassword' => 'ot',
+            'kfdbDatabase' => 'ot',
+            'sessPermsRequired' => array(),
+            'sessParms' => array( 'logfile' => "seedsession.log")
+        ) );
+        $o = new Calendar( $oApp );
+        $o->createAppt($_POST);
         $rJX['sOut'] = "Hello World";
         $rJX['bOk'] = true;
         break;
