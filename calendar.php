@@ -291,7 +291,7 @@ class Calendar
 
     private function formNewAppt( $event )
     {
-        $s = "<h5>This appointment is new:</h5>"
+        $s = "<h5>This appointment is new:</h5><br />Please Specify client"
             ."<form method='post' action='' class='appt-newform'>"
             ."<input type='hidden' id='appt-gid' name='appt-gid' value='".$event->id."'>"
             ."<select id='appt-clientid' name='appt-clientid'>"
