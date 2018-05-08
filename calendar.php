@@ -286,7 +286,9 @@ class Calendar
         $s = "<h5>This appointment is new:</h5>"
             ."<form method='post' action='' class='appt-newform'>"
             ."<input type='hidden' id='appt-gid' name='appt-gid' value='".$event->id."'>"
-            ."What is the client's full name? <input name='appt-clientid'/>"
+            ."<select id='appt-clientid' name='appt-clientid'>"
+                .SEEDCore_ArrayExpandRows( (new ClientsDB( $this->oApp->kfdb ))->KFRel()->GetRecordSetRA(""), "<option value='[[_key]]'>[[client_name]]</option>" )
+            ."</select>"
             ."<input type='submit' value='Save'/>"
             ."</form>";
 
@@ -312,6 +314,7 @@ class Calendar
         $kfr = $oApptDB->KFRel()->CreateRecord();
         $kfr->SetValue("google_event_id", $event->id);
         $kfr->SetValue("start_time", substr($event->start->dateTime, 0, 19) );  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
+        $kfr->SetValue("fk_clients",$ra['cid']);
         $kfr->PutDBRow();
     }
     

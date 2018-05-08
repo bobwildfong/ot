@@ -43,7 +43,7 @@ switch( $cmd ) {
         ) );
         $o = new Calendar( $oApp );
         $o->createAppt($_POST);
-        $rJX['sOut'] = "Hello World";
+        $rJX['sOut'] = (new ClientsDB($oApp->kfdb))->getClient($_POST['cid'])->Value("client_name");
         $rJX['bOk'] = true;
         break;
 }
