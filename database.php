@@ -219,7 +219,7 @@ function createTables( KeyframeDatabase $kfdb )
             _status     INTEGER DEFAULT 0,
 
             google_event_id  VARCHAR(200) NOT NULL DEFAULT '',
-            eStatus          ENUM('NEW','REVIEWED','COMPLETED','CANCELLED') NOT NULL DEFAULT 'NEW',
+            eStatus          ENUM('REVIEWED','COMPLETED','CANCELLED','MISSED') NOT NULL DEFAULT 'REVIEWED',
             start_time       DATETIME NULL,
             fk_clients       INTEGER NOT NULL DEFAULT 0,
             fk_professionals INTEGER NOT NULL DEFAULT 0,
