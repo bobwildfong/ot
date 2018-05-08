@@ -160,8 +160,13 @@ class Calendar
 
         $s .= "
     <style>
-       span.appt-time,span.appt-summary {
-	       font-family: 'Roboto', sans-serif;
+       div.appointment {
+           width: 90%;
+       }
+       div.appt-time,div.appt-summary {
+           font-family: 'Roboto', sans-serif;
+           display: inline-block;
+           margin:0px 20px;
         }
        .drop-arrow {
 	       transition: all 0.2s ease;
@@ -273,8 +278,8 @@ class Calendar
         }
 
         $s .= "<div class='appointment $classFree' $sOnClick >"
-             ."<span class='appt-time'>".$time->format("g:ia")."</span>"
-             .($admin ? ("<span class='appt-summary'>".$event->getSummary()."</span>") : "")
+             ."<div class='appt-time'>".$time->format("g:ia")."</div>"
+             .($admin ? ("<div class='appt-summary'>".$event->getSummary()."</div>") : "")
              ."<div class='appt-special'>$sSpecial</div>"
              ."</div>";
 
@@ -301,7 +306,7 @@ class Calendar
         $s .= "\"";
         return $s;
     }
-    
+
     public function createAppt($ra){
         //Nessisary variables needed to create new appointments
         $oGC = new CATS_GoogleCalendar();               // for appointments on the google calendar
@@ -314,7 +319,7 @@ class Calendar
         $kfr->SetValue("start_time", substr($event->start->dateTime, 0, 19) );  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
         $kfr->PutDBRow();
     }
-    
+
 }
 
 
@@ -391,7 +396,7 @@ class CATS_GoogleCalendar
     function getEventByID($calendarID,$id){
         return $this->service->events->get($calendarID, $id);
     }
-    
+
 }
 
 
