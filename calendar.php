@@ -277,11 +277,14 @@ class Calendar
                 break;
         }
 
-        $s .= "<div class='appointment $classFree' $sOnClick >"
+        $sAppt = "<div class='appointment $classFree' $sOnClick >"
              ."<div class='appt-time'>".$time->format("g:ia")."</div>"
              .($admin ? ("<div class='appt-summary'>".$event->getSummary()."</div>") : "")
              ."<div class='appt-special'>$sSpecial</div>"
              ."</div>";
+        $sInvoice = "";
+
+        $s .= "<div class='row'><div class='col-md-6'>$sAppt</div><div class='col-md-6'>$sInvoice</div></div>";
 
         return $s;
     }
