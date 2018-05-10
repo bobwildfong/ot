@@ -34,16 +34,6 @@ class Calendar
             die();
         }
 
-        if( false ) {   // when a new appointment is made via the new-appointment form use this code
-/*
-                $kfr = $oApptDB->KFRel()->CreateRecord();
-                    $kfr->SetValue("google_event_id", $event->id);
-                    $kfr->SetValue("start_time", substr($event->start->dateTime, 0, 19) );  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
-                    $kfr->PutDBRow();
-*/
-        }
-
-
         /* Show the list of calendars so we can choose which one to look at
          * The current calendar will be selected in the list.
          */
@@ -283,7 +273,15 @@ class Calendar
              ."<div class='appt-special'>$sSpecial</div>"
              ."</div>";
         $sInvoice = "";
-
+        if($kfrAppt && $kfrAppt->Value('fk_clients')){
+            //This string defines the general format of all invoices
+            //The correct info for each client is subed in later with sprintf
+            //TODO add parameter for session desc and invoice number
+            $sInvoice = "%1\$s\n%2\$s\n%3\$s\n%4\$s\n%5\$s\n%d";
+            $kfrClient = (new ClientsDB($this->oApp->kfdb))->GetClient($kfrAppt->Value('fk_clients'));
+            $address = $kfrClient->Expand("[[address]] [[city]]\n[[postal_code]");
+            $sInvoice = sprintf($sInvoice,$kfrClient->Value('client_name'),$address);
+        }
         $s .= "<div class='row'><div class='col-md-6'>$sAppt</div><div class='col-md-6'>$sInvoice</div></div>";
 
         return $s;
