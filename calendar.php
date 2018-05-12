@@ -241,7 +241,7 @@ class Calendar
         if( !($start = $event->start->dateTime) ) {
             $start = $event->start->date;
         }
-        elseif ($event->start->timeZone) {
+        if ($event->start->timeZone) {
             $tz = $event->start->timeZone;
         }
         else{
@@ -277,10 +277,11 @@ class Calendar
             //This string defines the general format of all invoices
             //The correct info for each client is subed in later with sprintf
             //TODO add parameter for session desc and invoice number
-            $sInvoice = "%1\$s\n%2\$s\n%3\$s\n%4\$s\n%5\$s\n%d";
+            $sInvoice = "<textarea>%1\$s\n%2\$s\n%3\$s\n%4\$s\n%5\$s\n$%6\$d</textarea>";
             $kfrClient = (new ClientsDB($this->oApp->kfdb))->GetClient($kfrAppt->Value('fk_clients'));
-            $address = $kfrClient->Expand("[[address]] [[city]]\n[[postal_code]");
-            $sInvoice = sprintf($sInvoice,$kfrClient->Value('client_name'),$address);
+            $address = $kfrClient->Expand("[[address]] [[city]]\n[[postal_code]]");
+            $session = date_diff(date_create(($event->start->dateTime?$event->start->dateTime:$event->start->date)), date_create(($event->end->dateTime?$event->end->dateTime:$event->end->date)));
+            $sInvoice = sprintf($sInvoice,$kfrClient->Value('client_name'),$address,$kfrClient->Value('dob'),$session->format("%h:%i"),$time->format("M jS Y"),100);//TODO Replace 100 fee with code to determine fee
         }
         $s .= "<div class='row'><div class='col-md-6'>$sAppt</div><div class='col-md-6'>$sInvoice</div></div>";
 
