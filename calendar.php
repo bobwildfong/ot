@@ -15,6 +15,12 @@ class Calendar
     {
         $s = "";
 
+        // Get the command parameter, used for responding to user actions
+        $cmd = SEEDInput_Str('cmd');
+        // Get the id of the event
+        $apptId = SEEDInput_Str('apptId');
+        
+        
         $oGC = new CATS_GoogleCalendar();               // for appointments on the google calendar
         $oApptDB = new AppointmentsDB( $this->oApp );   // for appointments saved in cats_appointments
 
@@ -28,8 +34,8 @@ class Calendar
 
         /* If the user has booked a free slot, store the booking
          */
-        if( ($bookSlot = SEEDInput_Str("bookSlot")) && ($sSummary = SEEDInput_Str("bookingSumary")) ) {
-            $oGC->BookSlot( $calendarIdCurrent, $bookSlot, $sSummary );
+        if( $cmd == 'booking' && ($sSummary = SEEDInput_Str("bookingSumary")) ) {
+            $oGC->BookSlot( $calendarIdCurrent, $apptId, $sSummary );
             echo("<head><meta http-equiv=\"refresh\" content=\"0; URL=".CATSDIR."\"></head><body><a href=".CATSDIR."\"\">Redirect</a></body>");
             die();
         }
@@ -110,8 +116,11 @@ class Calendar
                             $eType = 'moved';
                         }
                     }
-
-                    $sList .= $this->drawEvent( $event, $eType, $kfrAppt );
+                    $invoice = (($cmd == 'invoice' && $apptId == $event->id)?NULL:"true");
+                    if($invoice && SEEDInput_Int('tMon')){
+                        $invoice = "&tMon=".SEEDInput_Str('tMon');
+                    }
+                    $sList .= $this->drawEvent( $event, $eType, $kfrAppt, $invoice );
                 }
 
             }
@@ -220,7 +229,7 @@ class Calendar
         return( $s );
     }
 
-    private function drawEvent( $event, $eType, KeyframeRecord $kfrAppt = null )
+    private function drawEvent( $event, $eType, KeyframeRecord $kfrAppt = null, $invoice = null)
     /***************************************************************************
         eType:
             nonadmin = the user is only allowed to see Free slots and book them. This method is only called for Free slots.
@@ -282,6 +291,12 @@ class Calendar
             $address = $kfrClient->Expand("[[address]] [[city]]\n[[postal_code]]");
             $session = date_diff(date_create(($event->start->dateTime?$event->start->dateTime:$event->start->date)), date_create(($event->end->dateTime?$event->end->dateTime:$event->end->date)));
             $sInvoice = sprintf($sInvoice,$kfrClient->Value('client_name'),$address,$kfrClient->Value('dob'),$session->format("%h:%i"),$time->format("M jS Y"),100);//TODO Replace 100 fee with code to determine fee
+            if($invoice){
+                if($invoice == 'true'){
+                    $invoice = "";
+                }
+                $sInvoice = "<a href='?cmd=invoice&apptId=".$event->id.$invoice."'><img src='".CATSDIR_IMG."invoice.png' style='max-width:20px;'/></a>";
+            }
         }
         $s .= "<div class='row'><div class='col-md-6'>$sAppt</div><div class='col-md-6'>$sInvoice</div></div>";
 
@@ -305,7 +320,7 @@ class Calendar
     private function bookable($id){
         $s = " onclick=\"";
         $s .= "";
-        $s .= "window.location='?bookSlot=$id&bookingSumary=";
+        $s .= "window.location='?cmd=booking&apptId=$id&bookingSumary=";
         $s .= "' + prompt('Who is this appointment for?');";
         $s .= "\"";
         return $s;
