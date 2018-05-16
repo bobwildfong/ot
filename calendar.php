@@ -206,8 +206,10 @@ class Calendar
         var z = document.getElementsByClassName('day');
         for(y = 0; y < z.length; y++) {
 	       var w = x.cloneNode();
-	       z[y].insertBefore(w, z[y].firstChild);
+           var e = z[y].firstChild;
+	       z[y].insertBefore(w, e);
 	       w.onclick = rotateMe;
+           e.onclick = function(){w.click()};
         }
         function rotateMe() {
 	       this.parentElement.classList.toggle('collapsed');
