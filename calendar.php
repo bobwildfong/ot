@@ -209,7 +209,7 @@ class Calendar
            var e = z[y].firstChild;
 	       z[y].insertBefore(w, e);
 	       w.onclick = rotateMe;
-           e.onclick = function(){w.click()};
+           e.onclick = rotateMe;
         }
         function rotateMe() {
 	       this.parentElement.classList.toggle('collapsed');
