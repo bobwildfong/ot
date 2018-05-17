@@ -27,6 +27,8 @@ if( !defined("W_ROOT") )   define( "W_ROOT", "../w/" );
 if( !file_exists(SEEDROOT."seedcore/SEEDCore.php") ) die( "SEEDROOT is not correct: ".SEEDROOT );
 
 define( "SEEDCORE", SEEDROOT."seedcore/" );
+define( "SEEDAPP", SEEDROOT."seedapp/" );
+define( "SEEDLIB", SEEDROOT."seedlib/" );
 
 require_once SEEDCORE."SEEDCoreForm.php";
 require_once SEEDCORE."SEEDCore.php";

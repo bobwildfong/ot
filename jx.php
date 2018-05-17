@@ -30,21 +30,49 @@ $cmd = SEEDInput_Str('cmd');
  * Fortunately, this ajax request should be coming from the same browser that's running the main CATS program so we will have
  * the same PHP_SESSION here. That means we can just use the same authentication method as index.php
  */
+$oApp = new SEEDAppSessionAccount( array(
+    'kfdbUserid' => 'ot', 'kfdbPassword' => 'ot', 'kfdbDatabase' => 'ot',
+    'sessPermsRequired' => array(),
+    'sessParms' => array( 'logfile' => "seedsession.log")
+) );
+
+
+
+/* The permission level of ajax commands is defined by the format of the command.
+ *
+ * Commands containing --- are only available to admin users.
+ *                      -- are only available to leader users or greater.
+ *                       - are only available to therapist users or greater.
+ *            (no hyphens) are available to CATS clients.
+ */
+
+if( strpos( $cmd, "---" ) !== false && !$oApp->sess->CanRead( 'admin' ) ) {
+    $rJX['sErr'] = "Command requires admin permission";
+    goto done;
+} else
+if( strpos( $cmd, "--" ) !== false && !$oApp->sess->CanRead( 'leader' ) ) {
+    $rJX['sErr'] = "Command requires leader permission";
+    goto done;
+} else
+if( strpos( $cmd, "-" ) !== false && !$oApp->sess->CanRead( 'therapist' ) ) {
+    $rJX['sErr'] = "Command requires therapist permission";
+    goto done;
+} else {
+    // anyone can use this command
+}
 
 
 switch( $cmd ) {
     case 'appt-newform':
         require_once "calendar.php";
-        $oApp = new SEEDAppSessionAccount( array( 'kfdbUserid' => 'ot',
-            'kfdbPassword' => 'ot',
-            'kfdbDatabase' => 'ot',
-            'sessPermsRequired' => array(),
-            'sessParms' => array( 'logfile' => "seedsession.log")
-        ) );
-        $o = new Calendar( $oApp );
-        $o->createAppt($_POST);
-        $rJX['sOut'] = (new ClientsDB($oApp->kfdb))->getClient($_POST['cid'])->Value("client_name");
-        $rJX['bOk'] = true;
+        if( ($clientId = @$_POST['cid']) ) {
+            $o = new Calendar( $oApp );
+            $o->createAppt($_POST);
+            $rJX['sOut'] = (new ClientsDB($oApp->kfdb))->getClient($clientId)->Value("client_name");
+            $rJX['bOk'] = true;
+        } else {
+            $rJX['sErr'] = "Unspecified client";
+        }
         break;
 }
 

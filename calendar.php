@@ -19,8 +19,8 @@ class Calendar
         $cmd = SEEDInput_Str('cmd');
         // Get the id of the event
         $apptId = SEEDInput_Str('apptId');
-        
-        
+
+
         $oGC = new CATS_GoogleCalendar();               // for appointments on the google calendar
         $oApptDB = new AppointmentsDB( $this->oApp );   // for appointments saved in cats_appointments
 
@@ -30,7 +30,7 @@ class Calendar
 
         /* Get the id of the calendar that we're currently looking at. If there isn't one, use the primary.
          */
-        $calendarIdCurrent = $this->oApp->sess->SmartGPC( 'calendarIdCurrent' ) ?: $sCalendarIdPrimary;
+        $calendarIdCurrent = $this->oApp->sess->SmartGPC( 'calendarIdCurrent', array($sCalendarIdPrimary) );
 
         /* If the user has booked a free slot, store the booking
          */
@@ -332,22 +332,26 @@ class Calendar
         //Nessisary variables needed to create new appointments
         $oGC = new CATS_GoogleCalendar();               // for appointments on the google calendar
         $oApptDB = new AppointmentsDB( $this->oApp );   // for appointments saved in cats_appointments
-        $calendarIdCurrent = $this->oApp->sess->SmartGPC( 'calendarIdCurrent' ) ?: $sCalendarIdPrimary;
-        //Actual code responcible for creating the appoinment
-        $event = $oGC->getEventByID($calendarIdCurrent,$ra['appt_gid']);
-        $kfr = $oApptDB->KFRel()->CreateRecord();
-        $kfr->SetValue("google_event_id", $event->id);
-        $kfr->SetValue("start_time", substr($event->start->dateTime, 0, 19) );  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
-        $kfr->SetValue("fk_clients",$ra['cid']);
-        $kfr->PutDBRow();
-    }
 
+        if( ($googleEventId = @$ra['appt_gid']) &&
+            ($catsClientId = @$ra['cid']) &&
+            // Assume that the current calendar has already been set in session vars. If not, we can't create an appointment.
+            ($calendarIdCurrent = $this->oApp->sess->SmartGPC( 'calendarIdCurrent' )) &&
+            ($event = $oGC->getEventByID($calendarIdCurrent,$googleEventId)) )
+        {
+            $kfr = $oApptDB->KFRel()->CreateRecord();
+            $kfr->SetValue("google_event_id", $event->id);
+            $kfr->SetValue("start_time", substr($event->start->dateTime, 0, 19) );  // yyyy-mm-ddThh:mm:ss is 19 chars long; trim the timezone part
+            $kfr->SetValue("fk_clients",$catsClientId);
+            $kfr->PutDBRow();
+        }
+    }
 }
 
 
 class CATS_GoogleCalendar
 {
-    var $service;
+    private $service;
 
     function __construct()
     {
@@ -366,7 +370,6 @@ class CATS_GoogleCalendar
         $oG->GetClient();
         $this->service = new Google_Service_Calendar($oG->client);
     }
-
 
     function GetAllMyCalendars()
     {
@@ -394,6 +397,10 @@ class CATS_GoogleCalendar
 
     function GetEvents( $calendarId, $startdate, $enddate )
     {
+        $raEvents = array();
+
+        if( !$this->service ) goto done;
+
         $optParams = array(
             'orderBy' => 'startTime',
             'singleEvents' => TRUE,
@@ -404,21 +411,21 @@ class CATS_GoogleCalendar
 
         $raEvents = $results->getItems();
 
+        done:
         return( $raEvents );
     }
 
     function BookSlot( $calendarId, $slot, $sSummary )
     {
-        if( ($event = $this->service->events->get($calendarId, $slot)) ) {
+        if( $this->service && ($event = $this->service->events->get($calendarId, $slot)) ) {
             $event->setSummary($sSummary);
             $this->service->events->update($calendarId, $event->getId(), $event);
         }
     }
 
     function getEventByID($calendarID,$id){
-        return $this->service->events->get($calendarID, $id);
+        return( $this->service ? $this->service->events->get($calendarID, $id) : null );
     }
-
 }
 
 
