@@ -285,8 +285,8 @@ class Calendar
         if($kfrAppt && $kfrAppt->Value('fk_clients')){
             //This string defines the general format of all invoices
             //The correct info for each client is subed in later with sprintf
-            //TODO add parameter for session desc and invoice number
-            $sInvoice = "<textarea>Name:%1\$s\nAddress:%2\$s\nDoB:%3\$s\nSession Time:%4\$s\n%5\$s\n$%6\$d</textarea><input type='submit' value='Confirm'>";
+            //TODO add parameter for session desc
+            $sInvoice = "<textarea>Name: %1\$s\nAddress: %2\$s\nDoB: %3\$s\nSession Time: %4\$s\nDate: %5\$s\nFee: $%6\$d</textarea><input type='submit' value='Confirm'>";
             $kfrClient = (new ClientsDB($this->oApp->kfdb))->GetClient($kfrAppt->Value('fk_clients'));
             $address = $kfrClient->Expand("[[address]] [[city]]\n[[postal_code]]");
             $session = date_diff(date_create(($event->start->dateTime?$event->start->dateTime:$event->start->date)), date_create(($event->end->dateTime?$event->end->dateTime:$event->end->date)));

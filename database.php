@@ -170,6 +170,7 @@ function createTables( KeyframeDatabase $kfdb )
             postal_code VARCHAR(200) NOT NULL DEFAULT '',
             phone_number VARCHAR(200) NOT NULL DEFAULT '',
             fax_number VARCHAR(200) NOT NULL DEFAULT '',
+            rate INTEGER NOT NULL DEFAULT 0,
             email VARCHAR(200) NOT NULL DEFAULT '')" );
 
         $kfdb->Execute( "INSERT INTO ".DBNAME.".professionals (_key,pro_name,pro_role) values (null,'Jose','Dentist')" );
@@ -227,6 +228,7 @@ function createTables( KeyframeDatabase $kfdb )
             fk_clients       INTEGER NOT NULL DEFAULT 0,
             fk_professionals INTEGER NOT NULL DEFAULT 0,
             note             TEXT,
+            session_info     TEXT,
             fk_cats_invoices INTEGER NOT NULL DEFAULT 0)" );
 
         $kfdb->SetDebug(0);
