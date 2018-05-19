@@ -129,10 +129,10 @@ class Calendar
 
         $linkGoToThisWeek = ( $tMon != $tMonThisWeek ) ? "<a href='?tMon=$tMonThisWeek'> Back to the current week </a>" : "";
         $sCalendar = "<div class='row'>"
-                        ."<div class='col-md-1'><a href='?tMon=".($tMon-3600*24*7)."'> &lt;- </a></div>"
+                        ."<div class='col-md-1'><a href='?tMon=".($tMon-3600*24*7)."'><img src='" . CATSDIR_IMG . "arrow.jpg' style='transform: rotate(180deg); height: 20px; position: relative; top: 5px;' alt='->'>  </a></div>"
                         ."<div class='col-md-8'><h3>Appointments from ".date('Y-m-d', $tMon)." to ".date('Y-m-d', $tSun)."</h3></div>"
                         ."<div class='col-md-2'>$linkGoToThisWeek</div>"
-                        ."<div class='col-md-1'><a href='?tMon=".($tMon+3600*24*7)."'> -&gt; </a></div>"
+                        ."<div class='col-md-1'><a href='?tMon=".($tMon+3600*24*7)."'><img src='" . CATSDIR_IMG . "arrow.jpg' style='height: 20px' alt='->'> </a></div>"
                     ."</div>";
         $sCalendar .= $sList;
 
@@ -168,7 +168,7 @@ class Calendar
            margin:0px 20px;
         }
        .drop-arrow {
-	       transition: all 0.2s ease;
+	       transition: all 0.2s ease-in-out;
 	       width: 10px;
 	       height: 10px;
 	       display: inline;
@@ -178,7 +178,7 @@ class Calendar
 	       transform: rotate(-90deg);
         }
         .appointment {
-	       transition: all 0.2s ease;
+	       transition: all 0.2s ease-in-out;
 	       overflow: hidden;
 	       border: 1px dotted gray;
 	       border-radius: 5px;
@@ -188,6 +188,7 @@ class Calendar
 	       margin-top: 5px;
 	       margin-bottom: 5px;
            box-sizing: content-box;
+           height: 150px;
         }
         .collapsed .appointment {
 	       height: 0;
@@ -211,7 +212,9 @@ class Calendar
 	       w.onclick = rotateMe;
            e.onclick = rotateMe;
         }
-        function rotateMe() {
+        function rotateMe(e) {
+           e.preventDefault();
+           window.getSelection().removeAllRanges();
 	       this.parentElement.classList.toggle('collapsed');
         }
         function expand() {
