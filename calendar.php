@@ -297,7 +297,9 @@ class Calendar
                 if($invoice == 'true'){
                     $invoice = "";
                 }
-                $sInvoice = "<a href='?cmd=invoice&apptId=".$event->id.$invoice."'><img src='".CATSDIR_IMG."invoice.png' style='max-width:20px;'/></a>";
+                $sInvoice = "<a href='?cmd=invoice&apptId=".$event->id.$invoice."'><img src='".CATSDIR_IMG."invoice.png' style='max-width:20px;'/></a>"
+                           ."&nbsp;&nbsp;"
+                           ."<a href='pdf/invoice.php?id=".$kfrAppt->Key()."' target='_blank'>Show Invoice</a>";
             }
         }
         $s .= "<div class='row'><div class='col-md-6'>$sAppt</div><div class='col-md-6'>$sInvoice</div></div>";

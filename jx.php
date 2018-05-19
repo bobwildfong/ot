@@ -25,18 +25,6 @@ $rJX = array( 'bOk' => false,
 
 $cmd = SEEDInput_Str('cmd');
 
-/* Establish secure session here - this is an open entry point where anyone can fake an ajax request with their own url.
- * Just like the main index.php we have to be sure that the request is coming from an authorized user.
- * Fortunately, this ajax request should be coming from the same browser that's running the main CATS program so we will have
- * the same PHP_SESSION here. That means we can just use the same authentication method as index.php
- */
-$oApp = new SEEDAppSessionAccount( array(
-    'kfdbUserid' => 'ot', 'kfdbPassword' => 'ot', 'kfdbDatabase' => 'ot',
-    'sessPermsRequired' => array(),
-    'sessParms' => array( 'logfile' => "seedsession.log")
-) );
-
-
 
 /* The permission level of ajax commands is defined by the format of the command.
  *

@@ -13,7 +13,6 @@ ini_set('html_errors', 1);
  */
 if( !defined("CATSDIR") ) { define( "CATSDIR", "./" ); }
 
-
 /* catsConfig.php
  *
  * Copy catsConfig_sample.php to the directory above this one and rename it to catsConfig.php.
@@ -23,6 +22,8 @@ include( CATSDIR."../catsConfig.php" );
 
 if( !defined("SEEDROOT") ) define( "SEEDROOT", "../seeds/" );
 if( !defined("W_ROOT") )   define( "W_ROOT", "../w/" );
+if( !defined("W_ROOT_FPDF") ) { define( "W_ROOT_FPDF", CATSDIR."w/fpdf181/" ); }
+
 
 if( !file_exists(SEEDROOT."seedcore/SEEDCore.php") ) die( "SEEDROOT is not correct: ".SEEDROOT );
 
@@ -37,11 +38,23 @@ require_once SEEDROOT."Keyframe/KeyframeForm.php" ;
 require_once SEEDROOT."Keyframe/KeyframeDB.php" ;
 require_once SEEDROOT."DocRep/DocRepDB.php" ;
 
+require_once "database.php";
 require_once "documents.php";
+
 
 
 if( !defined("CATSDIR_IMG") ) { define( "CATSDIR_IMG", CATSDIR."i/img/" ); }
 
 $dirImg = CATSDIR_IMG;
+
+
+// Create oApp for all files to use
+$oApp = new SEEDAppSessionAccount( array( 'kfdbUserid' => 'ot',
+                                          'kfdbPassword' => 'ot',
+                                          'kfdbDatabase' => 'ot',
+                                          'sessPermsRequired' => array(),
+                                          'sessParms' => array( 'logfile' => "seedsession.log")
+) );
+$oApp->kfdb->SetDebug(1);
 
 ?>

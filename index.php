@@ -3,13 +3,6 @@ require_once "_config.php";
 require_once "database.php";
 require_once "cats_ui.php";
 require_once "therapist-clientlist.php";
-$oApp = new SEEDAppSessionAccount( array( 'kfdbUserid' => 'ot',
-                                          'kfdbPassword' => 'ot',
-                                          'kfdbDatabase' => 'ot',
-                                          'sessPermsRequired' => array(),
-                                          'sessParms' => array( 'logfile' => "seedsession.log")
-) );
-$oApp->kfdb->SetDebug(1);
 
 /* If you get the error Cannot connect to database, you probably have to execute these two MySQL commands:
         CREATE DATABASE ot;
