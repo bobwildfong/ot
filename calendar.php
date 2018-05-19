@@ -278,17 +278,15 @@ class Calendar
                 break;
         }
 
-        $sAppt = "<div class='appointment $classFree' $sOnClick >"
-             ."<div class='appt-time'>".$time->format("g:ia")."</div>"
+        $sAppt = "<div class='appt-time'>".$time->format("g:ia")."</div>"
              .($admin ? ("<div class='appt-summary'>".$event->getSummary()."</div>") : "")
-             ."<div class='appt-special'>$sSpecial</div>"
-             ."</div>";
+             ."<div class='appt-special'>$sSpecial</div>";
         $sInvoice = "";
         if($kfrAppt && $kfrAppt->Value('fk_clients')){
             //This string defines the general format of all invoices
             //The correct info for each client is subed in later with sprintf
             //TODO add parameter for session desc and invoice number
-            $sInvoice = "<textarea>%1\$s\n%2\$s\n%3\$s\n%4\$s\n%5\$s\n$%6\$d</textarea><input type='submit' value='Confirm'>";
+            $sInvoice = "<textarea>Name:%1\$s\nAddress:%2\$s\nDoB:%3\$s\nSession Time:%4\$s\n%5\$s\n$%6\$d</textarea><input type='submit' value='Confirm'>";
             $kfrClient = (new ClientsDB($this->oApp->kfdb))->GetClient($kfrAppt->Value('fk_clients'));
             $address = $kfrClient->Expand("[[address]] [[city]]\n[[postal_code]]");
             $session = date_diff(date_create(($event->start->dateTime?$event->start->dateTime:$event->start->date)), date_create(($event->end->dateTime?$event->end->dateTime:$event->end->date)));
@@ -302,7 +300,7 @@ class Calendar
                            ."<a href='pdf/cats_invoice.php?id=".$kfrAppt->Key()."' target='_blank'>Show Invoice</a>";
             }
         }
-        $s .= "<div class='row'><div class='col-md-6'>$sAppt</div><div class='col-md-6'>$sInvoice</div></div>";
+        $s .= "<div class='appointment $classFree' $sOnClick ><div class='row'><div class='col-md-6'>$sAppt</div><div class='col-md-6'>$sInvoice</div></div></div>";
 
         return $s;
     }
