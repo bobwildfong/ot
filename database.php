@@ -230,7 +230,7 @@ function createTables( KeyframeDatabase $kfdb )
             fk_clients       INTEGER NOT NULL DEFAULT 0,
             fk_professionals INTEGER NOT NULL DEFAULT 0,
             note             TEXT,
-            session_desc     TEXT DEFAULT 'Occupational Therapy Treatment',
+            session_desc     TEXT,
             fk_cats_invoices INTEGER NOT NULL DEFAULT 0)" );
 
         $kfdb->SetDebug(0);
