@@ -289,13 +289,12 @@ class Calendar
             //This string defines the general format of all invoices
             //The correct info for each client is subed in later with sprintf
             //TODO add parameter for session desc
-            $sInvoice = "<form><div class='row'><div class='col-md-6'><span>Name:&nbsp </span> <input type='text' value='%1\$s'></div> <div class='col-md-6'> <span>Send invoice to:&nbsp; </span> <input type='email' value=''></div></div>"
-                        . "<div class='row'><div class='col-md-6'><span>Session length:&nbsp; </span><input type='text' value='%4\$s'></div><div class='col-md-6'><span> Preptime:&nbsp </span> <input type='number' value=''></div></div>"
+            $sInvoice = "<form><div class='row'><div class='col-md-6'><span>Name:&nbsp </span> <input type='text' value='%1\$s'></div> <div class='col-md-6'> <span>Send invoice to:&nbsp; </span> <input type='email' value='%2\$s'></div></div>"
+                        . "<div class='row'><div class='col-md-6'><span>Session length:&nbsp; </span><input type='text' value='%4\$s'></div><div class='col-md-6'><span> Preptime:&nbsp </span> <input type='number' value='%3\$s'></div></div>"
                         . "<div class='row'><div class='col-md-12'><span>Rate: </span> <input type='text' value='$%6\$d'></div></div><input type='submit' value='Confirm'></form>";
             $kfrClient = (new ClientsDB($this->oApp->kfdb))->GetClient($kfrAppt->Value('fk_clients'));
-            $address = $kfrClient->Expand("[[address]] [[city]]\n[[postal_code]]");
             $session = date_diff(date_create(($event->start->dateTime?$event->start->dateTime:$event->start->date)), date_create(($event->end->dateTime?$event->end->dateTime:$event->end->date)));
-            $sInvoice = sprintf($sInvoice,$kfrClient->Value('client_name'),$address,$kfrClient->Value('dob'),$session->format("%h:%i"),$time->format("M jS Y"),100);//TODO Replace 100 fee with code to determine fee
+            $sInvoice = sprintf($sInvoice,$kfrClient->Value('client_name'),$kfrClient->Value('email'),$kfrAppt->Value('prep_minutes'),$session->format("%h:%i"),$time->format("M jS Y"),100);//TODO Replace 100 fee with code to determine fee
             if($invoice){
                 if($invoice == 'true'){
                     $invoice = "";
