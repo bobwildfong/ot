@@ -342,8 +342,7 @@ function addCols( $tab )
 	$this->Line( $r1, $y1+6, $r1+$r2, $y1+6);
 	$colX = $r1;
 	$colonnes = $tab;
-	while ( list( $lib, $pos ) = each ($tab) )
-	{
+	foreach( $tab as $lib => $pos ) { //while ( list( $lib, $pos ) = each ($tab) )
 		$this->SetXY( $colX, $y1+2 );
 		$this->Cell( $pos, 1, $lib, 0, 0, "C");
 		$colX += $pos;
@@ -355,8 +354,7 @@ function addLineFormat( $tab )
 {
 	global $format, $colonnes;
 
-	while ( list( $lib, $pos ) = each ($colonnes) )
-	{
+	foreach( $colonnes as $lib => $pos ) {  //while ( list( $lib, $pos ) = each ($colonnes) )
 		if ( isset( $tab["$lib"] ) )
 			$format[ $lib ] = $tab["$lib"];
 	}
@@ -368,8 +366,7 @@ function lineVert( $tab )
 
 	reset( $colonnes );
 	$maxSize=0;
-	while ( list( $lib, $pos ) = each ($colonnes) )
-	{
+	foreach( $colonnes as $lib => $pos ) {  //while ( list( $lib, $pos ) = each ($colonnes) )
 		$texte = $tab[ $lib ];
 		$longCell  = $pos -2;
 		$size = $this->sizeOfText( $texte, $longCell );
@@ -394,10 +391,10 @@ function addLine( $ligne, $tab )
 	$ordonnee     = 10;
 	$maxSize      = $ligne;
 
-	reset( $colonnes );
-	while ( list( $lib, $pos ) = each ($colonnes) )
-	{
-		$longCell  = $pos -2;
+	//reset( $colonnes );
+	//while ( list( $lib, $pos ) = each ($colonnes) )
+	foreach( $colonnes as $lib => $pos ) {
+	    $longCell  = $pos -2;
 		$texte     = $tab[ $lib ];
 		$length    = $this->GetStringWidth( $texte );
 		$tailleTexte = $this->sizeOfText( $texte, $length );
@@ -505,10 +502,10 @@ function addTVAs( $params, $tab_tva, $invoice )
 {
 	$this->SetFont('Arial','',8);
 
-	reset ($invoice);
+	//reset ($invoice);
 	$px = array();
-	while ( list( $k, $prod) = each( $invoice ) )
-	{
+	//while ( list( $k, $prod) = each( $invoice ) )
+	foreach( $invoice as $k => $prod ) {
 		$tva = $prod["tva"];
 		@ $px[$tva] += $prod["qte"] * $prod["px_unit"];
 	}
@@ -518,11 +515,11 @@ function addTVAs( $params, $tab_tva, $invoice )
 	$totalTTC = 0;
 	$totalTVA = 0;
 	$y = 261;
-	reset ($px);
+	//reset ($px);
 	natsort( $px );
-	while ( list($code_tva, $articleHT) = each( $px ) )
-	{
-		$tva = $tab_tva[$code_tva];
+	//while ( list($code_tva, $articleHT) = each( $px ) )
+	foreach( $px as $code_tva => $articleHT ) {
+	    $tva = $tab_tva[$code_tva];
 		$this->SetXY(17, $y);
 		$this->Cell( 19,4, sprintf("%0.2F", $articleHT),'', '','R' );
 		if ( $params["RemiseGlobale"]==1 )

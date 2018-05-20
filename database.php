@@ -222,13 +222,15 @@ function createTables( KeyframeDatabase $kfdb )
             google_event_id  VARCHAR(200) NOT NULL DEFAULT '',
             eStatus          ENUM('REVIEWED','COMPLETED','CANCELLED','MISSED') NOT NULL DEFAULT 'REVIEWED',
             start_time       DATETIME NULL,
-            prep_time        INTEGER NOT NULL DEFAULT 10,
-            total_time       INTEGER NOT NULL DEFAULT 0,
-            fee              INTEGER NOT NULL DEFAULT 0,
+            session_minutes  INTEGER NOT NULL DEFAULT 0,  -- initially calculated from calendar
+            prep_minutes     INTEGER NOT NULL DEFAULT 10,
+         -- total_time       INTEGER NOT NULL DEFAULT 0,    just session+prep
+            rate             INTEGER NOT NULL DEFAULT 0,  -- from pros but editable  
+            invoice_email    VARCHAR(200) NOT NULL DEFAULT 0,
             fk_clients       INTEGER NOT NULL DEFAULT 0,
             fk_professionals INTEGER NOT NULL DEFAULT 0,
             note             TEXT,
-            session_info     TEXT,
+            session_desc     TEXT DEFAULT 'Occupational Therapy Treatment',
             fk_cats_invoices INTEGER NOT NULL DEFAULT 0)" );
 
         $kfdb->SetDebug(0);

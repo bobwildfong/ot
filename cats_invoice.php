@@ -1,11 +1,8 @@
 <?php
 
-// (c) Xavier Nicolay
-// Exemple de génération de devis/facture PDF
+require_once "_config.php";
 
-require_once CATSDIR."_config.php";
-
-require('pdfinvoice.php');
+require('pdf/pdfinvoice.php');
 
 $oApptDB = new AppointmentsDB( $oApp );   // for appointments saved in cats_appointments
 
